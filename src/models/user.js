@@ -1,34 +1,44 @@
 export class User {
   userId
+  sectorId
+  firstName
+  lastName
   email
+  securityClearance
   username
-  isAdmin
-  usergoal
+  password
+  dateOfBirth
 
-  constructor (userId, email, username, isAdmin, usergoal) {
+  constructor (userId, sectorId, firstName, lastName, email, securityClearance, username,
+    password, dateOfBirth) {
     this.userId = userId
+    this.sectorId = sectorId
+    this.firstName = firstName
+    this.lastName = lastName
     this.email = email
+    this.securityClearance = securityClearance
     this.username = username
-    this.isAdmin = isAdmin
-    this.usergoal = usergoal
+    this.password = password
+    this.dateOfBirth = dateOfBirth
   }
 
   async clone () {
-    return new User(this.userId,
-      this.email,
-      this.username,
-      this.isAdmin,
-      this.usergoal)
+    return new User(this.userId, this.sectorId, this.firstName, this.lastName,
+      this.email, this.securityClearance, this.username, this.password, this.dateOfBirth)
   }
 
   static copyConstructor (user) {
     if (!user) return null // Handle the case where 'user' is null or undefined
     const clonedUser = new User(
       user.user_id,
+      user.sector_id,
+      user.first_name,
+      user.last_name,
       user.email,
+      user.security_clearance,
       user.username,
-      user.isAdmin,
-      user.usergoal
+      user.password,
+      user.date_of_birth
     )
     return clonedUser
   }

@@ -253,11 +253,17 @@ export default {
     },
     signUp () {
       // TODO
-      // setup data object with corrected and verified data
+      // setup data object with corrected and verified data -> createUserJson
       // encrypt any sensitive data
       // send a post request to the backend to post a new user entity
       // a methode to put the inputs in the database (later on)
       router.push({ name: 'login' })
+    },
+    createUserJson () {
+      // user json requires:
+      // [user_id, sector_id, first_name, last_name, email, security_clearance,
+      //  password, username, date_of_birth]
+
     },
     // This methode checks the input and validates it
     signUpCheck () {
