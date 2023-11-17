@@ -1,0 +1,320 @@
+<template>
+  <section class="bg-image">
+    TESTTEST VALIDATION TEST
+    <div class="mask d-flex align-items-center background">
+      <div class="container p-5">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+            <div class="card" style="border-radius: 15px;">
+              <div class="card-body p-5">
+                <h2 class="text-uppercase text-center mb-5">Sign Up</h2>
+                <form>
+                  <!-- row -->
+                  <div class="row">
+                    <div class="col-md-6 mb-4">
+                      <div class="form-outline">
+                        <div class="signup-label">First Name</div>
+                        <input v-model="firstName" @input="validateInput" type="text" class="form-control" id="firstName" placeholder="" />
+                        <p class="text-danger">{{ errorFirstName }}</p>
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                      <div class="form-outline">
+                        <div class="signup-label">Last Name</div>
+                        <input v-model="lastName" @input="validateInput" type="text" class="form-control" id="lastName" placeholder="" />
+                        <p class="text-danger">{{ errorLastName }}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-outline mb-4">
+                    <div class="signup-label">Email</div>
+                    <input v-model="emailBox" @input="validateInput" type="email" class="form-control" id="emailBox" placeholder="" />
+                    <p class="text-danger">{{ errorEmail }}</p>
+                  </div>
+                  <div class="form-outline mb-4">
+                    <div class="signup-label">Sector</div>
+                    <select name="sectors" id="sectors" class="form-control">
+                      <option class="form-control" v-for="sector in this.sectors" :key="sector" :value="sector"
+                      >{{sector}}</option>
+                      <option class="form-control" selected>I'm not sure</option>
+                    </select>
+                  </div>
+                  <div class="form-outline mb-4">
+                    <div class="signup-label">Postal Code</div>
+                    <input v-model="postCodeBox" @input="validateInput" type="text" class="form-control" id="postCodeBox" placeholder="" />
+                    <p class="text-danger">{{ errorPostalCode }}</p>
+                  </div>
+                  <div class="form-outline mb-4">
+                    <div class="signup-label">Username</div>
+                    <input v-model="userName" @input="validateInput" type="text" class="form-control" id="usernameBox" placeholder="" />
+                    <p class="text-danger">{{ errorUsername }}</p>
+                  </div>
+                  <div class="form-outline mb-4">
+                    <div class="signup-label">Password</div>
+                    <input v-model="password" @input="validateInput" type="password" class="form-control" id="passwordBox" placeholder="" />
+                    <p class="text-danger">{{ errorPassword }}</p>
+                  </div>
+                  <div class="form-outline mb-4">
+                    <div class="signup-label"></div>
+                    <div class="signup-label">Confirm Password</div>
+                    <input v-model="confirmPassword" @input="validateInput" type="password" class="form-control" id="confirmPasswordBox" placeholder="" />
+                    <p class="text-danger">{{ errorConfirmPassword }}</p>
+                  </div>
+                  <!-- dateofbirth -->
+                  <div class="row">
+                    <div class="col mb-4">
+                      <div class="form-outline mb-6">
+                        <div class="signup-label">Date of Birth (optional)</div>
+                        <input v-model="dateOfBirthBox" @input="validateInput" type="date" class="form-control" id="dateOfBirthBox" placeholder="" />
+                        <p class="text-danger">{{ errorDateOfBirth }}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-center">
+                    <button @click.prevent="signUpCheck" class="btn btn-primary btn-block btn-lg buttonColor text-body">Sign up</button>
+                  </div>
+                  <p class="text-center text-muted mt-4 mb-0">Already have an account?
+                    <router-link class="fw-bold text-body signuplink" to="/login">Login here</router-link>
+                  </p>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
+
+<script>
+import router from '@/router'
+
+export default {
+  name: 'SignUpValidationView',
+  data () {
+    return {
+      errorFirstName: '',
+      errorLastName: '',
+      errorEmail: '',
+      errorSector: '',
+      errorPostalCode: '',
+      errorUsername: '',
+      errorPassword: '',
+      errorConfirmPassword: '',
+      errorDateOfBirth: '',
+      firstName: null,
+      lastName: '',
+      emailBox: '',
+      sectorBox: '',
+      postCodeBox: '',
+      userName: '',
+      password: '',
+      confirmPassword: '',
+      dateOfBirthBox: '',
+      sectors: ['Agriculture', 'Basic Metal Production', 'Chemical Industries',
+        'Commerce', 'Construction', 'Education', 'Financial services', 'Food',
+        'Forestry', 'Health services', 'Catering', 'Mining', 'Mechanical and electrical engineering',
+        'Media', 'Oil and gas production', 'Postal and telecommunications services',
+        'Public service', 'Shipping', 'Textiles', 'Transport', 'Transport equipment manufacturing',
+        'Utilities services'] // temporary mock sectors src:https://www.ilo.org/global/industries-and-sectors/lang--en/index.htm
+    }
+  },
+
+  methods: {
+    validateInput: function (event) {
+      let message = ''
+      const nameRegex = '^[a-zA-Z\\-]+$' // checks for only letters
+      const emailRegex = '^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$' // checks for email format
+      const postalRegex = '^\\d{4}[a-zA-Z]{2}$' // checks postal code format (1234AB/1234ab)
+      const usernameRegex = '^[a-zA-Z0-9._-]{6,12}$'// checks for only letters, numbers and char.: ._-
+      const passwordRegex = '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!#$@%&*]).{8,}$'
+      // checks for password of with minimal length 8,
+      // 1 lowercase, 1 uppercase, 1 spec. char.: !#$%&*@
+      let putError = false
+      switch (event.target.id) {
+        case 'firstName':
+          // do not interact if field is empty
+          if (event.target.value.length === 0) {
+            break
+          }
+          // interact when regex match is not found
+          if (!event.target.value.match(nameRegex)) {
+            message = 'Name must consist out of letters only'
+            putError = true
+          } else if (event.target.value.length < 2 || event.target.value.length > 20) {
+            message = 'Name length must be 2 or more'
+            putError = true
+          }
+          break
+        case 'lastName':
+          // do not interact if field is empty
+          if (event.target.value.length === 0) {
+            break
+          }
+          // interact when regex match is not found
+          if (!event.target.value.match(nameRegex)) {
+            message = 'Name must consist out of letters only'
+            putError = true
+          } else if (event.target.value.length < 2 || event.target.value.length > 20) {
+            message = 'Name length must be 2 or more'
+            putError = true
+          }
+          break
+        case 'emailBox':
+          if (!event.target.value.match(emailRegex)) {
+            putError = true
+          }
+          break
+        case 'postCodeBox':
+          if (!event.target.value.match(postalRegex)) {
+            putError = true
+          }
+          break
+        case 'usernameBox':
+          if (!event.target.value.match(usernameRegex)) {
+            putError = true
+          }
+          break
+        case 'passwordBox':
+          if (event.target.value.length < 8) {
+            message = 'Password is too short'
+            putError = true
+          } else if (event.target.value.length > 20) {
+            message = 'Password is too long'
+            putError = true
+          } else if (!event.target.value.match(passwordRegex)) {
+            message = 'Password requires 1 lowercase, 1 uppercase, 1 number & 1 special character (!#$%&*@)'
+            putError = true
+          }
+          break
+        case 'confirmPasswordBox':
+          if (event.target.value !== this.password) {
+            putError = true
+          }
+          break
+        case 'dateOfBirthBox':
+          // console.log(event.target)
+          // console.log(event.target.value)
+          // console.log(new Date(event.target.value).getDate())
+          if (!this.verifyDate(new Date(event.target.value))) {
+            console.log('inv')
+            putError = true
+          }
+          break
+      }
+      // console.log(event.target.id, message)
+      this.setErrorMessage(event.target.id, putError, message)
+    },
+    /**
+     * @param id
+     * @param putError boolean determines if text should be added or removed
+     * @param message error message to be displayed
+     */
+    setErrorMessage (id, putError, message) {
+      // find correct id
+      switch (id) {
+        case 'firstName':
+          this.errorFirstName = putError ? message : ''
+          break
+        case 'lastName':
+          this.errorLastName = putError ? message : ''
+          break
+        case 'emailBox':
+          this.errorEmail = putError ? 'Enter a valid email address' : ''
+          break
+        case 'postCodeBox':
+          this.errorPostalCode = putError ? 'Enter a valid postal code' : ''
+          break
+        case 'usernameBox':
+          this.errorUsername = putError ? 'Enter a valid username (length: 6-12, - , _ , . )' : ''
+          break
+        case 'passwordBox':
+          this.errorPassword = putError ? message : ''
+          break
+        case 'confirmPasswordBox':
+          this.errorConfirmPassword = putError ? 'Passwords must match' : ''
+          break
+        case 'dateOfBirthBox':
+          this.errorDateOfBirth = putError ? 'You must be older than 16' : ''
+      }
+    },
+    verifyDate (date) {
+      // construct a full date
+      const today = new Date()
+      return (today.getFullYear() - date.getFullYear()) > 15
+    },
+    signUp () {
+      // TODO
+      // setup data object with corrected and verified data
+      // encrypt any sensitive data
+      // send a post request to the backend to post a new user entity
+      // a methode to put the inputs in the database (later on)
+      router.push({ name: 'login' })
+    },
+    // This methode checks the input and validates it
+    signUpCheck () {
+      console.log(this.firstName)
+      let countError = 0
+      if (this.userName === '') {
+        this.errorMessageName = 'Enter a valid username'
+        countError++
+      } else {
+        this.errorMessageName = ''
+      }
+      if (this.password === '') {
+        this.errorMessagePassword = 'Enter a valid password'
+        countError++
+      } else if (!this.passwordChecker(this.password)) {
+        this.errorMessagePassword = 'Password must consist of at least 6 characters, 1 capital letter, ' +
+          ' 1 lowercase letter and 1 number.'
+        countError++
+      } else {
+        this.errorMessagePassword = ''
+      }
+      if (this.password === '' || this.password !== this.confirmPassword) {
+        this.errorMessagePasswordRepeat = 'Password does not match'
+        countError++
+      } else {
+        this.errorMessagePasswordRepeat = ''
+      }
+      if (countError === 0) {
+        this.signUp()
+      }
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+.text-danger {
+  text-align: left;
+  font-size: 10px !important;
+}
+.form-control {
+  text-align: left;
+  border-radius: 0 5px 5px 5px;
+}
+.form-outline  {
+  text-align: left;
+}
+
+.signup-label {
+  display: flex;
+  justify-content: start;
+  font-size: 12px;
+}
+
+.signuplink {
+  text-decoration: none;
+}
+.signuplink:hover {
+  text-decoration: underline;
+}
+
+.background {
+  background: #401B96;
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: linear-gradient(359deg, #401B96 4.87%, rgba(129, 180, 239, 0.93) 53.59%, #401B96 94.99%);
+}
+</style>
