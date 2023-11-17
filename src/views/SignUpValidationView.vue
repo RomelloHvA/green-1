@@ -121,6 +121,11 @@ export default {
   },
 
   methods: {
+    /**
+     * Function validates an event. Checks which field it has to validate
+     * automatically warns the user when they have input an invalid value
+     * @param event @input event
+     */
     validateInput: function (event) {
       let message = ''
       const nameRegex = '^[a-zA-Z\\-]+$' // checks for only letters
@@ -193,11 +198,7 @@ export default {
           }
           break
         case 'dateOfBirthBox':
-          // console.log(event.target)
-          // console.log(event.target.value)
-          // console.log(new Date(event.target.value).getDate())
           if (!this.verifyDate(new Date(event.target.value))) {
-            console.log('inv')
             putError = true
           }
           break
@@ -206,9 +207,11 @@ export default {
       this.setErrorMessage(event.target.id, putError, message)
     },
     /**
-     * @param id
+     * Function sets the content of error message properties which will
+     * then be displayed on the user's screen
+     * @param id of input field
      * @param putError boolean determines if text should be added or removed
-     * @param message error message to be displayed
+     * @param message error message to be displayed (optional)
      */
     setErrorMessage (id, putError, message) {
       // find correct id
@@ -238,6 +241,11 @@ export default {
           this.errorDateOfBirth = putError ? 'You must be older than 16' : ''
       }
     },
+    /**
+     * Verifies a given date
+     * @param date Date object
+     * @returns {boolean} true if the input date is 'older' than 16 years.
+     */
     verifyDate (date) {
       // construct a full date
       const today = new Date()
