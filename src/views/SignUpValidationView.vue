@@ -28,20 +28,20 @@
                   </div>
                   <div class="form-outline mb-4">
                     <div class="signup-label">Email</div>
-                    <input v-model="emailBox" @input="validateInput" type="email" class="form-control" id="emailBox" placeholder="" />
+                    <input v-model="email" @input="validateInput" type="email" class="form-control" id="emailBox" placeholder="" />
                     <p class="text-danger">{{ errorEmail }}</p>
                   </div>
                   <div class="form-outline mb-4">
-                    <div class="signup-label">Sector</div>
+                    <div class="signup-label">HvA Faculty</div>
                     <select name="sectors" id="sectors" class="form-control">
-                      <option class="form-control" v-for="sector in this.sectors" :key="sector" :value="sector"
-                      >{{sector}}</option>
+                      <option class="form-control" v-for="faculty in this.faculties" :key="faculty" :value="faculty"
+                      >{{faculty}}</option>
                       <option class="form-control" selected>I'm not sure</option>
                     </select>
                   </div>
                   <div class="form-outline mb-4">
                     <div class="signup-label">Postal Code</div>
-                    <input v-model="postCodeBox" @input="validateInput" type="text" class="form-control" id="postCodeBox" placeholder="" />
+                    <input v-model="postCode" @input="validateInput" type="text" class="form-control" id="postCodeBox" placeholder="" />
                     <p class="text-danger">{{ errorPostalCode }}</p>
                   </div>
                   <div class="form-outline mb-4">
@@ -65,7 +65,7 @@
                     <div class="col mb-4">
                       <div class="form-outline mb-6">
                         <div class="signup-label">Date of Birth (optional)</div>
-                        <input v-model="dateOfBirthBox" @input="validateInput" type="date" class="form-control" id="dateOfBirthBox" placeholder="" />
+                        <input v-model="dateOfBirth" @input="validateInput" type="date" class="form-control" id="dateOfBirthBox" placeholder="" />
                         <p class="text-danger">{{ errorDateOfBirth }}</p>
                       </div>
                     </div>
@@ -96,7 +96,7 @@ export default {
       errorFirstName: '',
       errorLastName: '',
       errorEmail: '',
-      errorSector: '',
+      errorFaculty: '',
       errorPostalCode: '',
       errorUsername: '',
       errorPassword: '',
@@ -104,19 +104,16 @@ export default {
       errorDateOfBirth: '',
       firstName: null,
       lastName: '',
-      emailBox: '',
-      sectorBox: '',
-      postCodeBox: '',
+      email: '',
+      faculty: '',
+      postCode: '',
       userName: '',
       password: '',
       confirmPassword: '',
-      dateOfBirthBox: '',
-      sectors: ['Agriculture', 'Basic Metal Production', 'Chemical Industries',
-        'Commerce', 'Construction', 'Education', 'Financial services', 'Food',
-        'Forestry', 'Health services', 'Catering', 'Mining', 'Mechanical and electrical engineering',
-        'Media', 'Oil and gas production', 'Postal and telecommunications services',
-        'Public service', 'Shipping', 'Textiles', 'Transport', 'Transport equipment manufacturing',
-        'Utilities services'] // temporary mock sectors src:https://www.ilo.org/global/industries-and-sectors/lang--en/index.htm
+      dateOfBirth: '',
+      faculties: ['Applied Social Sciences and Law', 'Business and Economics',
+        'Digital Media and Creative Industries', 'Education', 'Health', 'Sports and Nutrition',
+        'Technology'] // HvA faculties src:https://www.amsterdamuas.com/about-auas/organisation/faculties/faculties.html?_ga=2.137166840.975923899.1700941795-516242571.1663835270
     }
   },
 
@@ -128,11 +125,17 @@ export default {
      */
     validateInput: function (event) {
       let message = ''
+      // regex for different fields
       const nameRegex = '^[a-zA-Z\\-]+$' // checks for only letters
       const emailRegex = '^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$' // checks for email format
       const postalRegex = '^\\d{4}[a-zA-Z]{2}$' // checks postal code format (1234AB/1234ab)
       const usernameRegex = '^[a-zA-Z0-9._-]{6,12}$'// checks for only letters, numbers and char.: ._-
       const passwordRegex = '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!#$@%&*]).{8,}$'
+      // magic number variables
+      const minNameLength = 2
+      const maxNameLength = 20
+      const minPasswordLength = 8
+      const maxPasswordLength = 20
       // checks for password of with minimal length 8,
       // 1 lowercase, 1 uppercase, 1 spec. char.: !#$%&*@
       let putError = false
@@ -146,7 +149,7 @@ export default {
           if (!event.target.value.match(nameRegex)) {
             message = 'Name must consist out of letters only'
             putError = true
-          } else if (event.target.value.length < 2 || event.target.value.length > 20) {
+          } else if (event.target.value.length < minNameLength || event.target.value.length > maxNameLength) {
             message = 'Name length must be 2 or more'
             putError = true
           }
@@ -160,7 +163,7 @@ export default {
           if (!event.target.value.match(nameRegex)) {
             message = 'Name must consist out of letters only'
             putError = true
-          } else if (event.target.value.length < 2 || event.target.value.length > 20) {
+          } else if (event.target.value.length < minNameLength || event.target.value.length > maxNameLength) {
             message = 'Name length must be 2 or more'
             putError = true
           }
@@ -181,10 +184,10 @@ export default {
           }
           break
         case 'passwordBox':
-          if (event.target.value.length < 8) {
+          if (event.target.value.length < minPasswordLength) {
             message = 'Password is too short'
             putError = true
-          } else if (event.target.value.length > 20) {
+          } else if (event.target.value.length > maxPasswordLength) {
             message = 'Password is too long'
             putError = true
           } else if (!event.target.value.match(passwordRegex)) {
@@ -247,9 +250,10 @@ export default {
      * @returns {boolean} true if the input date is 'older' than 16 years.
      */
     verifyDate (date) {
+      const minYear = 16
       // construct a full date
       const today = new Date()
-      return (today.getFullYear() - date.getFullYear()) > 15
+      return (today.getFullYear() - date.getFullYear()) >= minYear
     },
     signUp () {
       // TODO
@@ -262,7 +266,7 @@ export default {
     createUserJson () {
       // user json requires:
       // [user_id, sector_id, first_name, last_name, email, security_clearance,
-      //  password, username, date_of_birth]
+      //  password, username, bio (null), occupation (null), date_of_birth, postal_code, user_col (null) ]
 
     },
     // This methode checks the input and validates it
