@@ -114,7 +114,8 @@ const routes = [
       },
 
       { path: 'intro', component: () => import('@/components/AdminDashboard/AdminIntroComponent') },
-      { path: 'users', component: () => import('@/components/AdminDashboard/AdminUserComponent') }
+      { path: 'users', component: () => import('@/components/AdminDashboard/AdminUserComponent') },
+      { path: 'action_plans', component: () => import('@/components/AdminDashboard/ActionPlanEditorComponent/ActionPlanEditorMain') }
     ],
     component: () => import(/* webpackChunkName: "about" */ '../views/AdminDashboardView')
   },
