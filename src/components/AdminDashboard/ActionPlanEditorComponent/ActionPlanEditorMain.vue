@@ -1,30 +1,28 @@
 <template>
 Select a sector to edit those action plans:
-  <form>
-    <label for="Select a sector:"></label>
-    <select id="sectors" name="sectors" v-model="selectedOption">
-      <option v-for="option in options" :value="option" :key="option" @click="pushSelectedToRoute(option)">{{ option }}</option>
-    </select>
-  </form>
+    <SectorDropDownComponent @sectorSelected="pushSelectedToRoute"/>
   <SectorAllPlansComponent/>
 </template>
 
 <script>
 import SectorAllPlansComponent from '@/components/AdminDashboard/ActionPlanEditorComponent/SectorAllPlansComponent'
 import router from '@/router'
+import SectorDropDownComponent from '@/components/adminquiz/SectorDropDownComponent'
+import { ref } from 'vue'
+
 export default {
   name: 'ActionPlanEditorMain',
-  components: { SectorAllPlansComponent },
+  components: { SectorDropDownComponent, SectorAllPlansComponent },
   data () {
     return {
       options: ['ICT', 'Fashion', 'Engineering'],
-      selectedOption: ''
+      selectedOption: ref()
     }
   },
   methods: {
     pushSelectedToRoute (selectedOption) {
-      if (selectedOption !== '') {
-        router.push(`/admin_dashboard/action_plans/${selectedOption}`)
+      if (selectedOption.name !== 'none' || selectedOption.name !== '') {
+        router.push(`/admin_dashboard/action_plans/${selectedOption.name}`)
       }
     }
   }
