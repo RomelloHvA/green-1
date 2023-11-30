@@ -110,11 +110,11 @@ export class RESTAdaptorWithFetch /* <E> */ {
     return { isPending, error, load, abort, isAborted }
   }
 
-  async asyncCustom (endpoint, method, body) {
+  async asyncCustom (endpoint, method, body, params) {
     const entity = ref(null)
     endpoint = this.resourcesUrl + '/' + endpoint
 
-    const { data, isPending, error, load, abort, isAborted } = await useFetch(endpoint, body, method)
+    const { data, isPending, error, load, abort, isAborted } = await useFetch(endpoint, body, method, params)
 
     watchEffect(() => {
       if (data.value === null || data.value.length === 0) return

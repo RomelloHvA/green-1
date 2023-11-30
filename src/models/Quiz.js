@@ -1,6 +1,7 @@
 import QuizQuestionTrueFalse from '@/models/YesNoQuestion'
 import MultipleChoiceQuestion from '@/models/MultipleChoiceQuestion'
 import QuizResult from '@/models/QuizResult'
+import Sector from './Sector'
 
 /**
  * Quiz model class.
@@ -26,6 +27,7 @@ export default class Quiz {
   isConcept
   isPublished
   isLive
+  sector
 
   /**
    * For the constructor is only json needed the json needs to be in the following format:
@@ -45,6 +47,7 @@ export default class Quiz {
       this.isConcept = true
       this.isPublished = false
       this.totalQuestions = 0
+      this.sector = null
       return
     }
 
@@ -65,6 +68,7 @@ export default class Quiz {
     this.isConcept = questionJSON.isConcept
     this.isPublished = questionJSON.isPublished
     this.isLive = questionJSON.isLive
+    this.sector = questionJSON.sector ? new Sector(questionJSON.sector) : null
 
     if (!isInQuizBuilder) {
       if (questionJSON.quizQuestions !== null && questionJSON.quizQuestions.length !== 0) {
@@ -194,6 +198,9 @@ export default class Quiz {
     if (this.isConcept !== other.isConcept) return false
     if (this.isPublished !== other.isPublished) return false
     if (this.quizQuestionsArrayEquals(other.quizQuestions) === false) return false
+    if (other.sector !== null) {
+      if (other.sector.equals(this.sector) === false) return false
+    }
     return true
   }
 

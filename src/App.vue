@@ -21,6 +21,7 @@ import CONFIG from '@/app-config'
 import { ProfilesAdaptor } from '@/services/ProfilesAdaptor'
 import { GoalsAdaptor } from '@/services/GoalsAdaptor'
 import { ActionPlansAdaptor } from '@/services/ActionPlansAdaptor'
+import Sector from '@/models/Sector'
 export default {
   components: { NavBar, FooterComponent },
   provide () {
@@ -29,6 +30,7 @@ export default {
       quizLiveService: new RESTAdaptorWithFetch(CONFIG.BACKEND_URL + '/quiz', Quiz.copyConstructor),
       questionTrueFalseService: new RESTAdaptorWithFetch(CONFIG.BACKEND_URL + '/question', YesNoQuestion.copyConstructor),
       questionMultipleChoiceService: new RESTAdaptorWithFetch(CONFIG.BACKEND_URL + '/question', MultipleChoiceQuestion.copyConstructor),
+      sectorService: new RESTAdaptorWithFetch(CONFIG.BACKEND_URL + '/sector', Sector.copyConstructor),
       contentService: new RESTContentAdaptor(CONFIG.BACKEND_URL + '/page'),
       usersServices: new UsersAdaptor(CONFIG.BACKEND_URL),
       profileService: new ProfilesAdaptor(CONFIG.BACKEND_URL + '/profiles'),

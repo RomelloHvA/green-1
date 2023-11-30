@@ -26,13 +26,13 @@ public class QuizService {
         return quizRepository.findById(id).orElse(null);
     }
 
-    public Quiz getQuizByIsLive() {
-        return quizRepository.findByIsLive(true);
+    public Quiz getQuizByIsLive(long id) {
+        return quizRepository.findByIsLiveAndSectorId(true, id);
     }
 
     public Quiz addQuiz(Quiz quiz) {
         if (quiz.getIsLive()){
-            List<Quiz> quizzes = quizRepository.findAll();
+            List<Quiz> quizzes = quizRepository.findAllBySector(quiz.getSector());
             for (Quiz q : quizzes) {
                 if (q.getIsLive()){
                     q.setIsLive(false);

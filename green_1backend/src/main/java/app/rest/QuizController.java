@@ -3,6 +3,7 @@ package app.rest;
 import app.models.Quiz;
 import app.repositories.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +25,8 @@ public class QuizController {
     }
 
     @GetMapping("/live")
-    public Quiz getLiveQuiz(){
-        return quizService.getQuizByIsLive();
+    public ResponseEntity<Quiz> getQuizById(@RequestParam long sectorID) {
+        return ResponseEntity.ok(quizService.getQuizByIsLive(sectorID));
     }
 
     // Get all quizzes

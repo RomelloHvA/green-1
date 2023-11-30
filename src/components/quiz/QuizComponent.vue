@@ -4,7 +4,8 @@
         <h1 v-show="showItemSequence[0]" class="slide-in-animation headerText2 fs-1 fs-sd-2">Welcome to the SDG Quiz!</h1>
         <h3 v-show="showItemSequence[1]" class="slide-in-animation m-5 headerText3"> You will be asked questions about different topics </h3>
         <h3 v-show="showItemSequence[2]" class="slide-in-animation m-5 headerText3"> answer the questions and find out which SDG's are compatible with you!</h3>
-        <button v-show="showItemSequence[3]" @click="startQuiz" type="button" class="btn btn-primary my-5 startQuizButton slide-in-animation">Start quiz</button>
+        <button v-show="showItemSequence[3]" @click="startQuiz" type="button" class="btn btn-primary my-5 startQuizButton slide-in-animation" :disabled="quiz === null">Start quiz</button>
+        <h5 v-if="quiz === null && showItemSequence[3]" class="slide-in-animation text-danger">There currenlty seems to be no quiz available, please try again later</h5>
       </div>
        <!-- This is where the quiz progress bar will be displayed -->
       <!-- This is where the quiz questions will be displayed with the answers -->
@@ -59,9 +60,10 @@ export default {
     const questionAnswered = ref(null)
     const quizLiveService = inject('quizLiveService')
     const route = useRoute()
+    const sectorID = 1
 
     onBeforeMount(async () => {
-      const results = await quizLiveService.asyncCustom('live')
+      const results = await quizLiveService.asyncCustom('live', 'GET', null, { sectorID: sectorID })
 
       watchEffect(() => {
         quiz.value = results.entity.value

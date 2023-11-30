@@ -1,17 +1,21 @@
 <template>
-    <div>
-        <h1 class="fs-1 fs-sd-2">{{ questionObject.question }}</h1>
-        <div class="container quizUnderTextSection">
-            <div class=" justify-content-between answerBox m-auto row">
-                <div class="col-md-6 col-12 quizButtonSection">
-                    <button @click="clickedYesButton" type="button" :class="{selectedButton: yesIsSelected, quizAnswerButton: !yesIsSelected}"  class="btn btn-primary my-5 quizAnswerButton quizYesNoButton  ">Yes</button>
-                </div>
-                <div class="col-md-6 col-12 quizButtonSection">
-                    <button @click="clickedNoButton" type="button" :class="{selectedButton: noIsSelected, quizAnswerButton: !noIsSelected}" class="btn btn-primary my-5 quizAnswerButton quizYesNoButton  ">No</button>
-                </div>
-            </div>
+  <div>
+    <h1 class="fs-1 fs-sd-2">{{ questionObject.question }}</h1>
+    <div class="container quizUnderTextSection">
+      <div class=" justify-content-between answerBox m-auto row">
+        <div class="col-md-6 col-12 quizButtonSection">
+          <button @click="clickedYesButton" type="button"
+            :class="{ selectedButton: yesIsSelected, quizAnswerButton: !yesIsSelected }"
+            class="btn btn-primary my-5 quizAnswerButton quizYesNoButton  ">Yes</button>
         </div>
+        <div class="col-md-6 col-12 quizButtonSection">
+          <button @click="clickedNoButton" type="button"
+            :class="{ selectedButton: noIsSelected, quizAnswerButton: !noIsSelected }"
+            class="btn btn-primary my-5 quizAnswerButton quizYesNoButton  ">No</button>
+        </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -31,8 +35,7 @@ export default {
    * @author Marco de Boer
    */
   data () {
-    return {
-    }
+    return {}
   },
   mounted () {
     document.querySelector('nav').scrollIntoView({ behavior: 'smooth' })
@@ -71,25 +74,26 @@ export default {
 
 <style>
 .quizUnderTextSection {
-    margin-top: 50px;
-    margin-bottom: 50px;
-}
-.questionHeader {
-    font-size: 2.5rem;
-    font-weight: 500;
-    margin-bottom: 50px;
+  margin-top: 50px;
+  margin-bottom: 50px;
 }
 
-.answerBox{
-    max-width: 500px !important;
+.questionHeader {
+  font-size: 2.5rem;
+  font-weight: 500;
+  margin-bottom: 50px;
 }
+
+.answerBox {
+  max-width: 500px !important;
+}
+
 .quizYesNoButton {
-    font-size: 1.5rem;
-    width: 200px;
-    height: fit-content;
-    margin-top: 30px !important;
-    margin-bottom: 30px !important;
-    margin-right: 40px;
-    margin-left: 40px;
-}
-</style>
+  font-size: 1.5rem;
+  width: 200px;
+  height: fit-content;
+  margin-top: 30px !important;
+  margin-bottom: 30px !important;
+  margin-right: 40px;
+  margin-left: 40px;
+}</style>

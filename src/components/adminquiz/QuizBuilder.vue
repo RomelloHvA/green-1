@@ -29,6 +29,9 @@
                     <label for="quizName" class="quizBuilderLabel text-start">Quiz Name:</label>
                     <input v-model="quiz.quizName" type="text" autocomplete="off" class="form-control quizNameInput" id="quizName">
                   </div>
+                  <div>
+                    <SectorDropDownComponent :sector="quiz.sector" @sectorSelected="setSector"/>
+                  </div>
                   <div class="justify-content-center m-auto">
                     <button type="button" :class="{ 'disabled' : !hasChanged || pendingBusy}" @click="saveQuiz()" class="btn btn-success m-1">
                       <div class="d-flex row">
@@ -97,6 +100,7 @@ import ErrorComponent from '@/components/ErrorComponent'
 import LoadingComponent from '@/components/LoadingComponent'
 import router from '@/router'
 import { useToast } from 'vue-toast-notification'
+import SectorDropDownComponent from './SectorDropDownComponent.vue'
 
 export default {
   name: 'QuizBuilder',
@@ -104,7 +108,8 @@ export default {
     QuizBuilderTrueFalse,
     ErrorComponent,
     LoadingComponent,
-    QuizBuilderMultipleChoice
+    QuizBuilderMultipleChoice,
+    SectorDropDownComponent
   },
   setup (props, { emit }) {
     const quizService = inject('quizService')
@@ -139,7 +144,6 @@ export default {
 
       load.value().then(async () => {
         if (error.value === null) {
-          console.log(quizOriginal.value)
           await cloneQuiz(quizOriginal.value)
         }
         if (error.value === 'Could not fetch the data for that resource') {
@@ -229,6 +233,10 @@ export default {
       router.push({ path: '/admin_dashboard/quiz' })
     }
 
+    const setSector = (sector) => {
+      quiz.value.sector = sector
+    }
+
     const deleteQuiz = async () => {
       if (!window.confirm('Are you sure you want to delete this quiz?')) {
         return
@@ -270,7 +278,7 @@ export default {
     })
 
     return {
-      questionTypes, addQuestion, selectedQuestionType, deleteQuestion, error, isPending, quiz, saveQuestion, moveQuestion, saveButtonText, hasChanged, pendingBusy, saveQuiz, saveQuizIsPending, selectedValue, backToOverview, deleteButtonHover, deleteQuiz
+      questionTypes, addQuestion, selectedQuestionType, deleteQuestion, error, isPending, quiz, saveQuestion, moveQuestion, saveButtonText, hasChanged, pendingBusy, saveQuiz, saveQuizIsPending, selectedValue, backToOverview, deleteButtonHover, deleteQuiz, setSector
     }
   },
   methods: {

@@ -1,81 +1,71 @@
 <template>
-    <div class="minvh100">
-        <div v-if="error">
-            <ErrorComponent :error="error"/>
-        </div>
-        <div v-else-if="isPending">
-            <LoadingComponent/>
-        </div>
-        <div v-else>
-            <section v-if="quizzes !== null">
-                <div class="my-5">
-                    <div v-if="!isBuilderRoute">
-                        <h1>Quiz Overview</h1>
-                        <div class="d-flex justify-content-start container my-5">
-                            <ul class="quizBuilder row gap-5">
-                                <li class="quizOverviewCards col">
-                                    <div class="d-flex align-top m-auto quizOverviewCardContent flex-column align-items-center gap-3">
-                                        <div class="quizOverViewCardContentText">Current quiz for users:</div>
-                                        <div class="liveQuizText" v-if="liveQuiz !== null">{{ liveQuiz.quizName }}</div>
-                                        <div class="liveQuizText" v-else>No quiz is live</div>
-                                    </div>
-                                </li>
-                                <li class="quizOverviewCards col">
-                                    <div class="d-flex align-top m-auto quizOverviewCardContent flex-column align-items-center gap-3">
-                                        <div class="quizOverViewCardContentText">Quizzes ready to publish:</div>
-                                        <select v-model="selectedQuizForLive" class="form-select ">
-                                            <option value="" selected disabled>Select a quiz</option>
-                                            <!-- #todo autoload from available options -->
-                                            <option v-for="quiz in publishedQuizzes" :key="quiz.id" :value="quiz"> {{ quiz.quizName}}</option>
-                                        </select>
-                                        <button @click="setQuizLive" class="btn btn-primary" :disabled="!selectedQuizForLive || setLiveIsPending">
-                                          <div class="d-flex row">
-                                            <div class="col">Set Live</div>
-                                            <div v-if="setLiveIsPending" class="col spinnerInButton p-0">
-                                              <div class="spinner-border text-light spinnerInButton" role="status">
-                                                  <span class="sr-only"></span>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </button>
-                                    </div>
-                                </li>
-                                <li class="quizOverviewCards col">
-                                    <div class="d-flex align-top m-auto quizOverviewCardContent flex-column align-items-center gap-3">
-                                        <div class="quizOverViewCardContentText">Edit quiz</div>
-                                        <select v-model="selectedQuizForBuilder" class="form-select ">
-                                            <option value="" selected disabled>Select a quiz</option>
-                                            <!-- #todo autoload from available options -->
-                                            <option v-for="quiz in quizzes" :key="quiz.id" :value="quiz"> {{ quiz.quizName}}</option>
-                                        </select>
-                                        <button @click="gotoQuizBuilder" class="btn btn-primary" :disabled="!selectedQuizForBuilder">
-                                          Edit quiz
-                                        </button>
-                                    </div>
-                                </li>
-                                <li class="quizOverviewCards col">
-                                    <div class="d-flex align-top m-auto quizOverviewCardContent flex-column align-items-center gap-3">
-                                      <div class="quizOverViewCardContentText">Create Quiz</div>
-                                      <button @click="createQuiz" class="btn btn-primary" :disabled="createIsPending" >
-                                        <div class="d-flex row">
-                                          <div class="col">Create quiz</div>
-                                          <div v-if="createIsPending" class="col spinnerInButton p-0">
-                                            <div class="spinner-border text-light spinnerInButton" role="status">
-                                                <span class="sr-only"></span>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </button>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <router-view @updateQuizzes="updateQuizzes"/>
-                </div>
-            </section>
-        </div>
+  <div class="minvh100">
+    <div v-if="error">
+      <ErrorComponent :error="error" />
     </div>
+    <div v-else-if="isPending">
+      <LoadingComponent />
+    </div>
+    <div v-else>
+      <section v-if="quizzes !== null">
+        <div class="my-5 mw90 m-auto">
+          <div v-if="!isBuilderRoute">
+            <h1>Quiz Overview</h1>
+            <div class="flexRow m-auto container mtop-50">
+              <div class="d-flex align-top m-auto quizOverviewCardContent flexRow align-items-center gap-3">
+                <div class="quizOverViewCardContentText">Edit quiz</div>
+                <select v-model="selectedQuizForBuilder" class="form-select editSelecter">
+                  <option value="" selected disabled>Select a quiz</option>
+                  <!-- #todo autoload from available options -->
+                  <option v-for="quiz in quizzes" :key="quiz.id" :value="quiz"> {{ quiz.quizName }}</option>
+                </select>
+                <button @click="gotoQuizBuilder" class="btn btn-primary" :disabled="!selectedQuizForBuilder">
+                  Edit quiz
+                </button>
+              </div>
+              <div class="d-flex align-top m-auto quizOverviewCardContent flexRow align-items-center gap-3">
+                <div class="quizOverViewCardContentText">Create Quiz</div>
+                <button @click="createQuiz" class="btn btn-primary" :disabled="createIsPending">
+                  <div class="d-flex row">
+                    <div class="col">Create quiz</div>
+                    <div v-if="createIsPending" class="col spinnerInButton p-0">
+                      <div class="spinner-border text-light spinnerInButton" role="status">
+                        <span class="sr-only"></span>
+                      </div>
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
+            <div class="table-responsive mtop-50" v-if="sectors">
+              <table class="table table-ligth">
+                <thead>
+                  <tr class="sectorQuizTableLabels">
+                    <th scope="col">Sector:</th>
+                    <th scope="col">Quizzes</th>
+                    <th scope="col">Ready for Live</th>
+                    <th scope="col">Live</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <div v-if="sectorsError">
+                    <ErrorComponent :error="sectorsError" />
+                  </div>
+                  <div v-else-if="sectorsIsPending">
+                    <LoadingComponent />
+                  </div>
+                  <tr v-else v-for="sector in sectors" :key="sector.id">
+                    <QuizOverviewTabelRow :sector="sector" :quizzes="quizzes"/>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <router-view @updateQuizzes="updateQuizzes" />
+        </div>
+      </section>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -86,31 +76,36 @@ import LoadingComponent from '@/components/LoadingComponent'
 import router from '@/router'
 import Quiz from '@/models/Quiz'
 import { useToast } from 'vue-toast-notification'
+import QuizOverviewTabelRow from './QuizOverviewTabelRow.vue'
 
 export default {
   name: 'QuizOverview',
   components: {
     ErrorComponent,
-    LoadingComponent
+    LoadingComponent,
+    QuizOverviewTabelRow
   },
   setup () {
     const quizService = inject('quizService')
     const quizzes = ref([])
     const conceptQuizzes = ref([])
-    const publishedQuizzes = ref([])
-    const liveQuiz = ref(null)
     const load = ref(null)
     const isPending = ref(false)
     const error = ref(null)
     const route = useRoute()
     const selectedQuizForBuilder = ref('')
-    const selectedQuizForLive = ref('')
     const createIsPending = ref(false)
     const createError = ref(null)
     const $toast = useToast()
-    const setLiveIsPending = ref(false)
-    const setLiveError = ref(null)
+    const sectorService = inject('sectorService')
+    const sectors = ref([])
+    const sectorsIsPending = ref(false)
+    const sectorsError = ref(null)
 
+    /**
+     * This function loads all the quizzes and then filters them and fetch sectors
+     * @Author Marco de Boer
+     */
     onBeforeMount(async () => {
       const results = await quizService.asyncFindAll()
 
@@ -122,38 +117,50 @@ export default {
         error.value = results.error.value
       })
 
-      load.value().then(() => {
+      load.value().then(async () => {
         if (error.value === null) {
           filterQuizzes()
+          await fetchSectors()
         }
       })
     })
 
-    function filterQuizzes () {
-      // Clear the existing quizzes
-      conceptQuizzes.value.splice(0, conceptQuizzes.value.length)
-      publishedQuizzes.value.splice(0, publishedQuizzes.value.length)
+    async function fetchSectors () {
+      const sectorResults = await sectorService.asyncFindAll()
 
-      quizzes.value.forEach(quiz => {
-        if (quiz.isConcept) {
-          conceptQuizzes.value.push(quiz)
-        } else if (quiz.isPublished) {
-          publishedQuizzes.value.push(quiz)
-          if (quiz.isLive) {
-            liveQuiz.value = quiz
-          }
+      watchEffect(() => {
+        sectors.value = sectorResults.entities.value
+        sectorsIsPending.value = sectorResults.isPending.value
+        sectorsError.value = sectorResults.error.value
+      })
+
+      sectorResults.load().then(() => {
+        if (sectorResults.error.value) {
+          console.log(sectorResults.error.value)
         }
       })
     }
 
+    /**
+     * This function filters the quizzes and only adds the concept quizzes to the conceptQuizzes array
+     */
+    function filterQuizzes () {
+      // Clear the existing quizzes
+      conceptQuizzes.value.splice(0, conceptQuizzes.value.length)
+
+      quizzes.value.forEach(quiz => {
+        if (quiz.isConcept) {
+          conceptQuizzes.value.push(quiz)
+        }
+      })
+    }
+
+    /**
+     * This function updates the quizzes after a change from builder
+     * @Author Marco de Boer
+     */
     const updateQuizzes = () => {
       load.value().then(() => {
-        selectedQuizForBuilder.value = ''
-        selectedQuizForLive.value = ''
-        if (error.value) {
-          console.log(error.value)
-        }
-        filterQuizzes()
       })
     }
 
@@ -161,23 +168,10 @@ export default {
       router.push({ name: 'QuizBuilder', params: { id: selectedQuizForBuilder.value.id } })
     }
 
-    const setQuizLive = async () => {
-      selectedQuizForLive.value.isLive = true
-      const results = await quizService.asyncSave(selectedQuizForLive.value)
-
-      watchEffect(() => {
-        setLiveIsPending.value = results.isPending.value
-        setLiveError.value = results.error.value
-      })
-
-      results.load().then(() => {
-        if (results.error.value) {
-          return
-        }
-        liveQuiz.value = selectedQuizForLive.value
-      })
-    }
-
+    /**
+     * This function creates a new quiz
+     * @Author Marco de Boer
+     */
     const createQuiz = async () => {
       const result = await quizService.asyncSave(new Quiz({ id: 0 }))
 
@@ -196,40 +190,52 @@ export default {
       })
     }
 
-    const isBuilderRoute = computed(() => {
-      return route.path.includes('/quiz/builder')
-    })
+    const getConcept = computed((quizzes) => { return quizzes.filter(quiz => quiz.isConcept) })
+
+    const isBuilderRoute = computed(() => { return route.path.includes('/quiz/builder') })
 
     return {
-      quizzes, conceptQuizzes, publishedQuizzes, liveQuiz, isPending, error, isBuilderRoute, selectedQuizForBuilder, gotoQuizBuilder, selectedQuizForLive, setQuizLive, updateQuizzes, createQuiz, createIsPending, setLiveIsPending
+      quizzes, conceptQuizzes, isPending, error, isBuilderRoute, selectedQuizForBuilder, gotoQuizBuilder, updateQuizzes, createQuiz, createIsPending, sectors, getConcept, sectorsError, sectorsIsPending
     }
   }
 }
 </script>
 
 <style>
+.mtop-50 {
+  margin-top: 50px !important;
+}
+
+.editSelecter {
+  max-width: 200px;
+}
+
+.mw90 {
+  max-width: 90%;
+}
+
 .quizBuilder .nav-item .nav-link {
-    color: #1d1d1d !important;
-    font-size: 20px;
-    font-weight: 600;
+  color: #1d1d1d !important;
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .quizBuilder .nav-item:hover .nav-link:hover {
-    color: #a2a2a2 !important;
+  color: #a2a2a2 !important;
 }
 
 .quizBuilder .active {
-    border-bottom: 2px solid #000000;
+  border-bottom: 2px solid #000000;
 }
 
 .quizBuilder {
-    list-style: none;
+  list-style: none;
 }
 
 .liveQuizText {
   color: #411C97 !important;
-  font-weight: 600;
-  font-size: 1.3rem;
+  font-weight: 550;
+  font-size: 1.1rem;
 }
 
 .quizCardTitles {
@@ -238,29 +244,33 @@ export default {
 }
 
 .quizOverviewCards {
-    width: 250px;
-    height: 200px;
-    flex-shrink: 0;
-    background-color: #C5B2F0;
-    border-radius: 10px;
-    padding: 5px;
+  width: 250px;
+  height: 200px;
+  flex-shrink: 0;
+  background-color: #C5B2F0;
+  border-radius: 10px;
+  padding: 5px;
 }
 
 .quizOverviewCardContent {
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    align-items: top;
-    margin-top: 10px;
-    justify-content: center;
-    margin: auto;
-    color: white !important;
-    font-weight: 500;
-    font-size: 1.3rem;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  align-items: top;
+  margin-top: 10px;
+  justify-content: center;
+  margin: auto;
+  color: rgb(0, 0, 0) !important;
+  font-weight: 500;
+  font-size: 1.3rem;
 }
 
 .minvh100 {
-    min-height: 100vh;
+  min-height: 100vh;
 }
 
+.sectorQuizTableLabels {
+  font-weight: 600;
+  font-size: 1.3rem;
+}
 </style>

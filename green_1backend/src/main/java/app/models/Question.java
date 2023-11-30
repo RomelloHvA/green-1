@@ -26,6 +26,8 @@ public abstract class Question {
     protected Long id;
     private String question;
 
+    private String imgPath;
+
     @Column(name = "question_index")
     private int questionIndex;
 
@@ -71,6 +73,11 @@ public abstract class Question {
         return quiz;
     }
 
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
+    }
 
-
+    public String getImgPath() {
+        return imgPath;
+    }
 }

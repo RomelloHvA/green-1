@@ -1,5 +1,6 @@
 package app.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.type.NumericBooleanConverter;
@@ -22,6 +23,9 @@ public class Quiz {
     @Column(name = "is_live", columnDefinition = "TINYINT", length = 1)
     private boolean isLive;
 
+    @ManyToOne
+    private Sector sector;
+
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     @OrderBy("questionIndex ASC")
@@ -31,6 +35,14 @@ public class Quiz {
 
     public void setIsLive(boolean live) {
         isLive = live;
+    }
+
+    public void setSector(Sector sector){
+        this.sector = sector;
+    }
+
+    public Sector getSector(){
+        return sector;
     }
 
     public boolean getIsPublished() {
