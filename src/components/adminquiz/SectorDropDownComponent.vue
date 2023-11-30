@@ -59,6 +59,7 @@ export default {
       })
 
       load.value().then(() => {
+        emit('sectors', sectors.value)
         if (props.sector) {
           selectedSector.value = props.sector.name
         } else {
