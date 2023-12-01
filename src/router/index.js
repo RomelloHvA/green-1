@@ -5,6 +5,7 @@ import QuizResultsView from '@/views/quizResultsView'
 import SdgInfoPage from '@/components/LandingPage/SdgInfoPage.vue'
 import QuizBuilder from '@/components/adminquiz/QuizBuilder.vue'
 import QuizOverview from '@/components/adminquiz/QuizOverview.vue'
+import ImageEditor from '@/components/AdminDashboard/AdminImageEdit/ImageEditor'
 
 const routes = [
   {
@@ -111,6 +112,11 @@ const routes = [
             props: true
           }
         ]
+      },
+      {
+        path: '/admin_dashboard/image',
+        name: 'ImageOverview',
+        component: ImageEditor
       },
 
       { path: 'intro', component: () => import('@/components/AdminDashboard/AdminIntroComponent') },

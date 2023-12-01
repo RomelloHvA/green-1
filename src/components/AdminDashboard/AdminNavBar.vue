@@ -4,6 +4,7 @@
     <AdminNavBarItem text="Users" route="/admin_dashboard/users"/>
     <AdminNavBarItem text="Content" route="/admin_dashboard/content"/>
     <AdminNavBarItem text="Quiz" route="/admin_dashboard/quiz"/>
+    <AdminNavBarItem text="Images" route="/admin_dashboard/image"/>
   </ul>
 </template>
 <script>
