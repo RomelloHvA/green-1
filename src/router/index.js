@@ -116,7 +116,15 @@ const routes = [
       {
         path: '/admin_dashboard/image',
         name: 'ImageOverview',
-        component: ImageEditor
+        component: ImageEditor,
+        children: [
+          {
+            path: ':id',
+            name: 'ImageChangerComponent',
+            component: () => import('@/components/AdminDashboard/AdminImageEdit/ImageChangerComponent'),
+            props: true
+          }
+        ]
       },
 
       { path: 'intro', component: () => import('@/components/AdminDashboard/AdminIntroComponent') },
