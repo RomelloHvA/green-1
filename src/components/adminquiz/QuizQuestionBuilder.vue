@@ -42,8 +42,8 @@
         <UploadImageComponent ref="uploadImage" @image-previewed="setQuestionImgPath"
           :imagePath="questionClone.imgPath" />
       </div>
-      <QuizBuilderTrueFalse v-if="questionClone instanceof YesNoQuestion" :question="questionClone" />
-      <QuizBuilderMultipleChoice v-if="questionClone instanceof MultipleChoiceQuestion" :question="questionClone" />
+      <QuestionBuilderTrueFalse ref="builderChild" v-if="isTrueFalseQuestion" :question="questionClone" />
+      <QuestionBuilderMultipleChoice ref="builderChild" v-else-if="isMultipleChoiceQuestion" :question="questionClone" />
     </div>
   </div>
 </template>
@@ -52,14 +52,15 @@
 import UploadImageComponent from '@/components/UploadImageComponent'
 import YesNoQuestion from '@/models/YesNoQuestion'
 import MultipleChoiceQuestion from '@/models/MultipleChoiceQuestion'
-import QuizBuilderTrueFalse from './QuizBuilderTrueFalse.vue'
-import QuizBuilderMultipleChoice from './QuizBuilderMultipleChoice.vue'
+import QuestionBuilderTrueFalse from './QuestionBuilderTrueFalseNew.vue'
+import QuestionBuilderMultipleChoice from './QuestionBuilderMultipleChoiceNew.vue'
 import { inject, watch, ref, onBeforeMount, watchEffect, computed, defineProps, defineEmits } from 'vue'
 import { useToast } from 'vue-toast-notification'
+import Question from '@/models/Question'
 
 const props = defineProps({
   question: {
-    type: Object,
+    type: Question,
     required: true
   }
 })
@@ -73,11 +74,10 @@ if (props.question instanceof YesNoQuestion) {
   questionService = inject('questionMultipleChoiceService')
 }
 
-console.log(props.question)
-
 const questionClone = ref(null)
 const sdgOptions = ref([])
 const uploadImage = ref(null)
+const builderChild = ref(null)
 const saveQuestionIsPending = ref(false)
 const saveQuestionError = ref(null)
 const saveButtonText = ref('Saved')
@@ -123,6 +123,10 @@ async function callUploadImage () {
 const saveQuestion = async () => {
   await callUploadImage()
 
+  if (!await builderChild.value.validateOptions()) {
+    return
+  }
+
   const { isPending, error, load } = await questionService.asyncSave(questionClone.value)
 
   watchEffect(() => {
@@ -147,6 +151,10 @@ const hasChanged = computed(() => { return props.question.equals(questionClone.v
 
 const pendingBusy = computed(() => { return deleteQuestionIsPending.value || saveQuestionIsPending.value })
 
+const isTrueFalseQuestion = computed(() => { return questionClone.value instanceof YesNoQuestion })
+
+const isMultipleChoiceQuestion = computed(() => { return questionClone.value instanceof MultipleChoiceQuestion })
+
 watch(hasChanged, (newValue) => {
   if (!newValue && questionClone.value !== null) {
     saveButtonText.value = 'Save'
@@ -156,4 +164,152 @@ watch(hasChanged, (newValue) => {
 })
 </script>
 
-<style></style>
+<style>
+.question-card {
+  border: 1.5px solid black;
+  border-radius: 15px;
+  padding: 20px;
+  max-width: 1000px;
+  margin: 20px;
+}
+
+.question-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.question-number {
+  font-size: 24px;
+  margin-right: 10px;
+  background-color: #e1e1e1;
+  border-radius: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.questionArrowButton {
+  width: 30px;
+  height: 35px;
+  font-size: x-large;
+  border-radius: 8px !important;
+  padding: 0;
+}
+
+.questionDeleteButton {
+  width: fit-content;
+  height: fit-content;
+  background-color: transparent;
+  border: none;
+}
+
+.question-type {
+  color: #fff !important;
+  background-color: #6D3FD9 !important;
+  border: 2px solid #6D3FD9 !important;
+  border-radius: 4px;
+}
+
+.question-type option {
+  color: #000 !important;
+  background-color: #fff;
+}
+
+.question-type:focus {
+  box-shadow: none !important;
+  outline: none;
+}
+
+.question-type:hover {
+  background-color: #6D3FD9 !important;
+  color: #fff !important;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.question-text {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  height: 80px;
+  border: 1px solid #7777779e;
+  border-radius: 10px;
+  background-color: #f3f3f3;
+  resize: none;
+  align-content: start;
+  font-size: 20px;
+}
+
+.question-text:focus {
+  outline: none;
+}
+
+.question-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.answer-format,
+.sdg-select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 370px;
+  overflow-y: auto;
+}
+
+.sample-btn {
+  padding: 10px 20px;
+  border: 2px solid purple;
+  border-radius: 4px;
+  cursor: not-allowed;
+}
+
+.sdgSelecter .dropdown {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.sdgSelecter .dropdown-item {
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 10px;
+
+}
+
+.sdgSelecter .dropdown-item:hover {
+  background-color: #f0f0f0;
+}
+
+.sdgSelecter .selected {
+  background-color: #6D3FD9;
+  border-radius: 10px;
+  color: white;
+  margin: 0;
+}
+
+.sdgSelecter .selected:hover {
+  background-color: #6D3FD9;
+  border-radius: 10px;
+  color: white;
+}
+
+.spinnerInButton {
+  max-height: 25px;
+  max-width: 25px;
+  margin-right: 5px !important;
+}
+
+.uploadImageSpace {
+  justify-content: center;
+  max-width: 100%;
+  max-height: 400px;
+}
+</style>

@@ -70,10 +70,8 @@
               </div>
           </div>
           <div v-for="(value, key) in quiz.quizQuestions" :key="key">
-                  <QuizBuilderTrueFalse class="my-2" v-if="isTrueFalseQuesetion(value)" :question="value" @deleteQuestion="deleteQuestion" @saveQuestion="saveQuestion" @moveQuestion="moveQuestion"/>
-                  <QuizBuilderMultipleChoice class="my-2" v-else-if="isMultipleChoiceQuestion(value)" :question="value" @deleteQuestion="deleteQuestion" @saveQuestion="saveQuestion" @moveQuestion="moveQuestion"/>
+            <QuizQuestionBuilder class="my-2" :question="value" @deleteQuestion="deleteQuestion" @saveQuestion="saveQuestion" @moveQuestion="moveQuestion"/>
           </div>
-          <QuizQuestionBuilder :question="quiz.quizQuestions[0]" @deleteQuestion="deleteQuestion" @saveQuestion="saveQuestion" @moveQuestion="moveQuestion"/>
           <div class="d-flex justify-content-center flexRow">
               <div class="quizBuilderQuestionType">
                   <select class="form-select " aria-label="Select a type of question" v-model="selectedQuestionType" >
@@ -93,9 +91,7 @@
 <script>
 import { ref, inject, onBeforeMount, watchEffect, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import QuizBuilderTrueFalse from './QuizBuilderTrueFalse.vue'
 import YesNoQuestion from '@/models/YesNoQuestion'
-import QuizBuilderMultipleChoice from './QuizBuilderMultipleChoice.vue'
 import QuizQuestionBuilder from './QuizQuestionBuilder.vue'
 import MultipleChoiceQuestion from '@/models/MultipleChoiceQuestion'
 import ErrorComponent from '@/components/ErrorComponent'
@@ -107,10 +103,8 @@ import SectorDropDownComponent from './SectorDropDownComponent.vue'
 export default {
   name: 'QuizBuilder',
   components: {
-    QuizBuilderTrueFalse,
     ErrorComponent,
     LoadingComponent,
-    QuizBuilderMultipleChoice,
     SectorDropDownComponent,
     QuizQuestionBuilder
   },
