@@ -21,6 +21,7 @@ import CONFIG from '@/app-config'
 import { ProfilesAdaptor } from '@/services/ProfilesAdaptor'
 import { GoalsAdaptor } from '@/services/GoalsAdaptor'
 import { ActionPlansAdaptor } from '@/services/ActionPlansAdaptor'
+import { RESTImageAdaptor } from '@/services/RESTImageAdaptor'
 export default {
   components: { NavBar, FooterComponent },
   provide () {
@@ -30,6 +31,7 @@ export default {
       questionTrueFalseService: new RESTAdaptorWithFetch(CONFIG.BACKEND_URL + '/question', YesNoQuestion.copyConstructor),
       questionMultipleChoiceService: new RESTAdaptorWithFetch(CONFIG.BACKEND_URL + '/question', MultipleChoiceQuestion.copyConstructor),
       contentService: new RESTContentAdaptor(CONFIG.BACKEND_URL + '/page'),
+      imageService: new RESTImageAdaptor(CONFIG.BACKEND_URL + '/page'),
       usersServices: new UsersAdaptor(CONFIG.BACKEND_URL),
       profileService: new ProfilesAdaptor(CONFIG.BACKEND_URL + '/profiles'),
       goalService: new GoalsAdaptor(CONFIG.BACKEND_URL + '/goals'),
