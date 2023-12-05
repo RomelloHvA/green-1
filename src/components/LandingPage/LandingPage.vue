@@ -12,6 +12,7 @@
           <p class="paragraphText">{{ contentData.welcomeText }}</p>
           <button class="btn btn-primary quiz-button" @click="goToQuiz">To Quiz!</button>
       </div>
+        <img alt="home-image" :src="this.setImage()" class="bi-image">
       </div>
       <div class="col-lg-6 col-12 purpose-card">
         <div v-show="showItemSequence[1]" class="slide-in-animation card cardSpecific">
@@ -59,7 +60,8 @@ export default {
         welcomeText: '',
         purposeTitle: '',
         purposeText: '',
-        SdgInfoTitle: ''
+        SdgInfoTitle: '',
+        imagePath: ''
       }
     }
   },
@@ -87,6 +89,9 @@ export default {
     /**
      * Redirects user to quiz page
      */
+    setImage () {
+      return require('@/assets/img/admin-dashboard/images/mountains.jpg')
+    },
     goToQuiz () {
       this.$router.push({ path: '/quiz' })
       this.scrollToTop()
