@@ -33,18 +33,8 @@
                     <SectorDropDownComponent :sector="quiz.sector" @sectorSelected="setSector"/>
                   </div>
                   <div class="justify-content-center m-auto">
-                    <button type="button" :class="{ 'disabled' : !hasChanged || pendingBusy}" @click="saveQuiz()" class="btn btn-success m-1">
-                      <div class="d-flex row">
-                          <div class="col">
-                          {{saveButtonText}}
-                          </div>
-                          <div v-if="saveQuizIsPending" class="col spinnerInButton p-0">
-                              <div class="spinner-border text-light spinnerInButton" role="status">
-                                  <span class="sr-only"></span>
-                              </div>
-                          </div>
-                      </div>
-                    </button>
+                    <SaveButtonComponent :disabled=" !hasChanged || pendingBusy" :isPending="saveQuizIsPending"
+                    @save="saveQuiz" />
                   </div>
                   <div class="justify-content-center m-auto">
                     <button class="questionDeleteButton m-auto" @mouseenter="deleteButtonHover = true" @mouseleave="deleteButtonHover = false" @click="deleteQuiz">
@@ -69,8 +59,8 @@
                   </div>
               </div>
           </div>
-          <div v-for="(value, key) in quiz.quizQuestions" :key="key">
-            <QuizQuestionBuilder class="my-2" :question="value" @deleteQuestion="deleteQuestion" @saveQuestion="saveQuestion" @moveQuestion="moveQuestion"/>
+          <div v-for="question in quiz.quizQuestions" :key="question.id">
+            <QuestionBuilder class="my-2" :question="question" :quizId="quiz.id" @deleteQuestion="deleteQuestion" @saveQuestion="saveQuestion" @moveQuestion="moveQuestion"/>
           </div>
           <div class="d-flex justify-content-center flexRow">
               <div class="quizBuilderQuestionType">
@@ -89,16 +79,17 @@
     </div>
 </template>
 <script>
-import { ref, inject, onBeforeMount, watchEffect, computed, watch } from 'vue'
+import { ref, inject, onBeforeMount, watchEffect, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import YesNoQuestion from '@/models/YesNoQuestion'
-import QuizQuestionBuilder from './QuizQuestionBuilder.vue'
+import QuestionBuilder from './QuestionBuilder.vue'
 import MultipleChoiceQuestion from '@/models/MultipleChoiceQuestion'
 import ErrorComponent from '@/components/ErrorComponent'
 import LoadingComponent from '@/components/LoadingComponent'
 import router from '@/router'
 import { useToast } from 'vue-toast-notification'
 import SectorDropDownComponent from './SectorDropDownComponent.vue'
+import SaveButtonComponent from '@/components/buttons/SaveButtonComponent'
 
 export default {
   name: 'QuizBuilder',
@@ -106,13 +97,13 @@ export default {
     ErrorComponent,
     LoadingComponent,
     SectorDropDownComponent,
-    QuizQuestionBuilder
+    QuestionBuilder,
+    SaveButtonComponent
   },
   setup (props, { emit }) {
     const quizService = inject('quizService')
     const questionTypes = ref(['Yes/No', 'MultipleChoice'])
     const selectedQuestionType = ref('')
-    const saveButtonText = ref('Saved')
     const load = ref(null)
     const quiz = ref(null)
     const isPending = ref(false)
@@ -193,7 +184,7 @@ export default {
         )
       } else if (questionType === 'MultipleChoice') {
         quiz.value.quizQuestions.push(
-          await new MultipleChoiceQuestion(null, quiz.value.totalQuestions + 1, null, null)
+          await new MultipleChoiceQuestion(null, quiz.value.totalQuestions + 1, null, null, null)
         )
       }
       quiz.value.totalQuestions = quiz.value.quizQuestions.length
@@ -209,20 +200,16 @@ export default {
         return
       }
 
-      const { isPending, error, load } = await quizService.asyncSave(quiz.value)
+      const { entity, isPending, error, load } = await quizService.asyncSave(quiz.value)
 
       watchEffect(() => {
         saveQuizIsPending.value = isPending.value
         saveQuizError.value = error.value
-        if (saveQuizIsPending.value) {
-          saveButtonText.value = 'Saving'
-        }
       })
 
       load().then(() => {
         if (saveQuizError.value === null) {
-          saveButtonText.value = 'Saved'
-          quizOriginal.value = quiz.value
+          quizOriginal.value = entity.value
           emit('updateQuizzes')
         } else if (saveQuizError.value !== null) {
           $toast.error('Could not save quiz ' + quiz.value.quizName)
@@ -231,7 +218,8 @@ export default {
     }
 
     const saveQuestion = (question) => {
-      quiz.value.quizQuestions[question.index - 1] = question
+      quizOriginal.value.quizQuestions[question.index - 1] = question
+      cloneQuiz(quizOriginal.value)
     }
 
     const backToOverview = () => {
@@ -274,14 +262,6 @@ export default {
       }
     })
 
-    watch(hasChanged, (newValue) => {
-      if (newValue && quiz.value !== null) {
-        saveButtonText.value = 'Save'
-      } else {
-        saveButtonText.value = 'Saved'
-      }
-    })
-
     return {
       questionTypes,
       addQuestion,
@@ -292,7 +272,6 @@ export default {
       quiz,
       saveQuestion,
       moveQuestion,
-      saveButtonText,
       hasChanged,
       pendingBusy,
       saveQuiz,

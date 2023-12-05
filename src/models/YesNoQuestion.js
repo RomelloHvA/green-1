@@ -54,7 +54,7 @@ export default class YesNoQuestion extends Question {
 
   static copyConstructor (questionFromJson) {
     if (questionFromJson !== null && questionFromJson && questionFromJson !== undefined) {
-      return new YesNoQuestion(questionFromJson.id, questionFromJson.index, questionFromJson.question, questionFromJson.SDG)
+      return new YesNoQuestion(questionFromJson.id, questionFromJson.index, questionFromJson.question, questionFromJson.imgPath, questionFromJson.sdg)
     }
     return null
   }

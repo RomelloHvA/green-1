@@ -87,7 +87,7 @@ export default class MultipleChoiceQuestion extends Question {
 
   static copyConstructor (questionFromJson) {
     if (questionFromJson !== null && questionFromJson && questionFromJson !== undefined) {
-      return new MultipleChoiceQuestion(questionFromJson.id, questionFromJson.index, questionFromJson.question, questionFromJson.options, questionFromJson.answerLimit)
+      return new MultipleChoiceQuestion(questionFromJson.id, questionFromJson.index, questionFromJson.question, questionFromJson.imgPath, questionFromJson.options, questionFromJson.answerLimit)
     }
     return null
   }

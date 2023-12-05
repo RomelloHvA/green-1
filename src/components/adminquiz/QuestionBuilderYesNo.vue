@@ -1,19 +1,9 @@
 <template>
-  <div class="flexRow">
+  <div class="flexRow" v-if="questionClone">
     <div class="col-10">
       <label class="justify-content-start h5" :for="questionClone.question">Question:</label>
       <textarea class="question-text" placeholder="How many of the following SDG goals have you worked on?"
         v-model="questionClone.question" :class="{ 'red-border': questionClone.questionIsEmpty }"></textarea>
-      <div class="question-footer justify-content-center gap-5">
-        <!-- <div>
-                      Answers:
-                      <select class="answer-format">
-                          <option value="yes-no">Yes No</option>
-                          <option value="true-false">True False</option>
-                          <option value="agree-disagree">Agree Disagree</option>
-                      </select>
-                  </div> -->
-      </div>
       <div class="justify-content-center m-auto">
         <div class="justify-content-between answerBox m-auto row">
           <div class="col-md-6 col-12 quizButtonSection">

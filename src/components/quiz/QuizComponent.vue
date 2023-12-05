@@ -105,7 +105,6 @@ export default {
           next(false)
         }
       }
-      next()
     })
 
     onBeforeUnmount(() => {
@@ -208,6 +207,16 @@ export default {
 </script>
 
 <style>
+.quizImgSpot {
+  margin: auto;
+  justify-content: center;
+  max-width: 20rem;
+  max-height: 20rem;
+  overflow: hidden;
+  border-radius: 15px;
+  margin-bottom: 25px;
+}
+
 .headerText3 {
   font-weight: 500;
   margin-bottom: 0;

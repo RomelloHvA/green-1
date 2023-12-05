@@ -20,11 +20,11 @@ public class YesNoQuestion extends Question {
         return TYPE;
     }
 
-    public int getSDG() {
+    public int getSdg() {
         return sdg;
     }
 
-    public void setSDG(int SDG) {
-        this.sdg = SDG;
+    public void setSdg(int sdg) {
+        this.sdg = sdg;
     }
 }

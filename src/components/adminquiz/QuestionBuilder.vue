@@ -1,5 +1,5 @@
 <template>
-  <div v-if="questionClone" class="question-card justify-content-center m-auto">
+  <div v-if="questionClone" class="question-card justify-content-center m-auto ">
     <div class="question-header">
       <div class="d-flex gap-1">
         <span class="question-number">{{ questionClone.index }}</span>
@@ -7,43 +7,18 @@
         <button class="btn btn-primary questionArrowButton" @click="moveQuestionUp">&#8593;</button>
       </div>
       <div>
-        <button type="button" :class="{ 'disabled': hasChanged || pendingBusy }" @click="saveQuestion()"
-          class="btn btn-success m-1">
-          <div class="d-flex row">
-            <div class="col">
-              {{ saveButtonText }}
-            </div>
-            <div v-if="saveQuestionIsPending" class="col spinnerInButton p-0">
-              <div class="spinner-border text-light spinnerInButton" role="status">
-                <span class="sr-only"></span>
-              </div>
-            </div>
-          </div>
-        </button>
-        <button class="questionDeleteButton" @mouseenter="deleteButtonHover = true"
-          @mouseleave="deleteButtonHover = false" @click="deleteQuestion">
-          <svg v-if="!deleteButtonHover" xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="red"
-            class="bi bi-trash" viewBox="0 0 20 20">
-            <path
-              d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
-            <path
-              d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
-          </svg>
-          <svg v-if="deleteButtonHover" xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="red"
-            class="bi bi-trash-fill" viewBox="0 0 20 20">
-            <path
-              d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
-          </svg>
-        </button>
+        <SaveButtonComponent :disabled=" !hasChanged || pendingBusy" :isPending="saveQuestionIsPending"
+          @save="saveQuestion" />
+        <DeleteButtonComponent :disabled="pendingBusy" @delete="deleteQuestion" />
       </div>
     </div>
-    <div v-if="true">
+    <div v-if="true" class="d-flexRow">
       <div class="uploadImageSpace">
         <UploadImageComponent ref="uploadImage" @image-previewed="setQuestionImgPath"
-          :imagePath="questionClone.imgPath" />
+          :imagePath="questionClone.imgPath" @image-cleared="clearImg"/>
       </div>
-      <QuestionBuilderTrueFalse ref="builderChild" v-if="isTrueFalseQuestion" :question="questionClone" />
-      <QuestionBuilderMultipleChoice ref="builderChild" v-else-if="isMultipleChoiceQuestion" :question="questionClone" />
+      <QuestionBuilderYesNo ref="builderChild" v-if="isTrueFalseQuestion" :question="questionClone" />
+      <QuestionBuilderMultipleChoice ref="builderChild" v-else-if="isMultipleChoiceQuestion" :question="questionClone" :pendingBusy="pendingBusy"/>
     </div>
   </div>
 </template>
@@ -52,15 +27,21 @@
 import UploadImageComponent from '@/components/UploadImageComponent'
 import YesNoQuestion from '@/models/YesNoQuestion'
 import MultipleChoiceQuestion from '@/models/MultipleChoiceQuestion'
-import QuestionBuilderTrueFalse from './QuestionBuilderTrueFalseNew.vue'
-import QuestionBuilderMultipleChoice from './QuestionBuilderMultipleChoiceNew.vue'
-import { inject, watch, ref, onBeforeMount, watchEffect, computed, defineProps, defineEmits } from 'vue'
+import QuestionBuilderYesNo from './QuestionBuilderYesNo.vue'
+import QuestionBuilderMultipleChoice from './QuestionBuilderMultipleChoice.vue'
+import DeleteButtonComponent from '@/components/buttons/DeleteButtonComponent'
+import { inject, ref, onBeforeMount, watchEffect, computed, defineProps, defineEmits } from 'vue'
 import { useToast } from 'vue-toast-notification'
 import Question from '@/models/Question'
+import SaveButtonComponent from '@/components/buttons/SaveButtonComponent'
 
 const props = defineProps({
   question: {
     type: Question,
+    required: true
+  },
+  quizId: {
+    type: Number,
     required: true
   }
 })
@@ -80,13 +61,9 @@ const uploadImage = ref(null)
 const builderChild = ref(null)
 const saveQuestionIsPending = ref(false)
 const saveQuestionError = ref(null)
-const saveButtonText = ref('Saved')
 const deleteQuestionIsPending = ref(false)
 const $toast = useToast()
 
-watch(() => props.question, async (newQuestion) => {
-  questionClone.value = await newQuestion.clone()
-}, { deep: true })
 const cloneQuestion = async () => {
   questionClone.value = await props.question.clone()
 }
@@ -115,39 +92,41 @@ const setQuestionImgPath = (imgPath) => {
 }
 
 async function callUploadImage () {
-  if (uploadImage.value !== null) {
+  if (uploadImage.value !== null && questionClone.value.imgPath !== null) {
     questionClone.value.imgPath = await uploadImage.value.uploadImage()
   }
 }
 
-const saveQuestion = async () => {
-  await callUploadImage()
+const clearImg = () => {
+  questionClone.value.imgPath = null
+}
 
-  if (!await builderChild.value.validateOptions()) {
+const saveQuestion = async () => {
+  if (!await builderChild.value.validateQuestion()) {
     return
   }
 
-  const { isPending, error, load } = await questionService.asyncSave(questionClone.value)
+  if (questionClone.value.imgPath !== props.question.imgPath) {
+    await callUploadImage()
+  }
+
+  const { entity, isPending, error, load } = await questionService.asyncSave(questionClone.value, props.quizId)
 
   watchEffect(() => {
     saveQuestionIsPending.value = isPending.value
     saveQuestionError.value = error.value
-    if (saveQuestionIsPending.value) {
-      saveButtonText.value = 'Saving'
-    }
   })
 
   load().then(() => {
     if (saveQuestionError.value === null) {
-      saveButtonText.value = 'Saved'
-      emit('saveQuestion', questionClone.value)
+      emit('saveQuestion', entity.value)
     } else {
       $toast.error('Could not save question ' + questionClone.value.index)
     }
   })
 }
 
-const hasChanged = computed(() => { return props.question.equals(questionClone.value) && props.question.id !== null })
+const hasChanged = computed(() => { return !props.question.equals(questionClone.value) && props.question.id !== null })
 
 const pendingBusy = computed(() => { return deleteQuestionIsPending.value || saveQuestionIsPending.value })
 
@@ -155,13 +134,6 @@ const isTrueFalseQuestion = computed(() => { return questionClone.value instance
 
 const isMultipleChoiceQuestion = computed(() => { return questionClone.value instanceof MultipleChoiceQuestion })
 
-watch(hasChanged, (newValue) => {
-  if (!newValue && questionClone.value !== null) {
-    saveButtonText.value = 'Save'
-  } else {
-    saveButtonText.value = 'Saved'
-  }
-})
 </script>
 
 <style>
@@ -196,13 +168,6 @@ watch(hasChanged, (newValue) => {
   padding: 0;
 }
 
-.questionDeleteButton {
-  width: fit-content;
-  height: fit-content;
-  background-color: transparent;
-  border: none;
-}
-
 .question-type {
   color: #fff !important;
   background-color: #6D3FD9 !important;
@@ -223,13 +188,6 @@ watch(hasChanged, (newValue) => {
 .question-type:hover {
   background-color: #6D3FD9 !important;
   color: #fff !important;
-}
-
-.delete-btn {
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
 }
 
 .question-text {
@@ -301,15 +259,10 @@ watch(hasChanged, (newValue) => {
   color: white;
 }
 
-.spinnerInButton {
-  max-height: 25px;
-  max-width: 25px;
-  margin-right: 5px !important;
-}
-
 .uploadImageSpace {
   justify-content: center;
   max-width: 100%;
-  max-height: 400px;
+  max-height: 300px;
 }
+
 </style>

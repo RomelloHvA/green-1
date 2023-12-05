@@ -1,10 +1,12 @@
 <template>
-    <div class="container col-md-6">
-        <img id="frame" :src="imgSource" class="img-fluid my-2" />
-        <div class="mb-5">
-            <input class="form-control" type="file" id="formFile" @change="preview">
-            <button @click="clearImage" class="btn btn-primary mt-3">Remove Image</button>
-        </div>
+    <div class="container col-md-6 uploadComponent">
+      <figure class="imgFigurePreview justify-content-center m-auto">
+        <img id="frame" :src="imgSource" class="img-fluid my-2 imgFit" />
+      </figure>
+      <div class="mb-5">
+        <input class="form-control" type="file" id="formFile" @change="preview">
+        <button @click="clearImage" class="btn btn-primary mt-3">Remove Image</button>
+      </div>
     </div>
 </template>
 
@@ -17,7 +19,7 @@ const props = defineProps({
   imagePath: String
 })
 
-const emit = defineEmits(['image-previewed'])
+const emit = defineEmits(['image-previewed', 'image-cleared'])
 
 const imgSource = ref(props.imagePath)
 const currentImage = ref(null)
@@ -33,7 +35,6 @@ const uploadImage = async () => {
 
   // Handle the response, e.g., saving the returned image path or URL
   if (data.value) {
-    console.log(data.value)
     return data.value
   }
 }
@@ -46,6 +47,7 @@ const preview = (event) => {
 
 const clearImage = () => {
   imgSource.value = ''
+  emit('image-cleared')
 }
 
 defineExpose({
@@ -57,5 +59,20 @@ defineExpose({
 <style>
  .borderRed {
    border: 1px solid red;
+ }
+
+ .imgFit {
+    object-fit: contain;
+    max-height: 100%;
+    max-width: 100%;
+ }
+
+ .imgFigurePreview {
+    width: inherit;
+    height: inherit;
+ }
+
+ .uploadComponent {
+    object-fit: contain;
  }
 </style>
