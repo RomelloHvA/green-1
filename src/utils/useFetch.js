@@ -56,7 +56,11 @@ export function useFetch (url, object, method = 'GET', params = null) {
       if (!response.ok) {
         throw Error('Could not fetch the data for that resource')
       }
-      data.value = isFormData ? await response.text() : await response.json() // If FormData, expect text response
+      if (response.status !== 204) {
+        data.value = isFormData ? await response.text() : await response.json()
+      } else {
+        data.value = null // or some appropriate handling for no content
+      }
       error.value = null
     } catch (err) {
       if (err.message === 'Failed to fetch') {
