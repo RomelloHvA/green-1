@@ -67,7 +67,7 @@ export class RESTAdaptorWithFetch /* <E> */ {
      * @author Romello ten Broeke
      */
 
-  async asyncSave (entityToSave, quizId = null) {
+  async asyncSave (entityToSave, quizId = null, method = 'POST') {
     const entity = ref(entityToSave)
     let endpoint = this.resourcesUrl + '/' + entity.value.id
 
@@ -83,7 +83,7 @@ export class RESTAdaptorWithFetch /* <E> */ {
           throw new Error('invalid type')
       }
     }
-    const { data, isPending, error, load, abort, isAborted } = await useFetch(endpoint, entity.value, 'POST')
+    const { data, isPending, error, load, abort, isAborted } = await useFetch(endpoint, entity.value, method)
 
     watchEffect(() => {
       if (isPending.value === false && error.value === null) {

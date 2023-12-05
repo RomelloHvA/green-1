@@ -5,16 +5,12 @@ import app.models.Sector;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
-    List<Quiz> findAll();
 
     List<Quiz> findAllBySector(Sector sector);
-    Quiz findById(int id);
 
-    Quiz findByIsLiveAndSectorId(boolean isLive, long sectorId);
+    Optional<Quiz> findByIsLiveAndSectorId(boolean isLive, long sectorId);
 
-    Quiz save(Quiz quiz);
-
-    void delete(Quiz quiz);
 }

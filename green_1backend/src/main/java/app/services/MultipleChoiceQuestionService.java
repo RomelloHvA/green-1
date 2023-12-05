@@ -1,4 +1,4 @@
-package app.rest;
+package app.services;
 
 import app.repositories.MultipleChoiceQuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;

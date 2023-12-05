@@ -27,7 +27,7 @@
               <div class="flexRow m-auto my-4 w-75 justify-content-between" justify-content-between>
                   <div class="flexRow text-start m-auto">
                     <label for="quizName" class="quizBuilderLabel text-start">Quiz Name:</label>
-                    <input v-model="quiz.quizName" type="text" autocomplete="off" class="form-control quizNameInput" id="quizName">
+                    <input v-model="quiz.name" type="text" autocomplete="off" class="form-control quizNameInput" id="quizName">
                   </div>
                   <div>
                     <SectorDropDownComponent :sector="quiz.sector" @sectorSelected="setSector"/>
@@ -154,8 +154,8 @@ export default {
 
     function validateValues () {
       let valid = true
-      quiz.value.quizNameIsEmpty = quiz.value.quizName === null || quiz.value.quizName === ''
-      if (quiz.value.quizNameIsEmpty) {
+      quiz.value.nameIsEmpty = quiz.value.name === null || quiz.value.name === ''
+      if (quiz.value.nameIsEmpty) {
         valid = false
       }
 
@@ -200,7 +200,7 @@ export default {
         return
       }
 
-      const { entity, isPending, error, load } = await quizService.asyncSave(quiz.value)
+      const { entity, isPending, error, load } = await quizService.asyncSave(quiz.value, null, 'PUT')
 
       watchEffect(() => {
         saveQuizIsPending.value = isPending.value
@@ -212,7 +212,7 @@ export default {
           quizOriginal.value = entity.value
           emit('updateQuizzes')
         } else if (saveQuizError.value !== null) {
-          $toast.error('Could not save quiz ' + quiz.value.quizName)
+          $toast.error('Could not save quiz ' + quiz.value.name)
         }
       })
     }
@@ -239,11 +239,11 @@ export default {
       result.load().then(() => {
         console.log(result.error.value)
         if (result.error.value === null || result.error.value === 'Unexpected end of JSON input') {
-          $toast.success('Quiz ' + quiz.value.quizName + ' deleted')
+          $toast.success('Quiz ' + quiz.value.name + ' deleted')
           emit('updateQuizzes')
           backToOverview()
         } else {
-          $toast.error('Could not delete quiz ' + quiz.value.quizName)
+          $toast.error('Could not delete quiz ' + quiz.value.name)
         }
       })
     }

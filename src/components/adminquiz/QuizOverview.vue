@@ -17,7 +17,7 @@
                 <select v-model="selectedQuizForBuilder" class="form-select editSelecter">
                   <option value="" selected disabled>Select a quiz</option>
                   <!-- #todo autoload from available options -->
-                  <option v-for="quiz in quizzes" :key="quiz.id" :value="quiz"> {{ quiz.quizName }}</option>
+                  <option v-for="quiz in quizzes" :key="quiz.id" :value="quiz"> {{ quiz.name }}</option>
                 </select>
                 <button @click="gotoQuizBuilder" class="btn btn-primary" :disabled="!selectedQuizForBuilder">
                   Edit quiz

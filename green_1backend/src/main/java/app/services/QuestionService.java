@@ -1,4 +1,4 @@
-package app.rest;
+package app.services;
 
 import app.models.*;
 import app.repositories.QuizQuestionRepository;
@@ -33,7 +33,7 @@ public class QuestionService {
     }
 
     public Question addYesNoQuestion(Long quizindex ,YesNoQuestion question) {
-        Quiz quiz = quizService.getQuizById(quizindex);
+        Quiz quiz = quizService.findById(quizindex);
         if(quiz == null){
             throw new RuntimeException("Quiz not found");
         }
@@ -42,7 +42,7 @@ public class QuestionService {
     }
 
     public Question addMultipleChoiceQuestion(Long quizindex , MultipleChoiceQuestion question) {
-        Quiz quiz = quizService.getQuizById(quizindex);
+        Quiz quiz = quizService.findById(quizindex);
         if(quiz == null){
             throw new RuntimeException("Quiz not found");
         }

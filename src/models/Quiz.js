@@ -6,7 +6,7 @@ import Sector from './Sector'
 /**
  * Quiz model class.
  * @class Quiz
- * @property {String} quizName
+ * @property {String} name
  * @property {Array} questionObjectArray array of questions
  * @property {Number} currentQuestionIndex
  * @property {Number} totalQuestions
@@ -17,8 +17,8 @@ import Sector from './Sector'
 
 export default class Quiz {
   id
-  quizName
-  quizNameIsEmpty
+  name
+  nameIsEmpty
   quizQuestions
   currentQuestionIndex
   totalQuestions
@@ -32,7 +32,7 @@ export default class Quiz {
   /**
    * For the constructor is only json needed the json needs to be in the following format:
    * {
-   * "quizName": "name of the quiz",
+   * "name": "name of the quiz",
    * "questions": []
    * }
    * @param {JSON} questionJSON
@@ -51,12 +51,12 @@ export default class Quiz {
       return
     }
 
-    if (questionJSON.quizName === undefined) throw new Error('quizName is undefined')
+    if (questionJSON.name === undefined) throw new Error('name is undefined')
 
     if (questionJSON.quizQuestions === undefined) throw new Error('questions is undefined')
 
     this.id = questionJSON.id ? questionJSON.id : null
-    this.quizName = questionJSON.quizName
+    this.name = questionJSON.name
     this.quizQuestions = []
     this.totalQuestions = 0
     if (questionJSON.quizQuestions !== null && questionJSON.quizQuestions.length !== 0) {
@@ -193,7 +193,7 @@ export default class Quiz {
 
   equals (other) {
     if (other === null || other === undefined) return false
-    if (this.quizName !== other.quizName) return false
+    if (this.name !== other.name) return false
     if (this.isConcept !== other.isConcept) return false
     if (this.isPublished !== other.isPublished) return false
     if (this.quizQuestionsArrayEquals(other.quizQuestions) === false) return false
