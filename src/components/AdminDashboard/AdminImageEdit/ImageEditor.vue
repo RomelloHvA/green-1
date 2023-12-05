@@ -41,7 +41,7 @@ export default {
     pageId: Number
   },
   setup () {
-    const contentService = inject('contentService')
+    const imageService = inject('imageService')
     const allPages = ref(null)
     // Should be true because the data is not done loading yet.
     const isPending = ref(true)
@@ -50,7 +50,7 @@ export default {
 
     // What happens before this component gets mounted.
     onBeforeMount(async () => {
-      const APIResults = await contentService.findAllPages()
+      const APIResults = await imageService.findAllPages()
       // Watches for changes  in the values and updated them accordingly.
       // Without this, it will always wait on a promise and stay empty.
       watchEffect(() => {
