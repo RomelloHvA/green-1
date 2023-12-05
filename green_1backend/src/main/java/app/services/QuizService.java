@@ -53,7 +53,10 @@ public class QuizService {
                 .map(q -> {
                     q.setIsLive(quiz.getIsLive());
                     q.setSector(quiz.getSector());
-                    q.setQuizQuestions(quiz.getQuizQuestions());
+                    q.getQuizQuestions().clear();
+                    if (quiz.getQuizQuestions() != null) {
+                        q.getQuizQuestions().addAll(quiz.getQuizQuestions());
+                    }
                     q.setName(quiz.getName());
                     q.setIsConcept(quiz.getIsConcept());
                     q.setIsPublished(quiz.getIsPublished());

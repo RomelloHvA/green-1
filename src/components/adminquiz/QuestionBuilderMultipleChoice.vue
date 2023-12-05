@@ -1,6 +1,5 @@
 <template>
   <div class="d-flex row" v-if="questionClone">
-    <div class="my-5">
       <label class="justify-content-start h5" :for="questionClone.question">Question:</label>
       <textarea class="question-text" placeholder="Write a question" v-model="questionClone.question"
         :class="{ 'red-border': questionClone.questionIsEmpty }"></textarea>
@@ -35,7 +34,6 @@
       <div>
         <button class="btn btn-primary w-75" @click="addOptionToList">Add Option</button>
       </div>
-    </div>
     <div class="col-2">
     </div>
   </div>

@@ -1,8 +1,6 @@
 <template>
-    <div class="container col-md-6 uploadComponent">
-      <figure class="imgFigurePreview justify-content-center m-auto">
-        <img id="frame" :src="imgSource" class="img-fluid my-2 imgFit" />
-      </figure>
+    <div class="container col-md-6">
+      <img id="frame" :src="imgSource" class="img-fluid my-2 imgFit" />
       <div class="mb-5">
         <input class="form-control" type="file" id="formFile" @change="preview">
         <button @click="clearImage" class="btn btn-primary mt-3">Remove Image</button>
@@ -62,17 +60,13 @@ defineExpose({
  }
 
  .imgFit {
-    object-fit: contain;
-    max-height: 100%;
-    max-width: 100%;
- }
+  max-width: 100%; /* Image can grow up to container's width */
+  max-height: 100%; /* Image can grow up to container's height */
+  object-fit: contain; /* Maintain aspect ratio within the bounds */
+}
 
  .imgFigurePreview {
     width: inherit;
     height: inherit;
- }
-
- .uploadComponent {
-    object-fit: contain;
  }
 </style>

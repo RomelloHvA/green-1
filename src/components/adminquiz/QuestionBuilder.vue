@@ -12,11 +12,9 @@
         <DeleteButtonComponent :disabled="pendingBusy" @delete="deleteQuestion" />
       </div>
     </div>
-    <div v-if="true" class="d-flexRow">
-      <div class="uploadImageSpace">
-        <UploadImageComponent ref="uploadImage" @image-previewed="setQuestionImgPath"
+    <div class="d-flexRow">
+        <UploadImageComponent class="uploadImageSpace" ref="uploadImage" @image-previewed="setQuestionImgPath"
           :imagePath="questionClone.imgPath" @image-cleared="clearImg"/>
-      </div>
       <QuestionBuilderYesNo ref="builderChild" v-if="isTrueFalseQuestion" :question="questionClone" />
       <QuestionBuilderMultipleChoice ref="builderChild" v-else-if="isMultipleChoiceQuestion" :question="questionClone" :pendingBusy="pendingBusy"/>
     </div>
@@ -137,6 +135,11 @@ const isMultipleChoiceQuestion = computed(() => { return questionClone.value ins
 </script>
 
 <style>
+.uploadImageSpace {
+  max-width: 400px;
+  max-height: 400px;
+}
+
 .question-card {
   border: 1.5px solid black;
   border-radius: 15px;
@@ -257,12 +260,6 @@ const isMultipleChoiceQuestion = computed(() => { return questionClone.value ins
   background-color: #6D3FD9;
   border-radius: 10px;
   color: white;
-}
-
-.uploadImageSpace {
-  justify-content: center;
-  max-width: 100%;
-  max-height: 300px;
 }
 
 </style>
