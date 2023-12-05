@@ -109,7 +109,7 @@ export default {
       } else {
         selectedQuizForLive.value.isLive = true
       }
-      const results = await quizService.asyncSave(selectedQuizForLive.value)
+      const results = await quizService.asyncSave(selectedQuizForLive.value, null, 'PUT')
 
       watchEffect(() => {
         setLiveIsPending.value = results.isPending.value

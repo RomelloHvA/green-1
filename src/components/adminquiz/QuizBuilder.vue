@@ -228,6 +228,7 @@ export default {
 
     const setSector = (sector) => {
       quiz.value.sector = sector
+      quiz.value.isLive = false
     }
 
     const deleteQuiz = async () => {
