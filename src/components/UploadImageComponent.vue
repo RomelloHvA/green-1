@@ -22,6 +22,13 @@ const emit = defineEmits(['image-previewed', 'image-cleared'])
 const imgSource = ref(props.imagePath)
 const currentImage = ref(null)
 
+/**
+ * This function uploads the image to the backend.
+ * You can use this function in your own component by stating ref="uploadImage" in the component tag. and then uploadImage.value.uploadImage()
+ * @returns {string} Returns the path of the uploaded image.
+ * @author Marco de Boer
+ */
+
 const uploadImage = async () => {
   const formData = new FormData()
   formData.append('file', currentImage.value)
