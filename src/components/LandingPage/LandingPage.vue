@@ -78,6 +78,11 @@ export default {
       this.textIndex++
     }, 500)
   },
+  created () {
+    if (this.setImage() == null || this.setImage() === undefined) {
+      this.setImage()
+    }
+  },
   methods: {
     /**
      * Redirects user to quiz page
