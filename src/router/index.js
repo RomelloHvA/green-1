@@ -142,6 +142,11 @@ const routes = [
       }
     ],
     component: () => import('@/components/result/ResultPage')
+  },
+  {
+    path: '/admin_dashboard/isAdmin',
+    name: 'adminVerify',
+    component: () => import('@/components/AdminDashboard/AdminVerifyComponent')
   }
 ]
 

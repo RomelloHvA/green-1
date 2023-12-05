@@ -8,6 +8,7 @@
 export default class Question {
   id
   index
+  imgPath
   question
   questionIsEmpty
 
@@ -16,15 +17,17 @@ export default class Question {
    * @param {String} question
    * @param {Number} SDG can be an array of numbers
    */
-  constructor (id = null, index, question) {
+  constructor (id = null, index, question, imgPath = null) {
     this.id = id
     this.index = index
     this.question = question
+    this.imgPath = imgPath
   }
 
   equals (other) {
-    if (this.question !== other.question) return false
     if (this.index !== other.index) return false
+    if (this.imgPath !== other.imgPath) return false
+    if (this.question !== other.question) return false
     return true
   }
 }

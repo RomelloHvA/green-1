@@ -1,9 +1,10 @@
-package app.rest;
+package app.services;
 
 import app.models.MultipleChoiceOption;
 import app.models.MultipleChoiceQuestion;
 import app.models.Question;
 import app.repositories.MultipleChoiceOptionRepository;
+import app.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

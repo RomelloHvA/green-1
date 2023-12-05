@@ -1,5 +1,8 @@
 <template>
     <div>
+        <figure v-if="questionObject.imgPath !== null" class="quizImgSpot">
+          <img :src="questionObject.imgPath" class="imgFit" alt="Image">
+        </figure>
         <h1 class="fs-1 fs-sd-2">{{ questionObject.question }}</h1>
         <h5 v-show="isAnswerLimitBiggerThenOne">&#40;You can select {{ questionObject.answerLimit }} answers&#41;</h5>
         <div class="container">

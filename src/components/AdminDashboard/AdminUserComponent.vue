@@ -1,36 +1,39 @@
 <template>
   <div class="minvh100">
     <div id="searchbar">
-    <form class="form">
-      <button class="searchButton">
-        <svg width="17" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="search">
-          <path d="M7.667 12.667A5.333 5.333 0 107.667 2a5.333 5.333 0 000 10.667zM14.334 14l-2.9-2.9" stroke="currentColor" stroke-width="1.333" stroke-linecap="round" stroke-linejoin="round"></path>
-        </svg>
-      </button>
-      <input class="input" placeholder="Type your text" required="" type="text" v-model="searchUser">
-    </form>
+      <form class="form">
+        <button class="searchButton">
+          <svg width="17" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img"
+               aria-labelledby="search">
+            <path d="M7.667 12.667A5.333 5.333 0 107.667 2a5.333 5.333 0 000 10.667zM14.334 14l-2.9-2.9"
+                  stroke="currentColor" stroke-width="1.333" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </button>
+        <input class="input" placeholder="Type your text" required="" type="text" v-model="searchUser">
+      </form>
     </div>
     <table class="table table-sm table-dark">
       <thead>
       <tr>
-        <th >UserName</th>
+        <th>UserName</th>
         <th scope="col">Email</th>
         <th scope="col">Action Plan</th>
         <th scope="col">Edit</th>
       </tr>
       </thead>
       <tbody>
-      <tr v-for="user in users && filteredSearch " :key="user.user_id" >
-        <td >{{ user.username }}</td>
-        <td >{{ user.email }}</td>
-        <td >{{ user.usergoal }}</td>
+      <tr v-for="user in users && filteredSearch " :key="user.user_id">
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.user_goal }}</td>
         <td>
           <button id="editButton" @click="() => ToggelPopUp('isEditing', user)">Edit</button>
         </td>
       </tr>
       <!-- Edit dropdown that is displayed when the "Edit" button is clicked -->
       </tbody>
-      <EditPopUp @updateUser="updateUser" v-if="popUpTrigger.isEditing" :user="selectedUser" :toggelPopUp="() => ToggelPopUp('isEditing')">
+      <EditPopUp @updateUser="updateUser" v-if="popUpTrigger.isEditing" :user="selectedUser"
+                 :toggelPopUp="() => ToggelPopUp('isEditing')">
       </EditPopUp>
     </table>
   </div>
@@ -39,6 +42,7 @@
 <script>
 import { ref } from 'vue'
 import EditPopUp from '@/components/AdminDashboard/EditPopUp'
+
 export default {
   name: 'AdminUserComponent',
   components: { EditPopUp },
@@ -58,9 +62,7 @@ export default {
 
     const ToggelPopUp = (trigger, user) => {
       popUpTrigger.value[trigger] = !popUpTrigger.value[trigger]
-      console.log(user)
       selectedUser.value = user
-      console.log(selectedUser.value)
     }
     return {
       EditPopUp,
@@ -72,11 +74,11 @@ export default {
   computed: {
     filteredSearch () {
       return this.users.filter(user => {
-        console.log(this.user)
+        // console.log(this.user)
         return (
           (user.username && user.username.toLowerCase().indexOf(this.searchUser.toLowerCase()) > -1) ||
           (user.email && user.email.toLowerCase().indexOf(this.searchUser.toLowerCase()) > -1) ||
-          (user.usergoal && user.usergoal.toLowerCase().indexOf(this.searchUser.toLowerCase()) > -1)
+          (user.user_goal && user.user_goal.toLowerCase().indexOf(this.searchUser.toLowerCase()) > -1)
         )
       })
     }
@@ -88,23 +90,17 @@ export default {
     saveEdit () {
       this.isEditing = false
     },
-    updateUser (updatedUser) {
-      console.log(updatedUser)
-      console.log(this.users)
-      const index = this.users.findIndex(o => o.userId === updatedUser.userId)
-      console.log(updatedUser)
-      if (index !== -1) {
-        this.users.splice(index, 1, updatedUser)
+    async updateUser (updatedUser) {
+      try {
+        const index = this.users.findIndex(o => o.user_id === updatedUser.user_id)
+        if (index !== -1) {
+          this.users.splice(index, 1, updatedUser)
+        }
+        await this.usersServices.asyncSave(updatedUser)
+      } catch (error) {
+        console.log(error)
       }
     }
-    // updateOffer (updatedUser) {
-    //   console.log(updatedUser)
-    //   console.log(updatedUser)
-    //   const index = this.users.findIndex(o => o.id === updatedUser.id)
-    //   if (index !== -1) {
-    //     this.users.splice(index, 1, updatedUser)
-    //   }
-    // }
   }
 }
 
@@ -167,6 +163,7 @@ export default {
   background: none;
   color: #8b8ba7;
 }
+
 /* styling of whole input container */
 .form {
   --timing: 0.3s;
@@ -184,9 +181,10 @@ export default {
   padding-inline: 0.8em;
   border-radius: var(--border-radius);
   transition: border-radius 0.5s ease;
-  background: var(--input-bg,#fff);
+  background: var(--input-bg, #fff);
   margin: 5px;
 }
+
 /* styling of Input */
 .input {
   font-size: 0.9rem;
@@ -197,6 +195,7 @@ export default {
   padding-block: 0.7em;
   border: none;
 }
+
 /* styling of animated border */
 .form:before {
   content: "";
@@ -211,6 +210,7 @@ export default {
   border-radius: 1px;
   transition: transform var(--timing) ease;
 }
+
 /* Hover on Input */
 .form:focus-within {
   border-radius: var(--after-border-radius);
@@ -219,10 +219,12 @@ export default {
 input:focus {
   outline: none;
 }
+
 /* here is code of animated border */
 .form:focus-within:before {
   transform: scale(1);
 }
+
 /* styling of close button */
 /* == you can click the close button to remove text == */
 .reset {
@@ -231,18 +233,20 @@ input:focus {
   opacity: 0;
   visibility: hidden;
 }
+
 /* close button shown when typing */
 input:not(:placeholder-shown) ~ .reset {
   opacity: 1;
   visibility: visible;
 }
+
 /* sizing svg icons */
 .form svg {
   width: 17px;
   margin-top: 3px;
 }
 
-#searchbar{
+#searchbar {
   background-color: gray;
   height: 50px;
   padding: 1px;

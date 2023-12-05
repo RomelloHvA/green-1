@@ -67,24 +67,23 @@ export class RESTAdaptorWithFetch /* <E> */ {
      * @author Romello ten Broeke
      */
 
-  async asyncSave (entityToSave) {
+  async asyncSave (entityToSave, quizId = null, method = 'POST') {
     const entity = ref(entityToSave)
     let endpoint = this.resourcesUrl + '/' + entity.value.id
 
     if (entity.value instanceof Question) {
       switch (entity.value.type) {
         case 'yesno':
-          endpoint = this.resourcesUrl + '/yesno/' + 1
+          endpoint = this.resourcesUrl + '/yesno/' + quizId
           break
         case 'multiplechoice':
-          endpoint = this.resourcesUrl + '/multiplechoice/' + 1
+          endpoint = this.resourcesUrl + '/multiplechoice/' + quizId
           break
         default:
           throw new Error('invalid type')
       }
     }
-
-    const { data, isPending, error, load, abort, isAborted } = await useFetch(endpoint, entity.value, 'POST')
+    const { data, isPending, error, load, abort, isAborted } = await useFetch(endpoint, entity.value, method)
 
     watchEffect(() => {
       if (isPending.value === false && error.value === null) {
@@ -110,11 +109,11 @@ export class RESTAdaptorWithFetch /* <E> */ {
     return { isPending, error, load, abort, isAborted }
   }
 
-  async asyncCustom (endpoint, method, body) {
+  async asyncCustom (endpoint, method, body, params) {
     const entity = ref(null)
     endpoint = this.resourcesUrl + '/' + endpoint
 
-    const { data, isPending, error, load, abort, isAborted } = await useFetch(endpoint, body, method)
+    const { data, isPending, error, load, abort, isAborted } = await useFetch(endpoint, body, method, params)
 
     watchEffect(() => {
       if (data.value === null || data.value.length === 0) return

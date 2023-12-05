@@ -34,20 +34,25 @@ import router from '@/router'
 export default {
   name: 'NavBar',
   components: { NavBarItem },
+  inject: ['usersServices'],
   data () {
     return {
-      isAdmin: true,
+      isAdmin: false,
       userName: sessionStorage.getItem('userName'),
       isLoggedIn: this.userName !== null && this.userName !== '' && this.userName !== undefined
     }
   },
-  created () {
+  async created () {
+    let users = []
+    users = await this.usersServices.asyncFindAll()
     /**
      * EventBus is used for listening to emits from LogInView
      * @author Jiaming Yan
      */
     eventBus.on('change-data', (data) => {
       this.userName = sessionStorage.getItem('userName')
+      const currentUser = users.find(user => user.username === this.userName)
+      this.isAdmin = currentUser.isAdmin
       this.isLoggedIn = true
     })
   },

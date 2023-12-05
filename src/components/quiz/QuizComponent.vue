@@ -4,7 +4,8 @@
         <h1 v-show="showItemSequence[0]" class="slide-in-animation headerText2 fs-1 fs-sd-2">Welcome to the SDG Quiz!</h1>
         <h3 v-show="showItemSequence[1]" class="slide-in-animation m-5 headerText3"> You will be asked questions about different topics </h3>
         <h3 v-show="showItemSequence[2]" class="slide-in-animation m-5 headerText3"> answer the questions and find out which SDG's are compatible with you!</h3>
-        <button v-show="showItemSequence[3]" @click="startQuiz" type="button" class="btn btn-primary my-5 startQuizButton slide-in-animation">Start quiz</button>
+        <button v-show="showItemSequence[3]" @click="startQuiz" type="button" class="btn btn-primary my-5 startQuizButton slide-in-animation" :disabled="quiz === null">Start quiz</button>
+        <h5 v-if="quiz === null && showItemSequence[3]" class="slide-in-animation text-danger">There currenlty seems to be no quiz available, please try again later</h5>
       </div>
        <!-- This is where the quiz progress bar will be displayed -->
       <!-- This is where the quiz questions will be displayed with the answers -->
@@ -59,9 +60,10 @@ export default {
     const questionAnswered = ref(null)
     const quizLiveService = inject('quizLiveService')
     const route = useRoute()
+    const sectorId = 1
 
     onBeforeMount(async () => {
-      const results = await quizLiveService.asyncCustom('live')
+      const results = await quizLiveService.asyncCustom('live', 'GET', null, { sectorId: sectorId })
 
       watchEffect(() => {
         quiz.value = results.entity.value
@@ -99,6 +101,7 @@ export default {
         if (window.confirm('You have not finished the quiz, your progress will be lost')) {
           totalQuestionsAnswered.value = 0
           next()
+          return
         } else {
           next(false)
         }
@@ -206,6 +209,26 @@ export default {
 </script>
 
 <style>
+.quizImgSpot {
+  display: flex; /* For centering the image */
+  justify-content: center; /* Center image horizontally */
+  align-items: center; /* Center image vertically */
+  width: 60%; /* Width of the container */
+  max-width: 800px; /* Maximum width of the container */
+  max-height: 300px; /* Maximum height of the container */
+  border-radius: 15px;
+  margin: auto; /* Center the container */
+  margin-bottom: 25px; /* Spacing below the container */
+  overflow: hidden; /* In case of border-radius, it clips the image */
+}
+
+/* .imgFit {
+  margin: auto;
+  object-fit: scale-down;
+  max-height: auto;
+  max-width: 100%;
+ } */
+
 .headerText3 {
   font-weight: 500;
   margin-bottom: 0;
