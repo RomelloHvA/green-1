@@ -232,8 +232,7 @@ export default {
       const result = await quizService.asyncDeleteById(quiz.value.id)
 
       result.load().then(() => {
-        console.log(result.error.value)
-        if (result.error.value === null || result.error.value === 'Unexpected end of JSON input') {
+        if (result.error.value === null) {
           $toast.success('Quiz ' + quiz.value.name + ' deleted')
           emit('updateQuizzes')
           backToOverview()
