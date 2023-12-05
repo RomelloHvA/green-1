@@ -28,11 +28,11 @@ public class ImageController {
     private PageRepository pageRepository;
 
     @GetMapping(path = "/{pageId}/all")
-    public ResponseEntity<List<Image>> getAllImagesByPageId(@PathVariable(value = "pageId") Long pageId) throws ResourceNotFoundException {
+    public ResponseEntity<Image> getImageByPageId(@PathVariable(value = "pageId") Long pageId) throws ResourceNotFoundException {
         if (!pageRepository.existsById(Math.toIntExact(pageId))) {
             throw new ResourceNotFoundException("Not found Page with id = " + pageId);
         }
-        List<Image> pageImages = imageRepository.findAllByFkPage_PageId(pageId);
-        return new ResponseEntity<>(pageImages, HttpStatus.OK);
+        Image pageImage = imageRepository.findByFkPageImage_PageId(pageId);
+        return new ResponseEntity<>(pageImage, HttpStatus.OK);
     }
 }
