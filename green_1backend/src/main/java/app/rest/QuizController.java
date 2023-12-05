@@ -46,7 +46,7 @@ public class QuizController {
     }
 
     // Create a new quiz
-    @PostMapping
+    @PostMapping("/{id}")
     public ResponseEntity<Quiz>  createQuiz(@RequestBody Quiz quiz) {
         Quiz newQuiz = quizService.createQuiz(quiz);
         return ResponseEntity.status(HttpStatus.CREATED).body(newQuiz);
