@@ -9,26 +9,8 @@
       <AdminLoaderComponent/>
     </div>
     <form v-else-if="pageId">
-      <div class="form-group" v-for="image in imageClone" :key="image.imageId">
-        <!-- Deployed text -->
-        <label :for="'Textarea_' + image.contentId">{{ image.contentTitle }}</label>
-        <textarea class="form-control" :id="'Textarea_' + image.contentId" rows="3" disabled
-                  :placeholder="findContentById(image.contentId).contentDutch"></textarea>
-        <!-- Editable Text to be deployed -->
-        <label :for="'Textarea_' + image.contentId">CONCEPT Text for {{ image.contentTitle }}</label>
-        <textarea class="form-control" :id="'Textarea_' + image.contentId" rows="3"
-                  v-model="image.contentConcept"></textarea>
-        <button type="button" class="btn btn-success m-1" @click="saveNewContent(image.contentId, image, 'true')">Save concept</button>
-        <button type="button" class="btn btn-info m-1" @click="saveNewContent(image.contentId, image, 'false')">Deploy concept</button>
-        <button type="button" class="btn btn-danger m-1" @click="resetContentToDeployed(image)"
-                :disabled="!isContentChanged(image.contentConcept, findContentById(image.contentId).contentDutch)">
-          Reset to original
-        </button>
-        <button type="button" class="btn btn-danger mx-1" @click="resetContentToConcept(image)"
-                :disabled="!isContentChanged(image.contentConcept, findContentById(image.contentId).contentConcept)">
-          Reset to saved concept
-        </button>
-
+      <div class="form-group">
+        <p>Current image Id: {{editableImage.imageId}}</p>
       </div>
     </form>
   </section>
@@ -117,11 +99,11 @@ export default {
     const fetchData = async () => {
       const APIResults = await imageService.findImageByPageId(props.pageId)
       try {
-        editableImage.value = APIResults.editableContent.value
+        editableImage.value = APIResults.editableImage.value
         isPending.value = APIResults.isPending.value
         error.value = APIResults.error.value
         // Clones all the content to a cloned object so the original stays
-        imageClone.value = Object.fromEntries(editableImage.value.map(item => [item.contentId, { ...item }]))
+        imageClone.value = { ...editableImage.value }
         succes.value = true
       } catch (e) {
         console.log(e)
@@ -156,7 +138,7 @@ export default {
         }
       }
     )
-    return { editableImage: editableImage, isPending, error, imageClone: imageClone, imageService: imageService, sendData, succes }
+    return { editableImage: editableImage, isPending, imageClone: imageClone, error, imageService: imageService, sendData, succes }
   }
 }
 </script>
