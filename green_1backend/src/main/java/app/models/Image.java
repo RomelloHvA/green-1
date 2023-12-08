@@ -24,14 +24,28 @@ public class Image {
     @JsonIgnore
     private Page fkPageImage;
 
+    @Column(name = "imageWidth")
+    private Integer imageWidth;
+
+    @Column(name = "imageHeight")
+    private Integer imageHeight;
     public Image() {
     }
-
-    public Image(Long imageId, String fileName, String imageName, Page fkPageImage) {
+    public Image(Long imageId, String fileName, String imageName, Page fkPageImage, Integer imageHeight, Integer imageWidth) {
         this.imageId = imageId;
         this.fileName = fileName;
         this.imageName = imageName;
         this.fkPageImage = fkPageImage;
+        this.imageHeight = imageHeight;
+        this.imageWidth = imageWidth;
+    }
+
+    public void setImageWidth(int imageWidth) {
+        this.imageWidth = imageWidth;
+    }
+
+    public void setImageHeight(int imageHeight) {
+        this.imageHeight = imageHeight;
     }
 
     public void setImageId(Long imageId) {
@@ -65,5 +79,13 @@ public class Image {
     public Page getFkPageImage() {
         return fkPageImage;
     }
+    public Integer getImageWidth() {
+        return imageWidth;
+    }
+
+    public Integer getImageHeight() {
+        return imageHeight;
+    }
+
 
 }
