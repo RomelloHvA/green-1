@@ -63,6 +63,8 @@ public class ImageController {
             @RequestBody Map<String, String> body
             ) {
         String fileName = body.get("fileName");
+        Integer imageWidth = Integer.valueOf(body.get("imageWidth"));
+        Integer imageHeight = Integer.valueOf(body.get("imageHeight"));
         Image image = null;
         try {
             Image existingImage = this.imageRepository.findByFkPageImage_PageId(pageId);
@@ -76,6 +78,8 @@ public class ImageController {
             if (image != null) {
                  Page page = this.pageRepository.findPageByPageIdIs(pageId);
                 image.setFkPageImage(page);
+                image.setImageHeight(imageHeight);
+                image.setImageWidth(imageWidth);
                 this.imageRepository.save(image);
                 return ResponseEntity.ok(image);
             } else {

@@ -9,7 +9,7 @@
       <AdminLoaderComponent/>
     </div>
     <form v-else-if="pageId">
-      <div class="form-group">
+      <div class="form-group d-flex flex-row align-items-center">
         <p>Current image: {{editableImage.imageName}}</p>
         <label for="imageSelect" class="m-2">Select Image:</label>
         <select id="imageSelect" v-model="imageClone.fileName">
@@ -19,20 +19,24 @@
         <!-- Image Preview -->
         <div v-if="imageClone.fileName !== 'none'">
           <img :src="require('@/assets/img/admin-dashboard/images/' + imageClone.fileName)" alt="Selected Image Preview"
-               class="img-preview w-25 h-25">
+               class="img-preview w-50 h-50 m-2">
         </div>
-        <label for="imageSelect" class="m-2">Change width: </label>
-        <input type="number" v-model="imageClone.imageWidth"/>
-        <label for="imageSelect" class="m-2">Change height: </label>
-        <input type="number" v-model="imageClone.imageHeight"/>
-        <button type="button" class="btn btn-success m-1" @click="saveImage"
-                :disabled="!isImageChanged(imageClone, editableImage)">
-          Save changes
-        </button>
-        <button type="button" class="btn btn-danger m-1" @click="resetImage"
-                :disabled="!isImageChanged(imageClone, editableImage)">
-          Reset to original
-        </button>
+        <div class="d-flex flex-column w-25">
+          <label for="imageSelect" class="m-2">Change width: </label>
+          <input type="number" v-model="imageClone.imageWidth"/>
+          <label for="imageSelect" class="m-2">Change height: </label>
+          <input type="number" v-model="imageClone.imageHeight"/>
+        </div>
+        <div class="m-1">
+          <button type="button" class="btn btn-success m-1" @click="saveImage"
+                  :disabled="!isImageChanged(imageClone, editableImage)">
+            Save changes
+          </button>
+          <button type="button" class="btn btn-danger m-1" @click="resetImage"
+                  :disabled="!isImageChanged(imageClone, editableImage)">
+            Reset to original
+          </button>
+        </div>
       </div>
     </form>
   </section>
@@ -57,7 +61,7 @@ export default {
   },
   methods: {
     resetImage () {
-      this.imageClone.fileName = this.editableImage.fileName
+      this.imageClone = { ...this.editableImage }
       this.$toast.warning('Restored original')
     },
     isImageChanged (imageA, imageB) {
@@ -87,7 +91,9 @@ export default {
     },
     async saveImage () {
       const body = {
-        fileName: this.imageClone.fileName
+        fileName: this.imageClone.fileName,
+        imageWidth: this.imageClone.imageWidth,
+        imageHeight: this.imageClone.imageHeight
       }
       try {
         const response = await this.sendData(this.pageId, body)

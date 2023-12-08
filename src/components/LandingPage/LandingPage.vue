@@ -12,7 +12,8 @@
           <p class="paragraphText">{{ contentData.welcomeText }}</p>
           <button class="btn btn-primary quiz-button" @click="goToQuiz">To Quiz!</button>
       </div>
-        <img alt="home-image" v-if="imagePath" :src="require('@/assets/img/admin-dashboard/images/' + imagePath)" class="bi-image">
+        <img alt="home-image" v-if="imagePath" :src="require('@/assets/img/admin-dashboard/images/' + imagePath)"
+             class="bi-image" :width="image.imageWidth" :height="image.imageHeight">
       </div>
       <div class="col-lg-6 col-12 purpose-card">
         <div v-show="showItemSequence[1]" class="slide-in-animation card cardSpecific">
@@ -61,7 +62,8 @@ export default {
         purposeText: '',
         SdgInfoTitle: ''
       },
-      imagePath: null
+      imagePath: null,
+      image: null
     }
   },
   mounted () {
@@ -86,6 +88,7 @@ export default {
         const image = await imageService.findImageByPageId(1)
 
         if (image.editableImage.value) {
+          this.image = image.editableImage.value
           this.imagePath = image.editableImage.value.fileName.toString()
         } else {
           console.warn('Image path is null or undefined.')
