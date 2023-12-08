@@ -62,7 +62,7 @@ public class ImageController {
             @PathVariable(value = "pageId") Long pageId,
             @RequestBody Map<String, String> body
             ) {
-        String imageName = body.get("imageName");
+        String fileName = body.get("fileName");
         Image image = null;
         try {
             Image existingImage = this.imageRepository.findByFkPageImage_PageId(pageId);
@@ -71,7 +71,7 @@ public class ImageController {
                 this.imageRepository.save(existingImage);
             }
 
-            image = this.imageRepository.findByImageName(imageName);
+            image = this.imageRepository.findByFileName(fileName);
 
             if (image != null) {
                  Page page = this.pageRepository.findPageByPageIdIs(pageId);

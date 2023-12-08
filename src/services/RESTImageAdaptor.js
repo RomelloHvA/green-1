@@ -97,29 +97,29 @@ export class RESTImageAdaptor {
     }
   }
 
-  // async saveContentById (content, urlParameter) {
-  //   const requestUrl = this.resourcesUrl + '/content/' + content.contentId + '/' + urlParameter
-  //   const savedContent = ref(null)
-  //   const succes = ref(false)
-  //   const error = ref(null)
-  //   try {
-  //     const response = await fetch(requestUrl, {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify(content)
-  //     })
-  //     if (response.ok) {
-  //       savedContent.value = await response.json()
-  //       error.value = null
-  //       succes.value = true
-  //     } else {
-  //       throw new Error('Network response was not ok: ' + response.status)
-  //     }
-  //   } catch (err) {
-  //     error.value = err.message
-  //   }
-  //   console.log(succes.value + ' succes value')
-  //   console.log(error.value + ' error value')
-  //   return { succes, error }
-  // }
+  async saveImageByPageId (pageId, body) {
+    const requestUrl = this.resourcesUrl + '/' + pageId + '/update'
+    const savedImage = ref(null)
+    const succes = ref(false)
+    const error = ref(null)
+    try {
+      const response = await fetch(requestUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      })
+      if (response.ok) {
+        savedImage.value = await response.json()
+        error.value = null
+        succes.value = true
+      } else {
+        throw new Error('Network response was not ok: ' + response.status)
+      }
+    } catch (err) {
+      error.value = err.message
+    }
+    console.log(succes.value + ' succes value')
+    console.log(error.value + ' error value')
+    return { succes, error }
+  }
 }

@@ -21,6 +21,10 @@
           <img :src="require('@/assets/img/admin-dashboard/images/' + imageClone.fileName)" alt="Selected Image Preview"
                class="img-preview w-25 h-25">
         </div>
+        <button type="button" class="btn btn-success m-1" @click="saveImage"
+                :disabled="!isImageChanged(imageClone.fileName, editableImage.fileName)">
+          Save changes
+        </button>
         <button type="button" class="btn btn-danger m-1" @click="resetImage"
                 :disabled="!isImageChanged(imageClone.fileName, editableImage.fileName)">
           Reset to original
@@ -52,53 +56,25 @@ export default {
       this.imageClone.fileName = this.editableImage.fileName
       this.$toast.warning('Restored original')
     },
-    resetContentToConcept (content) {
-      const originalContent = this.findImageById(content.contentId)
-      content.contentConcept = originalContent.contentConcept
-      this.$toast.warning('Restored concept')
-    },
-    findImageById (id) {
-      if (this.editableImage) {
-        return this.editableImage.find(content => content.contentId === id)
-      } else {
-        return ''
-      }
-    },
     isImageChanged (imageA, imageB) {
       return imageA !== imageB
+    },
+    async saveImage () {
+      const body = {
+        fileName: this.imageClone.fileName
+      }
+      try {
+        const response = await this.sendData(this.pageId, body)
+        console.log(response.succes.value)
+        if (response.succes.value) {
+          this.$toast.success('Saved successfully')
+        } else {
+          this.$toast.warning('Couldn\'t save')
+        }
+      } catch (error) {
+        console.log('Error saving image:', error.message)
+      }
     }
-    /**
-     * @param id id of the content to be saved.
-     * @param content content to be saved.
-     * @param urlParameter is if only the concept should be saved.
-     */
-    // async saveNewContent (id, content, urlParameter) {
-    //   const indexOfContent = this.editableContent.findIndex(content => content.contentId === id)
-    //   if (indexOfContent !== -1) {
-    //     // Only overwrites the concept in the frontend and sends an API request
-    //     if (urlParameter === 'true') {
-    //       this.editableContent[indexOfContent].contentConcept = content.contentConcept
-    //       // Overwrites Dutch text and concept of the original
-    //     } else {
-    //       this.editableContent[indexOfContent].contentConcept = content.contentConcept
-    //       // this.editableContent[indexOfContent].contentDutch = content.contentConcept // temporary edit
-    //       this.editableContent[indexOfContent].contentEnglish = content.contentConcept
-    //     }
-    //     try {
-    //       // Makes the call to the API to also save it in the backend.
-    //       const APIResult = await this.sendData(this.editableContent[indexOfContent], urlParameter)
-    //       console.log(APIResult.succes.value)
-    //
-    //       if (APIResult.succes.value) {
-    //         this.$toast.success('Saved successfully')
-    //       } else {
-    //         this.$toast.warning('Couldn\'t save')
-    //       }
-    //     } catch (error) {
-    //       console.error('Error saving content:', error.message)
-    //     }
-    //   }
-    // }
   },
   setup (props) {
     const imageService = inject('imageService')
@@ -126,8 +102,8 @@ export default {
         await router.push('/admin_dashboard/image')
       }
     }
-    const sendData = async (content, urlParamater) => {
-      return await imageService.saveContentById(content, urlParamater)
+    const sendData = async (pageId, body) => {
+      return await imageService.saveImageByPageId(pageId, body)
     }
 
     // Only makes a call if the page id is not null
