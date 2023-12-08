@@ -21,6 +21,10 @@
           <img :src="require('@/assets/img/admin-dashboard/images/' + imageClone.fileName)" alt="Selected Image Preview"
                class="img-preview w-25 h-25">
         </div>
+        <button type="button" class="btn btn-danger m-1" @click="resetImage"
+                :disabled="!isImageChanged(imageClone.fileName, editableImage.fileName)">
+          Reset to original
+        </button>
       </div>
     </form>
   </section>
@@ -44,9 +48,8 @@ export default {
     images: Array
   },
   methods: {
-    resetContentToDeployed (content) {
-      const originalContent = this.findImageById(content.contentId)
-      content.contentConcept = originalContent.contentDutch
+    resetImage () {
+      this.imageClone.fileName = this.editableImage.fileName
       this.$toast.warning('Restored original')
     },
     resetContentToConcept (content) {
@@ -61,8 +64,8 @@ export default {
         return ''
       }
     },
-    isContentChanged (contentA, contentB) {
-      return contentA !== contentB
+    isImageChanged (imageA, imageB) {
+      return imageA !== imageB
     }
     /**
      * @param id id of the content to be saved.
