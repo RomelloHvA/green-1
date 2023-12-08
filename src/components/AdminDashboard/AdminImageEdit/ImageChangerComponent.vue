@@ -10,11 +10,17 @@
     </div>
     <form v-else-if="pageId">
       <div class="form-group">
-        <p>Current image Id: {{editableImage.imageId}}</p>
-        <label for="imageSelect">Select Image:</label>
-        <select id="imageSelect" v-model="selectedImage" @change="updateImagePath">
-          <option v-for="image in images" :key="image.imageId" :value="image.imagePath">{{ image.imageName }}</option>
+        <p>Current image: {{editableImage.imageName}}</p>
+        <label for="imageSelect" class="m-2">Select Image:</label>
+        <select id="imageSelect" v-model="imageClone.fileName" @change="updateImagePath">
+          <option value="none">None</option> <!-- New option for 'none' -->
+          <option v-for="image in images" :key="image.imageName" :value="image.fileName">{{ image.fileName }}</option>
         </select>
+        <!-- Image Preview -->
+        <div v-if="imageClone.fileName !== 'none'">
+          <img :src="require('@/assets/img/admin-dashboard/images/' + imageClone.fileName)" alt="Selected Image Preview"
+               class="img-preview w-25 h-25">
+        </div>
       </div>
     </form>
   </section>
