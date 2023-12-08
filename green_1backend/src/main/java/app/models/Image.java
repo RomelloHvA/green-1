@@ -18,9 +18,8 @@ public class Image {
 
     @Column(name = "imageName")
     private String imageName;
-
     @OneToOne
-    @JoinColumn(name = "fk_page_id", nullable = false)
+    @JoinColumn(name = "fk_page_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Page fkPageImage;

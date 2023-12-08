@@ -2,6 +2,7 @@ package app.rest;
 
 import app.exceptions.ResourceNotFoundException;
 import app.models.Image;
+import app.models.Page;
 import app.repositories.ImageRepository;
 import app.repositories.PageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,15 +62,21 @@ public class ImageController {
             @PathVariable(value = "pageId") Long pageId,
             @RequestBody Map<String, String> body
             ) {
-        String fileName = body.get("fileName");
         String imageName = body.get("imageName");
         Image image = null;
         try {
-            image = this.imageRepository.findByFkPageImage_PageId(pageId);
+            Image existingImage = this.imageRepository.findByFkPageImage_PageId(pageId);
+            if (existingImage != null) {
+                existingImage.setFkPageImage(null);
+                this.imageRepository.save(existingImage);
+            }
+
+            image = this.imageRepository.findByImageName(imageName);
 
             if (image != null) {
-                image.setFileName(fileName);
-                image.setImageName(imageName);
+                 Page page = this.pageRepository.findPageByPageIdIs(pageId);
+                image.setFkPageImage(page);
+                this.imageRepository.save(image);
                 return ResponseEntity.ok(image);
             } else {
                 throw new ResourceNotFoundException("No image found with pageId = " + pageId);

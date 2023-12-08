@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ImageRepository extends JpaRepository<Image, Integer> {
     Image findByFkPageImage_PageId(Long pageId);
+
+    Image findByImageName(String imageName);
 }
