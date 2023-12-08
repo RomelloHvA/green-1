@@ -12,7 +12,7 @@
           <p class="paragraphText">{{ contentData.welcomeText }}</p>
           <button class="btn btn-primary quiz-button" @click="goToQuiz">To Quiz!</button>
       </div>
-        <img alt="home-image" :src="this.setImage()" class="bi-image">
+        <img alt="home-image" v-if="imagePath" :src="require('@/assets/img/admin-dashboard/images/' + imagePath)" class="bi-image">
       </div>
       <div class="col-lg-6 col-12 purpose-card">
         <div v-show="showItemSequence[1]" class="slide-in-animation card cardSpecific">
@@ -39,7 +39,6 @@
 
 import SdgOverview from '@/components/LandingPage/SdgOverview.vue'
 import { inject } from 'vue'
-
 /**
  * LandingPage Component
  * This is the first page a user will see. Template consists of information about
@@ -47,7 +46,7 @@ import { inject } from 'vue'
  */
 export default {
   name: 'LandingPage',
-  inject: ['contentService'],
+  inject: ['contentService', 'imageService'],
   components: { SdgOverview },
   data () {
     return {
@@ -60,9 +59,9 @@ export default {
         welcomeText: '',
         purposeTitle: '',
         purposeText: '',
-        SdgInfoTitle: '',
-        imagePath: ''
-      }
+        SdgInfoTitle: ''
+      },
+      imagePath: null
     }
   },
   mounted () {
@@ -80,18 +79,24 @@ export default {
       this.textIndex++
     }, 500)
   },
-  created () {
-    if (this.setImage() == null || this.setImage() === undefined) {
-      this.setImage()
-    }
-  },
   methods: {
+    async loadImage () {
+      try {
+        const imageService = inject('imageService')
+        const image = await imageService.findImageByPageId(1)
+
+        if (image.editableImage.value) {
+          this.imagePath = image.editableImage.value.imagePath.toString()
+        } else {
+          console.warn('Image path is null or undefined.')
+        }
+      } catch (error) {
+        console.error('Error while loading image:', error)
+      }
+    },
     /**
      * Redirects user to quiz page
      */
-    setImage () {
-      return require('@/assets/img/admin-dashboard/images/mountains.jpg')
-    },
     goToQuiz () {
       this.$router.push({ path: '/quiz' })
       this.scrollToTop()
@@ -147,6 +152,7 @@ export default {
   beforeMount () {
     // load content data from db
     this.loadContent()
+    this.loadImage()
   }
 }
 </script>
