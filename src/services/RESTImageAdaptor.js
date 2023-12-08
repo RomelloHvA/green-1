@@ -23,7 +23,7 @@ export class RESTImageAdaptor {
     const isPending = ref(true)
     const error = ref(null)
     try {
-      const response = await fetch(this.resourcesUrl + '/all')
+      const response = await fetch(this.resourcesUrl)
       if (response.ok) {
         pages.value = await response.json()
         error.value = null
@@ -46,14 +46,14 @@ export class RESTImageAdaptor {
   /**
    * Fetches all available content for the given pageId from the specified resources URL.
    * @returns {Object} An object containing ref objects for pages, isPending, and error.
-   * @author Romello ten Broeke
+   * @author Romello ten Broeke, Jiaming Yan
    */
   async findImageByPageId (pageId) {
     const editableImage = ref([])
     const isPending = ref(true)
     const error = ref(null)
     try {
-      const response = await fetch(this.resourcesUrl + '/image/' + parseInt(pageId) + '/all')
+      const response = await fetch(this.resourcesUrl + '/' + parseInt(pageId) + '/all')
       if (response.ok) {
         editableImage.value = await response.json()
         error.value = null
@@ -68,6 +68,30 @@ export class RESTImageAdaptor {
     }
     return {
       editableImage,
+      isPending,
+      error
+    }
+  }
+
+  async getAllImages () {
+    const images = ref([])
+    const isPending = ref(true)
+    const error = ref(null)
+    try {
+      const response = await fetch(this.resourcesUrl)
+      if (response.ok) {
+        images.value = await response.json()
+        error.value = null
+      } else {
+        return new Error('Network response was not ok.')
+      }
+    } catch (err) {
+      error.value = err.message
+    } finally {
+      isPending.value = false
+    }
+    return {
+      images,
       isPending,
       error
     }

@@ -33,7 +33,7 @@ export default {
       questionMultipleChoiceService: new RESTAdaptorWithFetch(CONFIG.BACKEND_URL + '/question', MultipleChoiceQuestion.copyConstructor),
       sectorService: new RESTAdaptorWithFetch(CONFIG.BACKEND_URL + '/sector', Sector.copyConstructor),
       contentService: new RESTContentAdaptor(CONFIG.BACKEND_URL + '/page'),
-      imageService: new RESTImageAdaptor(CONFIG.BACKEND_URL + '/page'),
+      imageService: new RESTImageAdaptor(CONFIG.BACKEND_URL + '/page/image'),
       usersServices: new UsersAdaptor(CONFIG.BACKEND_URL),
       profileService: new ProfilesAdaptor(CONFIG.BACKEND_URL + '/profiles'),
       goalService: new GoalsAdaptor(CONFIG.BACKEND_URL + '/goals'),

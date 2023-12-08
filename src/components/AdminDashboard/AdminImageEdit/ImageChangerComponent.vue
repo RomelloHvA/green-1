@@ -11,6 +11,10 @@
     <form v-else-if="pageId">
       <div class="form-group">
         <p>Current image Id: {{editableImage.imageId}}</p>
+        <label for="imageSelect">Select Image:</label>
+        <select id="imageSelect" v-model="selectedImage" @change="updateImagePath">
+          <option v-for="image in images" :key="image.imageId" :value="image.imagePath">{{ image.imageName }}</option>
+        </select>
       </div>
     </form>
   </section>
@@ -89,6 +93,7 @@ export default {
   setup (props) {
     const imageService = inject('imageService')
     const editableImage = ref([])
+    const images = ref(null)
     const isPending = ref(true)
     const error = ref(null)
     const imageClone = ref({})
@@ -115,9 +120,15 @@ export default {
       return await imageService.saveContentById(content, urlParamater)
     }
 
+    const getAllImages = async () => {
+      const response = await imageService.getAllImages()
+      console.log(response)
+    }
+
     // Only makes a call if the page id is not null
     onBeforeMount(() => {
       if (pageId.value) {
+        getAllImages()
         fetchData()
       } else {
         // Reset editableContent if pageId is null
@@ -138,7 +149,7 @@ export default {
         }
       }
     )
-    return { editableImage: editableImage, isPending, imageClone: imageClone, error, imageService: imageService, sendData, succes }
+    return { editableImage: editableImage, isPending, imageClone: imageClone, images: images, error, imageService: imageService, sendData, succes }
   }
 }
 </script>
