@@ -13,14 +13,14 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long imageId;
 
-    @Column(name = "imagePath")
-    private String imagePath;
+    @Column(name = "fileName")
+    private String fileName;
 
     @Column(name = "imageName")
     private String imageName;
 
     @OneToOne
-    @JoinColumn(name = "pageId", nullable = false)
+    @JoinColumn(name = "fk_page_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Page fkPageImage;
@@ -28,9 +28,9 @@ public class Image {
     public Image() {
     }
 
-    public Image(Long imageId, String imagePath, String imageName, Page fkPageImage) {
+    public Image(Long imageId, String fileName, String imageName, Page fkPageImage) {
         this.imageId = imageId;
-        this.imagePath = imagePath;
+        this.fileName = fileName;
         this.imageName = imageName;
         this.fkPageImage = fkPageImage;
     }
@@ -39,8 +39,8 @@ public class Image {
         this.imageId = imageId;
     }
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    public void setFileName(String imagePath) {
+        this.fileName = imagePath;
     }
 
     public void setImageName(String imageName) {
@@ -55,8 +55,8 @@ public class Image {
         return imageId;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public String getFileName() {
+        return fileName;
     }
 
     public String getImageName() {
