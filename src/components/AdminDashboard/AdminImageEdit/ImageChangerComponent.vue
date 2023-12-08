@@ -12,7 +12,7 @@
       <div class="form-group">
         <p>Current image: {{editableImage.imageName}}</p>
         <label for="imageSelect" class="m-2">Select Image:</label>
-        <select id="imageSelect" v-model="imageClone.fileName" @change="updateImagePath">
+        <select id="imageSelect" v-model="imageClone.fileName">
           <option value="none">None</option> <!-- New option for 'none' -->
           <option v-for="image in images" :key="image.imageName" :value="image.fileName">{{ image.fileName }}</option>
         </select>
@@ -21,12 +21,16 @@
           <img :src="require('@/assets/img/admin-dashboard/images/' + imageClone.fileName)" alt="Selected Image Preview"
                class="img-preview w-25 h-25">
         </div>
+        <label for="imageSelect" class="m-2">Change width: </label>
+        <input type="number" v-model="imageClone.imageWidth"/>
+        <label for="imageSelect" class="m-2">Change height: </label>
+        <input type="number" v-model="imageClone.imageHeight"/>
         <button type="button" class="btn btn-success m-1" @click="saveImage"
-                :disabled="!isImageChanged(imageClone.fileName, editableImage.fileName)">
+                :disabled="!isImageChanged(imageClone, editableImage)">
           Save changes
         </button>
         <button type="button" class="btn btn-danger m-1" @click="resetImage"
-                :disabled="!isImageChanged(imageClone.fileName, editableImage.fileName)">
+                :disabled="!isImageChanged(imageClone, editableImage)">
           Reset to original
         </button>
       </div>
@@ -57,7 +61,29 @@ export default {
       this.$toast.warning('Restored original')
     },
     isImageChanged (imageA, imageB) {
-      return imageA !== imageB
+      return !this.deepEqual(imageA, imageB)
+    },
+    deepEqual (obj1, obj2) {
+      if (obj1 === obj2) return true
+
+      if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
+        return false
+      }
+
+      const keys1 = Object.keys(obj1)
+      const keys2 = Object.keys(obj2)
+
+      if (keys1.length !== keys2.length) {
+        return false
+      }
+
+      for (const key of keys1) {
+        if (!keys2.includes(key) || !this.deepEqual(obj1[key], obj2[key])) {
+          return false
+        }
+      }
+
+      return true
     },
     async saveImage () {
       const body = {
