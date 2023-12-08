@@ -23,7 +23,7 @@
       </table>
     </section>
     <div class="col-md-10">
-      <ImageChangerComponent :pageId="parseInt(this.$route.params.id)"/>
+      <ImageChangerComponent :pageId="parseInt(this.$route.params.id)" :images="images" />
     </div>
   </div>
 </template>
@@ -41,9 +41,10 @@ export default {
     pageId: Number
   },
   setup () {
-    // const imageService = inject('imageService')
+    const imageService = inject('imageService')
     const contentService = inject('contentService')
     const allPages = ref(null)
+    const images = ref(null)
     // Should be true because the data is not done loading yet.
     const isPending = ref(true)
     const error = ref(null)
@@ -52,15 +53,17 @@ export default {
     // What happens before this component gets mounted.
     onBeforeMount(async () => {
       const APIResults = await contentService.findAllPages()
+      const allImages = await imageService.getAllImages()
       // Watches for changes  in the values and updated them accordingly.
       // Without this, it will always wait on a promise and stay empty.
       watchEffect(() => {
         allPages.value = APIResults.pages.value
+        images.value = allImages.images.value
         isPending.value = APIResults.isPending.value
         error.value = APIResults.error.value
       })
     })
-    return { allPages, isPending, error, basePath }
+    return { allPages, isPending, error, basePath, images }
   },
   methods: {
     /**
