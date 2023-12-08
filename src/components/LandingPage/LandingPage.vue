@@ -86,7 +86,7 @@ export default {
         const image = await imageService.findImageByPageId(1)
 
         if (image.editableImage.value) {
-          this.imagePath = image.editableImage.value.imagePath.toString()
+          this.imagePath = image.editableImage.value.fileName.toString()
         } else {
           console.warn('Image path is null or undefined.')
         }
