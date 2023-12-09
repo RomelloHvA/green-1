@@ -45,11 +45,11 @@ public class ImageController {
      */
     @GetMapping(path = "/{pageId}/all")
     public ResponseEntity<Image> getImageByPageId(@PathVariable(value = "pageId") Long pageId) throws ResourceNotFoundException {
-        if (!pageRepository.existsById(Math.toIntExact(pageId))) {
-            throw new ResourceNotFoundException("Not found Page with id = " + pageId);
-        }
-        Image pageImage = imageRepository.findByFkPageImage_PageId(pageId);
-        return ResponseEntity.ok(pageImage);
+        Image image = this.imageRepository.findByFkPageImage_PageId(pageId);
+            if (!pageRepository.existsById(Math.toIntExact(pageId))) {
+                return ResponseEntity.ok(image);
+            }
+            return null;
     }
 
     /**

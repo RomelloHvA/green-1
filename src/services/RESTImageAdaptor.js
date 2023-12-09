@@ -52,25 +52,25 @@ export class RESTImageAdaptor {
     const editableImage = ref([])
     const isPending = ref(true)
     const error = ref(null)
+
     try {
       const response = await fetch(this.resourcesUrl + '/' + parseInt(pageId) + '/all')
+
       if (response.ok) {
         editableImage.value = await response.json()
         error.value = null
       } else {
-        // Handle HTTP errors if the response is not 'ok'
+        // Handle other HTTP errors if the response is not 'ok'
         return new Error('Network response was not ok.')
       }
     } catch (err) {
+      console.log('error: ' + error.value)
       error.value = err.message
     } finally {
       isPending.value = false
     }
-    return {
-      editableImage,
-      isPending,
-      error
-    }
+
+    return { editableImage, isPending, error }
   }
 
   async getAllImages () {

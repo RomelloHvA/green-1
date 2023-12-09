@@ -1,6 +1,6 @@
 <template>
   <div v-if="error">
-    <AdminErrorComponent :error="error"/>
+    <AdminErrorComponent/>
   </div>
   <section v-else>
     <h2 v-if="!pageId">Select a page to begin editing</h2>
@@ -9,7 +9,7 @@
       <AdminLoaderComponent/>
     </div>
     <form v-else-if="pageId">
-      <div class="form-group d-flex flex-row align-items-center">
+      <div class="form-group d-flex flex-row align-items-center" v-if="imageIsSet.value">
         <p>Current image: {{editableImage.imageName}}</p>
         <label for="imageSelect" class="m-2">Select Image:</label>
         <select id="imageSelect" v-model="imageClone.fileName">
@@ -20,6 +20,19 @@
         <div v-if="imageClone.fileName !== 'none'">
           <img :src="require('@/assets/img/admin-dashboard/images/' + imageClone.fileName)" alt="Selected Image Preview"
                class="img-preview w-50 h-50 m-2">
+        </div>
+        <div class="form-group d-flex flex-row align-items-center" v-else>
+          <p>Current image: None</p>
+          <label for="imageSelect" class="m-2">Select Image:</label>
+          <select id="imageSelect" v-model="imageClone.fileName">
+            <option value="none">None</option> <!-- New option for 'none' -->
+            <option v-for="image in images" :key="image.imageName" :value="image.fileName">{{ image.fileName }}</option>
+          </select>
+          <!-- Image Preview -->
+          <div v-if="imageClone.fileName !== 'none'">
+            <img :src="require('@/assets/img/admin-dashboard/images/' + imageClone.fileName)" alt="Selected Image Preview"
+                 class="img-preview w-50 h-50 m-2">
+          </div>
         </div>
         <div class="d-flex flex-column w-25">
           <label for="imageSelect" class="m-2">Change width: </label>
@@ -43,7 +56,7 @@
 </template>
 
 <script>
-import { inject, onBeforeMount, ref, watch } from 'vue'
+import { computed, inject, onBeforeMount, ref, watch } from 'vue'
 import AdminErrorComponent from '@/components/AdminDashboard/AdminErrorComponent'
 import AdminLoaderComponent from '@/components/AdminDashboard/AdminLoaderComponent'
 import router from '@/router'
@@ -111,23 +124,30 @@ export default {
   setup (props) {
     const imageService = inject('imageService')
     const editableImage = ref([])
-    // const images = ref(props.images)
     const isPending = ref(true)
     const error = ref(null)
     const imageClone = ref({})
     const pageId = ref(props.pageId)
     const succes = ref(false)
     const $toast = useToast()
+    const imageIsSet = computed(() => editableImage.value !== null)
 
     const fetchData = async () => {
+      console.log('imageIsSet in fetchData:', imageIsSet.value)
       const APIResults = await imageService.findImageByPageId(props.pageId)
+      console.log(APIResults)
+
       try {
         editableImage.value = APIResults.editableImage.value
         isPending.value = APIResults.isPending.value
         error.value = APIResults.error.value
-        // Clones all the content to a cloned object so the original stays
-        imageClone.value = { ...editableImage.value }
+
+        // Check if editableImage.value is not null before cloning
+        imageClone.value = editableImage.value ? { ...editableImage.value } : {}
         succes.value = true
+        if (editableImage.value !== null) {
+          imageIsSet.value = true
+        }
       } catch (e) {
         console.log(e)
         $toast.error('Could not find content for pageId:' + pageId.value)
@@ -161,7 +181,7 @@ export default {
         }
       }
     )
-    return { editableImage: editableImage, isPending, imageClone: imageClone, error, imageService: imageService, sendData, succes }
+    return { editableImage: editableImage, isPending, imageClone: imageClone, error, imageService: imageService, sendData, succes, imageIsSet: imageIsSet }
   }
 }
 </script>
