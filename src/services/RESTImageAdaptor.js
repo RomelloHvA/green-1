@@ -59,7 +59,6 @@ export class RESTImageAdaptor {
 
       if (response.ok) {
         editableImage.value = await response.json()
-        console.log(editableImage.value)
         if (editableImage.value) {
           isImageSet.value = true
         }
@@ -70,7 +69,6 @@ export class RESTImageAdaptor {
       }
     } catch (err) {
       error.value = err.message
-      console.log('error: ' + error.value)
     } finally {
       isPending.value = false
     }

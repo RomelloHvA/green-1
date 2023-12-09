@@ -142,10 +142,7 @@ export default {
     const imageIsSet = ref(false)
 
     const fetchData = async () => {
-      console.log('imageIsSet in fetchData:', imageIsSet.value)
       const APIResults = await imageService.findImageByPageId(props.pageId)
-      console.log(APIResults.editableImage.value)
-
       try {
         editableImage.value = APIResults.editableImage.value
         isPending.value = APIResults.isPending.value

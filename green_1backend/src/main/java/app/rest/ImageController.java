@@ -48,11 +48,8 @@ public class ImageController {
         try {
             if (!pageRepository.existsById(Math.toIntExact(pageId))
                     || Objects.equals(image, null)) {
-                System.out.println("Not found");
                 return ResponseEntity.ok(new Image()); // Return an empty object
             } else {
-                System.out.println(image);
-                System.out.println("Found");
                 return ResponseEntity.ok(image);
             }
         } catch (Exception e) {
@@ -73,43 +70,51 @@ public class ImageController {
             @RequestBody Map<String, String> body
             ) {
         String fileName = body.get("fileName");
-        Image image = this.imageRepository.findByFileName(fileName);
-        try {
-            // Trying to find out if there is already an existing image with the give pageId
+        // Trying to remove the image of the page that is found
+        if (Objects.equals(fileName, "none")) {
             Image existingImage = this.imageRepository.findByFkPageImage_PageId(pageId);
-            if (existingImage != null && !Objects.equals(existingImage.getImageId(), image.getImageId())) {
-                // If there is an image found with this Id, the pageId of that image will be set to null
-                existingImage.setFkPageImage(null);
-                this.imageRepository.save(existingImage);
-            }
-            // If there is an image with the given fileName
-            if (image != null) {
-                 Page page = this.pageRepository.findPageByPageIdIs(pageId);
-                image.setFkPageImage(page);
-                // this section checks if the file has a key named: "imageWidth"
-                if (body.containsKey("imageWidth")
-                        && body.get("imageWidth") != null
-                        && !body.get("imageWidth").isEmpty()) {
-                    // If the body has imageWidth,  and it is not empty or null
-                    Integer imageWidth = Integer.valueOf(body.get("imageWidth"));
-                    image.setImageWidth(imageWidth);
+            existingImage.setFkPageImage(null);
+            this.imageRepository.save(existingImage);
+            return ResponseEntity.ok(existingImage);
+        } else {
+            Image image = this.imageRepository.findByFileName(fileName);
+            try {
+                // Trying to find out if there is already an existing image with the give pageId
+                Image existingImage = this.imageRepository.findByFkPageImage_PageId(pageId);
+                if (existingImage != null && !Objects.equals(existingImage.getImageId(), image.getImageId())) {
+                    // If there is an image found with this Id, the pageId of that image will be set to null
+                    existingImage.setFkPageImage(null);
+                    this.imageRepository.save(existingImage);
                 }
-                // this section checks if the file has a key named: "imageHeight"
-                if (body.containsKey("imageHeight")
-                        && body.get("imageHeight") != null
-                        && !body.get("imageHeight").isEmpty()) {
-                    // If the body has imageHeight, and it is not empty or null
-                    Integer imageHeight = Integer.valueOf(body.get("imageHeight"));
-                    image.setImageHeight(imageHeight);
+                // If there is an image with the given fileName
+                if (image != null) {
+                    Page page = this.pageRepository.findPageByPageIdIs(pageId);
+                    image.setFkPageImage(page);
+                    // this section checks if the file has a key named: "imageWidth"
+                    if (body.containsKey("imageWidth")
+                            && body.get("imageWidth") != null
+                            && !body.get("imageWidth").isEmpty()) {
+                        // If the body has imageWidth,  and it is not empty or null
+                        Integer imageWidth = Integer.valueOf(body.get("imageWidth"));
+                        image.setImageWidth(imageWidth);
+                    }
+                    // this section checks if the file has a key named: "imageHeight"
+                    if (body.containsKey("imageHeight")
+                            && body.get("imageHeight") != null
+                            && !body.get("imageHeight").isEmpty()) {
+                        // If the body has imageHeight, and it is not empty or null
+                        Integer imageHeight = Integer.valueOf(body.get("imageHeight"));
+                        image.setImageHeight(imageHeight);
+                    }
+                    // Finally, saving the image to the database and returning the ok response to the front end
+                    this.imageRepository.save(image);
+                    return ResponseEntity.ok(image);
+                } else {
+                    throw new ResourceNotFoundException("No image found with pageId = " + pageId);
                 }
-                // Finally, saving the image to the database and returning the ok response to the front end
-                this.imageRepository.save(image);
-                return ResponseEntity.ok(image);
-            } else {
-                throw new ResourceNotFoundException("No image found with pageId = " + pageId);
+            } catch (ResourceNotFoundException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(image);
             }
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(image);
         }
     }
 }
