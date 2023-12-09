@@ -123,6 +123,12 @@ const routes = [
             name: 'ImageChangerComponent',
             component: () => import('@/components/AdminDashboard/AdminImageEdit/ImageChangerComponent'),
             props: true
+          },
+          {
+            path: 'preview',
+            name: 'PagePreview',
+            component: () => import('@/components/AdminDashboard/AdminImageEdit/PagePreview'),
+            props: true
           }
         ]
       },

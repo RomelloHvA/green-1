@@ -61,6 +61,8 @@
         </div>
       </div>
     </form>
+<!--    Preview of the page-->
+    <PagePreview v-if="pageId" :pageId="pageId"/>
   </section>
 </template>
 
@@ -70,10 +72,12 @@ import AdminErrorComponent from '@/components/AdminDashboard/AdminErrorComponent
 import AdminLoaderComponent from '@/components/AdminDashboard/AdminLoaderComponent'
 import router from '@/router'
 import { useToast } from 'vue-toast-notification'
+import PagePreview from '@/components/AdminDashboard/AdminImageEdit/PagePreview'
 
 export default {
   name: 'ImageChangerComponent',
   components: {
+    PagePreview,
     AdminLoaderComponent,
     AdminErrorComponent
   },
