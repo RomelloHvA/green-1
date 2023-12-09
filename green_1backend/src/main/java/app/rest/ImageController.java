@@ -41,15 +41,24 @@ public class ImageController {
      * A method for getting an image from a certain page
      * @param pageId = id of the page
      * @return the Image that is found with the pageId
-     * @throws ResourceNotFoundException When there is no image found
      */
     @GetMapping(path = "/{pageId}/all")
-    public ResponseEntity<Image> getImageByPageId(@PathVariable(value = "pageId") Long pageId) throws ResourceNotFoundException {
+    public ResponseEntity<Image> getImageByPageId(@PathVariable(value = "pageId") Long pageId) {
         Image image = this.imageRepository.findByFkPageImage_PageId(pageId);
-            if (!pageRepository.existsById(Math.toIntExact(pageId))) {
+        try {
+            if (!pageRepository.existsById(Math.toIntExact(pageId))
+                    || Objects.equals(image, null)) {
+                System.out.println("Not found");
+                return ResponseEntity.ok(new Image()); // Return an empty object
+            } else {
+                System.out.println(image);
+                System.out.println("Found");
                 return ResponseEntity.ok(image);
             }
-            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

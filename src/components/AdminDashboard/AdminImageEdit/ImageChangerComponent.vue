@@ -5,11 +5,11 @@
   <section v-else>
     <h2 v-if="!pageId">Select a page to begin editing</h2>
     <!-- If there is a pageId and is still pending show the load screen -->
-    <div v-if="pageId && isPending">
+    <div v-else-if="pageId && isPending">
       <AdminLoaderComponent/>
     </div>
     <form v-else-if="pageId">
-      <div class="form-group d-flex flex-row align-items-center" v-if="imageIsSet.value">
+      <div class="form-group d-flex flex-row align-items-center" v-if="imageClone.fileName !== 'none' && imageClone.fileName !== null">
         <p>Current image: {{editableImage.imageName}}</p>
         <label for="imageSelect" class="m-2">Select Image:</label>
         <select id="imageSelect" v-model="imageClone.fileName">
@@ -20,19 +20,6 @@
         <div v-if="imageClone.fileName !== 'none'">
           <img :src="require('@/assets/img/admin-dashboard/images/' + imageClone.fileName)" alt="Selected Image Preview"
                class="img-preview w-50 h-50 m-2">
-        </div>
-        <div class="form-group d-flex flex-row align-items-center" v-else>
-          <p>Current image: None</p>
-          <label for="imageSelect" class="m-2">Select Image:</label>
-          <select id="imageSelect" v-model="imageClone.fileName">
-            <option value="none">None</option> <!-- New option for 'none' -->
-            <option v-for="image in images" :key="image.imageName" :value="image.fileName">{{ image.fileName }}</option>
-          </select>
-          <!-- Image Preview -->
-          <div v-if="imageClone.fileName !== 'none'">
-            <img :src="require('@/assets/img/admin-dashboard/images/' + imageClone.fileName)" alt="Selected Image Preview"
-                 class="img-preview w-50 h-50 m-2">
-          </div>
         </div>
         <div class="d-flex flex-column w-25">
           <label for="imageSelect" class="m-2">Change width: </label>
@@ -51,12 +38,34 @@
           </button>
         </div>
       </div>
+<!--      No image-->
+      <div class="form-group d-flex flex-row align-items-center" v-else>
+        <p>Current image: None</p>
+        <label for="imageSelect" class="m-2">Select Image:</label>
+        <select id="imageSelect" v-model="imageClone.fileName">
+          <option value="none">None</option> <!-- New option for 'none' -->
+          <option v-for="image in images" :key="image.imageName" :value="image.fileName">{{ image.fileName }}</option>
+        </select>
+        <!-- Image Preview -->
+        <div v-if="imageClone.fileName !== 'none'">
+        </div>
+        <div class="m-1">
+          <button type="button" class="btn btn-success m-1" @click="saveImage"
+                  :disabled="!isImageChanged(imageClone, editableImage)">
+            Save changes
+          </button>
+          <button type="button" class="btn btn-danger m-1" @click="resetImage"
+                  :disabled="!isImageChanged(imageClone, editableImage)">
+            Reset to original
+          </button>
+        </div>
+      </div>
     </form>
   </section>
 </template>
 
 <script>
-import { computed, inject, onBeforeMount, ref, watch } from 'vue'
+import { inject, onBeforeMount, ref, watch } from 'vue'
 import AdminErrorComponent from '@/components/AdminDashboard/AdminErrorComponent'
 import AdminLoaderComponent from '@/components/AdminDashboard/AdminLoaderComponent'
 import router from '@/router'
@@ -130,12 +139,12 @@ export default {
     const pageId = ref(props.pageId)
     const succes = ref(false)
     const $toast = useToast()
-    const imageIsSet = computed(() => editableImage.value !== null)
+    const imageIsSet = ref(false)
 
     const fetchData = async () => {
       console.log('imageIsSet in fetchData:', imageIsSet.value)
       const APIResults = await imageService.findImageByPageId(props.pageId)
-      console.log(APIResults)
+      console.log(APIResults.editableImage.value)
 
       try {
         editableImage.value = APIResults.editableImage.value
