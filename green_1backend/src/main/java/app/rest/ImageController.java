@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * RestController for finding images and updating image per page
@@ -63,23 +64,36 @@ public class ImageController {
             @RequestBody Map<String, String> body
             ) {
         String fileName = body.get("fileName");
-        Integer imageWidth = Integer.valueOf(body.get("imageWidth"));
-        Integer imageHeight = Integer.valueOf(body.get("imageHeight"));
-        Image image = null;
+        Image image = this.imageRepository.findByFileName(fileName);
         try {
+            // Trying to find out if there is already an existing image with the give pageId
             Image existingImage = this.imageRepository.findByFkPageImage_PageId(pageId);
-            if (existingImage != null) {
+            if (existingImage != null && !Objects.equals(existingImage.getImageId(), image.getImageId())) {
+                // If there is an image found with this Id, the pageId of that image will be set to null
                 existingImage.setFkPageImage(null);
                 this.imageRepository.save(existingImage);
             }
-
-            image = this.imageRepository.findByFileName(fileName);
-
+            // If there is an image with the given fileName
             if (image != null) {
                  Page page = this.pageRepository.findPageByPageIdIs(pageId);
                 image.setFkPageImage(page);
-                image.setImageHeight(imageHeight);
-                image.setImageWidth(imageWidth);
+                // this section checks if the file has a key named: "imageWidth"
+                if (body.containsKey("imageWidth")
+                        && body.get("imageWidth") != null
+                        && !body.get("imageWidth").isEmpty()) {
+                    // If the body has imageWidth,  and it is not empty or null
+                    Integer imageWidth = Integer.valueOf(body.get("imageWidth"));
+                    image.setImageWidth(imageWidth);
+                }
+                // this section checks if the file has a key named: "imageHeight"
+                if (body.containsKey("imageHeight")
+                        && body.get("imageHeight") != null
+                        && !body.get("imageHeight").isEmpty()) {
+                    // If the body has imageHeight, and it is not empty or null
+                    Integer imageHeight = Integer.valueOf(body.get("imageHeight"));
+                    image.setImageHeight(imageHeight);
+                }
+                // Finally, saving the image to the database and returning the ok response to the front end
                 this.imageRepository.save(image);
                 return ResponseEntity.ok(image);
             } else {
