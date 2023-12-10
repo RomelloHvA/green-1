@@ -1,8 +1,10 @@
 package app.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "action_plan")
@@ -14,16 +16,8 @@ public class ActionPlan {
     private String description;
     @OneToOne (cascade = CascadeType.ALL, orphanRemoval = true)
     private Sector sector;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Sdg> sdgList;
-
-    public ActionPlan(Long id, String title, String description, Sector sector, List<Sdg> sdgList) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.sector = sector;
-        this.sdgList = sdgList;
-    }
+    @ElementCollection
+    private Set<Long> sdgId;
 
     public Sector getSector() {
         return sector;
@@ -57,12 +51,12 @@ public class ActionPlan {
         this.description = description;
     }
 
-    public List<Sdg> getSdgList() {
-        return sdgList;
+    public Set<Long> getSdgId() {
+        return sdgId;
     }
 
-    public void setSdgList(List<Sdg> sdgList) {
-        this.sdgList = sdgList;
+    public void setSdgId(Set<Long> sdgId) {
+        this.sdgId = sdgId;
     }
 
     public ActionPlan() {
