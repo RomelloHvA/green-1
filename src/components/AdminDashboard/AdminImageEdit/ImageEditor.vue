@@ -3,9 +3,9 @@
     <div v-if="error">
       <AdminErrorComponent :error="error"/>
     </div>
-    <section v-else>
+    <section v-else class="w-25 mx-auto">
       <h2 v-if="!this.$route.params.id">Select the page you want to edit the content of</h2>
-      <table class="table table-hover">
+      <table class="table table-hover border border-dark">
         <thead>
         <tr>
           <th scope="col">{{ isPending ? 'Loading...' : 'Page Title' }}</th>
@@ -22,7 +22,7 @@
         </tbody>
       </table>
     </section>
-    <div class="col-md-10">
+    <div class="col-md-10 mx-auto">
       <ImageChangerComponent :pageId="parseInt(this.$route.params.id)" :images="images" />
     </div>
   </div>

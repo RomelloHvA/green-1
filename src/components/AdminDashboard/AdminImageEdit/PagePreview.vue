@@ -1,5 +1,5 @@
 <template>
-  <p>Page preview</p>
+  <p class="fw-bold fs-4 text-decoration-underline">Page preview for Landing page:</p>
   <div class="border-black">
     <LandingPagePreview v-if="pageId === 1"
     :pageId="pageId" :imageClone="imageClone"/>

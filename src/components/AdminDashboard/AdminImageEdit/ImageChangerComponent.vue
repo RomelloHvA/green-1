@@ -10,16 +10,18 @@
     </div>
     <form v-else-if="pageId">
       <div class="form-group d-flex flex-row align-items-center" v-if="imageClone.fileName !== 'none' && imageClone.fileName !== null">
-        <p>Current image: {{editableImage.imageName}}</p>
-        <label for="imageSelect" class="m-2">Select Image:</label>
-        <select id="imageSelect" v-model="imageClone.fileName">
-          <option value="none">None</option> <!-- New option for 'none' -->
-          <option v-for="image in images" :key="image.imageName" :value="image.fileName">{{ image.fileName }}</option>
-        </select>
-        <!-- Image Preview -->
-        <div v-if="imageClone.fileName !== 'none'">
-          <img :src="require('@/assets/img/admin-dashboard/images/' + imageClone.fileName)" alt="Selected Image Preview"
-               class="img-preview w-50 h-50 m-2">
+        <div class="d-flex flex-column">
+          <p>Current image: {{editableImage.imageName}}</p>
+          <label for="imageSelect" class="m-2">Select Image:</label>
+          <select id="imageSelect" v-model="imageClone.fileName" class="w-50 mx-auto">
+            <option value="none">None</option> <!-- New option for 'none' -->
+            <option v-for="image in images" :key="image.imageName" :value="image.fileName">{{ image.fileName }}</option>
+          </select>
+          <!-- Image Preview -->
+          <div v-if="imageClone.fileName !== 'none'">
+            <img :src="require('@/assets/img/admin-dashboard/images/' + imageClone.fileName)" alt="Selected Image Preview"
+                 class="img-preview w-50 h-50 m-2">
+          </div>
         </div>
         <div class="d-flex flex-column w-25">
           <label for="imageSelect" class="m-2">Change width: </label>
@@ -61,8 +63,10 @@
         </div>
       </div>
     </form>
-<!--    Preview of the page-->
-    <PagePreview v-if="pageId" :pageId="pageId" :imageClone="imageClone"/>
+    <div class="mt-3">
+      <!--    Preview of the page-->
+      <PagePreview v-if="pageId" :pageId="pageId" :imageClone="imageClone"/>
+    </div>
   </section>
 </template>
 
