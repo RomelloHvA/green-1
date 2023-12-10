@@ -29,6 +29,11 @@
 </template>
 
 <script>
+/**
+ * This component is only responsible for selecting the page where you want to change the image
+ * This is component is also built based on ContentComponent made by @author Romello ten Broeke
+ * @author Jiaming Yan
+ */
 import AdminErrorComponent from '@/components/AdminDashboard/AdminErrorComponent'
 import AdminLoaderComponent from '@/components/AdminDashboard/AdminLoaderComponent'
 import { inject, onBeforeMount, ref, watchEffect } from 'vue'

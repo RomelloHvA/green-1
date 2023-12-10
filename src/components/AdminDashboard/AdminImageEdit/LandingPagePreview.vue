@@ -38,8 +38,11 @@
     </div>
   </div>
 </template>
-
 <script>
+/**
+ * This component is a replica of the LandingPage.vue and is only used for previewing the Landing page without loading the image from database
+ * @author Jiaming Yan
+ */
 import SdgOverview from '@/components/LandingPage/SdgOverview'
 import { inject } from 'vue'
 

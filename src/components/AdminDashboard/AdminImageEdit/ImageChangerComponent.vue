@@ -9,6 +9,7 @@
       <AdminLoaderComponent/>
     </div>
     <form v-else-if="pageId">
+      <!-- Image selector -->
       <div class="form-group d-flex flex-row align-items-center" v-if="imageClone.fileName !== 'none' && imageClone.fileName !== null">
         <div class="d-flex flex-column">
           <p>Current image: {{editableImage.imageName}}</p>
@@ -24,23 +25,27 @@
           </div>
         </div>
         <div class="d-flex flex-column w-25">
+          <!-- Image width changer -->
           <label for="imageSelect" class="m-2">Change width: </label>
           <input type="number" v-model="imageClone.imageWidth"/>
+          <!-- Image height changer -->
           <label for="imageSelect" class="m-2">Change height: </label>
           <input type="number" v-model="imageClone.imageHeight"/>
         </div>
         <div class="m-1">
+          <!-- Saving the image to the database, disabled if no changes are made -->
           <button type="button" class="btn btn-success m-1" @click="saveImage"
                   :disabled="!isImageChanged(imageClone, editableImage)">
             Save changes
           </button>
+          <!-- Resetting the values of the image back to its original state, disabled if no changes are made -->
           <button type="button" class="btn btn-danger m-1" @click="resetImage"
                   :disabled="!isImageChanged(imageClone, editableImage)">
             Reset to original
           </button>
         </div>
       </div>
-<!--      No image-->
+        <!--    If no image is found -->
       <div class="form-group d-flex flex-row align-items-center" v-else>
         <p>Current image: None</p>
         <label for="imageSelect" class="m-2">Select Image:</label>
@@ -48,14 +53,16 @@
           <option value="none">None</option> <!-- New option for 'none' -->
           <option v-for="image in images" :key="image.imageName" :value="image.fileName">{{ image.fileName }}</option>
         </select>
-        <!-- Image Preview -->
+        <!-- Image Preview when there is an image -->
         <div v-if="imageClone.fileName !== 'none'">
         </div>
         <div class="m-1">
+          <!-- Saving the image to the database, disabled if no changes are made -->
           <button type="button" class="btn btn-success m-1" @click="saveImage"
                   :disabled="!isImageChanged(imageClone, editableImage)">
             Save changes
           </button>
+          <!-- Resetting the values of the image back to its original state, disabled if no changes are made -->
           <button type="button" class="btn btn-danger m-1" @click="resetImage"
                   :disabled="!isImageChanged(imageClone, editableImage)">
             Reset to original
@@ -71,6 +78,11 @@
 </template>
 
 <script>
+/**
+ * This component is responsible for changing the values of the image and saving it to the database
+ * This is component is also built based on PageEditorComponent made by @author Romello ten Broeke
+ * @author Jiaming Yan
+ */
 import { inject, onBeforeMount, ref, watch } from 'vue'
 import AdminErrorComponent from '@/components/AdminDashboard/AdminErrorComponent'
 import AdminLoaderComponent from '@/components/AdminDashboard/AdminLoaderComponent'
@@ -97,6 +109,12 @@ export default {
     isImageChanged (imageA, imageB) {
       return !this.deepEqual(imageA, imageB)
     },
+    /**
+     * This method is used for comparing 2 objects with each other
+     * @param obj1
+     * @param obj2
+     * @return {boolean} true if Object 1 and Object 2 are the same or equal, otherwise false.
+     */
     deepEqual (obj1, obj2) {
       if (obj1 === obj2) return true
 
@@ -119,6 +137,10 @@ export default {
 
       return true
     },
+    /**
+     * Creating a request to the backend to save the values of the image
+     * @return {Promise<void>}
+     */
     async saveImage () {
       const body = {
         fileName: this.imageClone.fileName,
