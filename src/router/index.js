@@ -128,7 +128,13 @@ const routes = [
             path: 'preview',
             name: 'PagePreview',
             component: () => import('@/components/AdminDashboard/AdminImageEdit/PagePreview'),
-            props: true
+            props: true,
+            children: [{
+              path: 'landing_page_preview',
+              name: 'LandingPagePreview',
+              component: () => import('@/components/AdminDashboard/AdminImageEdit/LandingPagePreview'),
+              props: true
+            }]
           }
         ]
       },

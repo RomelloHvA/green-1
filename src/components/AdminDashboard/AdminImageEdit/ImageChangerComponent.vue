@@ -62,7 +62,7 @@
       </div>
     </form>
 <!--    Preview of the page-->
-    <PagePreview v-if="pageId" :pageId="pageId"/>
+    <PagePreview v-if="pageId" :pageId="pageId" :imageClone="imageClone"/>
   </section>
 </template>
 

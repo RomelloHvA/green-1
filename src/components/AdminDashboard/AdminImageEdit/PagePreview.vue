@@ -1,24 +1,26 @@
 <template>
-<p>Page preview</p>
-  <p>Page id = {{ $props.pageId }}</p>
+  <p>Page preview</p>
+  <div class="border-black">
+    <LandingPagePreview v-if="pageId === 1"
+    :pageId="pageId" :imageClone="imageClone"/>
+  </div>
 </template>
 
 <script>
-import { ref } from 'vue'
+import LandingPagePreview from '@/components/AdminDashboard/AdminImageEdit/LandingPagePreview'
 
 export default {
   name: 'PagePreview',
+  components: { LandingPagePreview },
   props: {
-    pageId: Number
-  },
-  setup (props) {
-    const pageId = ref(props.pageId)
-    console.log('pageId: ' + pageId.value)
-    return {}
+    pageId: Number,
+    imageClone: Object
   }
 }
 </script>
 
 <style scoped>
-
+.border-black {
+  border: 5px solid #401B96;
+}
 </style>
