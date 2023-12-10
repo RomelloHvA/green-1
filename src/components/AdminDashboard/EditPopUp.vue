@@ -26,7 +26,7 @@
                             @verifiedClose="handleAdminVerifiedClose"
                             user=""></AdminVerifyComponent>
       <button class="popup-close" @click="toggelPopUp()">
-        Close Popup
+        Close
       </button>
       <button @click="save" :disabled="!hasChanged">Save</button>
     </div>

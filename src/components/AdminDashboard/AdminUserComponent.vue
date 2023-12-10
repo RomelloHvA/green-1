@@ -18,6 +18,7 @@
         <th>UserName</th>
         <th scope="col">Email</th>
         <th scope="col">Action Plan</th>
+        <th scope="col">Admin</th>
         <th scope="col">Edit</th>
       </tr>
       </thead>
@@ -26,6 +27,8 @@
         <td>{{ user.username }}</td>
         <td>{{ user.email }}</td>
         <td>{{ user.user_goal }}</td>
+        <td v-if="user.isAdmin === true">Yes</td>
+        <td v-else>No</td>
         <td>
           <button id="editButton" @click="() => ToggelPopUp('isEditing', user)">Edit</button>
         </td>

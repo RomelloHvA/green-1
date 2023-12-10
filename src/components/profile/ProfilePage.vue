@@ -363,9 +363,10 @@ export default {
           this.profile.last_name === '' ||
           this.profile.date_of_birth === '' ||
           this.profile.occupation === '' ||
-          this.profile.bio === '' ||
-          this.profile.goals.length === 0) {
+          this.profile.bio === '') {
           return alert('Some of the fields are empty')
+        } else if (this.profile.goals.length === 0) {
+          return alert('Please add a goal')
         } else {
           // Check if the user wants to save the changes
           if (confirm('Are you sure you want to save changes?') === true) {

@@ -13,7 +13,7 @@
       </table>
     </div>
     <div class="popUpAdminButton">
-      <button @click="closePopup" class="popupButton">Close Popup</button>
+      <button @click="closePopup" class="popupButton">Close</button>
       <button @click="checkAdmin" class="popupButton">Verify</button>
     </div>
   </div>
