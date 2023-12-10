@@ -25,15 +25,19 @@ public class ActionPlanController {
 
     @GetMapping("")
     public List<ActionPlan> findAll() {
+        return actionPlanRepository.findAll();
+    }
 
-        for (int i = 0; i < 3; i++) {
+    @GetMapping("/testSector")
+    public ResponseEntity<Object> testdata() {
+        for (int i = 0; i < 5; i++) {
             Sector sector = new Sector();
             sector.setId((long) i);
-            sector.setName("title" + i);
-            sector.setDescription("Description " + i );
+            sector.setName("name: " + i);
+            sector.setDescription("Description: " + i);
             sectorRepo.save(sector);
         }
-        return actionPlanRepository.findAll();
+        return ResponseEntity.ok("Sectors created");
     }
 
     // Find all ActionPlans by sector ID

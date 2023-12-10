@@ -10,6 +10,7 @@
 <script>
 import router from '@/router'
 import SectorDropDownComponent from '@/components/adminquiz/SectorDropDownComponent'
+import { inject, onBeforeMount, ref } from 'vue'
 
 export default {
   name: 'ActionPlanEditorMain',
@@ -32,6 +33,28 @@ export default {
     isValidSectorRoute () {
       return this.sectors.some(sector => sector.id === parseInt(this.$route.params.sector))
     }
+  },
+  setup () {
+    const actionPlanService = inject('actionPlanService')
+    const editableActionPlans = ref([])
+    const isPending = ref(true)
+    const error = ref(null)
+
+    const fetchData = async () => {
+      const APIResults = await actionPlanService.findAll()
+      try {
+        editableActionPlans.value = APIResults.editableActionPlans.value
+        isPending.value = APIResults.isPending.value
+        error.value = APIResults.error.value
+      } catch (e) {
+        console.log(e)
+      }
+    }
+    onBeforeMount(() => {
+      fetchData()
+      console.log(editableActionPlans.value)
+    })
+    return { editableActionPlans, error, isPending }
   }
 }
 </script>

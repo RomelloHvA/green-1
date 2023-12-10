@@ -1,9 +1,5 @@
 package app.models;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -14,7 +10,7 @@ public class ActionPlan {
     private Long id;
     private String title;
     private String description;
-    @OneToOne (cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToOne (cascade = CascadeType.ALL)
     private Sector sector;
     @ElementCollection
     private Set<Long> sdgId;
