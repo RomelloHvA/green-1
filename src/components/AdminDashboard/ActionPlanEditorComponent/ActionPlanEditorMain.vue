@@ -3,7 +3,7 @@
   <SectorDropDownComponent @sectorSelected="pushSelectedToRoute" @sectors="setSectors"/>
 
   <h1 v-if="this.$route.params.sector === '1'">No sector selected</h1>
-  <router-view v-else-if="this.$route.params.sector !== null && isValidSectorRoute"/>
+  <sector-all-plans-component :all-action-plans="editableActionPlans" v-else-if="this.$route.params.sector !== null && isValidSectorRoute"/>
   <h1 v-else> Please check the url for a valid route</h1>
 </template>
 
@@ -11,10 +11,11 @@
 import router from '@/router'
 import SectorDropDownComponent from '@/components/adminquiz/SectorDropDownComponent'
 import { inject, onBeforeMount, ref } from 'vue'
+import SectorAllPlansComponent from '@/components/AdminDashboard/ActionPlanEditorComponent/SectorAllPlansComponent'
 
 export default {
   name: 'ActionPlanEditorMain',
-  components: { SectorDropDownComponent },
+  components: { SectorAllPlansComponent, SectorDropDownComponent },
   data () {
     return {
       sectors: []
@@ -43,7 +44,7 @@ export default {
     const fetchData = async () => {
       const APIResults = await actionPlanService.findAll()
       try {
-        editableActionPlans.value = APIResults.editableActionPlans.value
+        editableActionPlans.value = APIResults.allActionPlans.value
         isPending.value = APIResults.isPending.value
         error.value = APIResults.error.value
       } catch (e) {
@@ -52,7 +53,6 @@ export default {
     }
     onBeforeMount(() => {
       fetchData()
-      console.log(editableActionPlans.value)
     })
     return { editableActionPlans, error, isPending }
   }

@@ -18,14 +18,14 @@ export class ActionPlansAdaptor {
   }
 
   async findAll () {
-    const editableActionPlans = ref([])
+    const allActionPlans = ref([])
     const isPending = ref(true)
     const error = ref(null)
 
     try {
       const response = await fetch(this.resourcesUrl)
       if (response.ok) {
-        editableActionPlans.value = await response.json()
+        allActionPlans.value = await response.json()
         error.value = null
       } else {
         // Handle HTTP errors if the response is not 'ok'
@@ -36,9 +36,8 @@ export class ActionPlansAdaptor {
     } finally {
       isPending.value = false
     }
-
     return {
-      editableActionPlans,
+      allActionPlans,
       isPending,
       error
     }

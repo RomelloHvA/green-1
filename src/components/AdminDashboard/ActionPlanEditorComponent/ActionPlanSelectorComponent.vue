@@ -6,7 +6,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr v-for="plan in actionPlans" :key="plan.id">
+    <tr v-for="plan in filteredActionPlans" :key="plan.id">
       <td>{{ plan.title }}</td>
     </tr>
     </tbody>
@@ -14,10 +14,18 @@
 </template>
 
 <script>
+import { ref } from 'vue'
+
 export default {
   name: 'ActionPlanSelectorComponent',
   props: {
-    actionPlans: []
+    actionPlans: ref([])
+  },
+  computed: {
+    filteredActionPlans () {
+      // Filter actionPlans based on currentSectorId
+      return this.actionPlans.filter(plan => plan.sector.id === parseInt(this.$route.params.sector))
+    }
   }
 }
 </script>
