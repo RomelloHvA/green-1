@@ -1,5 +1,20 @@
 <template>
-  <h1> Valid route </h1>
+  <h1> Available plans: </h1>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <section>
+          Left side
+        </section>
+      </div>
+      <div class="col-md-8">
+        <section>
+          Right side
+        </section>
+      </div>
+    </div>
+  </div>
+
 </template>
 
 <script>
@@ -11,17 +26,15 @@ export default {
   setup () {
     const route = useRoute()
     const currentRouteParam = ref()
-    const validRouteParam = 'Technology'
-    let isValidRoute = false
+    const data = ref()
 
     watch(
       () => route.params.sector,
       newOption => {
         currentRouteParam.value = newOption
-        isValidRoute = currentRouteParam.value === validRouteParam
       }
     )
-    return { currentRouteParam, isValidRoute, validRouteParam }
+    return { currentRouteParam, data }
   }
 }
 </script>

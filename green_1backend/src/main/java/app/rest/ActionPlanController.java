@@ -13,15 +13,12 @@ import java.util.List;
 public class ActionPlanController {
 
     @Autowired
-    ActionPlanRepository<ActionPlan> actionPlanRepo;
+    ActionPlanRepository actionPlanRepo;
 
-    @GetMapping(path = "", produces = "application/json")
-    public List<ActionPlan> getAllActionPlan() {
-        return actionPlanRepo.findAll();
+    // Find all ActionPlans by sector ID
+    @GetMapping("/{sectorId}")
+    public List<ActionPlan> findAllBySectorId(@PathVariable Long sectorId) {
+        return actionPlanRepo.findAllBySectorId(sectorId);
     }
 
-    @GetMapping(path = "/sdg/{id}", produces = "application/json")
-    public ResponseEntity<List<ActionPlan>> getActionPlanById(@PathVariable int id) {
-        return ResponseEntity.ok().body(actionPlanRepo.findBySdgId(id));
-    }
 }
