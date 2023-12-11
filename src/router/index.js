@@ -119,7 +119,7 @@ const routes = [
         path: 'action_plans',
         component: () => import('@/components/AdminDashboard/ActionPlanEditorComponent/ActionPlanEditorMain'),
         children: [
-          { path: ':sector', component: () => import('@/components/AdminDashboard/ActionPlanEditorComponent/SectorAllPlansComponent') }
+          { path: ':sector/:id?', component: () => import('@/components/AdminDashboard/ActionPlanEditorComponent/SectorAllPlansComponent') }
         ]
       }
     ],
