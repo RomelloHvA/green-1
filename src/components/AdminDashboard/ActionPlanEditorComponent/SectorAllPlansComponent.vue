@@ -7,7 +7,7 @@
       </div>
       <div class="col-md-9">
         <section>
-          <action-plan-editor/>
+          <action-plan-editor :selected-action-plan="selectedPlan"/>
         </section>
       </div>
     </div>
@@ -24,9 +24,17 @@ import ActionPlanEditor from '@/components/AdminDashboard/ActionPlanEditorCompon
 
 export default {
   name: 'SectorAllPlansComponent',
-  components: { ActionPlanEditor, ActionPlanSelectorComponent },
+  components: {
+    ActionPlanEditor,
+    ActionPlanSelectorComponent
+  },
   props: {
     allActionPlans: ref([])
+  },
+  data () {
+    return {
+      selectedPlan: ref(null)
+    }
   },
   setup () {
     const route = useRoute()
@@ -34,12 +42,22 @@ export default {
     const data = ref()
 
     watch(
-      () => route.params.sector,
+      () => route.params.id,
       newOption => {
         currentRouteParam.value = newOption
+        if (currentRouteParam.value === 0) {
+          this.selectedPlan = {
+            title: 'nothing',
+            description: '',
+            sdgId: []
+          }
+        }
       }
     )
-    return { currentRouteParam, data }
+    return {
+      currentRouteParam,
+      data
+    }
   }
 }
 </script>
