@@ -1,5 +1,14 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    <HeaderComponent/>
+    <AboutNavbar/>
+    <router-view/>
   </div>
 </template>
+<script>
+import HeaderComponent from '@/components/AboutUs/HeaderComponent'
+import AboutNavbar from '@/components/AboutUs/AboutNavbar'
+export default {
+  components: { AboutNavbar, HeaderComponent }
+}
+</script>

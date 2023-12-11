@@ -1,6 +1,6 @@
 <template>
   <li class="nav-item ">
-    <router-link class="nav-link" exact-active-class="navbar-active" :to='route'>{{ itemText }}</router-link>
+    <router-link class="nav-link" active-class="navbar-active" :to='route'>{{ itemText }}</router-link>
   </li>
 </template>
 <script>
@@ -15,10 +15,10 @@ export default {
 }
 
 .nav-link{
-  color: white !important;
+  color: white;
 }
 
 .nav-item {
-  color: white !important;
+  color: white;
 }
 </style>

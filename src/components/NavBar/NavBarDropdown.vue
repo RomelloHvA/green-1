@@ -1,13 +1,13 @@
 <template>
   <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <router-link class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" to="/admin_dashboard">
       Admin dashboard
-    </a>
+    </router-link>
     <ul class="dropdown-menu">
-      <li><a class="dropdown-item" href="#">User Statistics</a></li>
+      <li><router-link class="dropdown-item" to='/admin_dashboard'>Explanation</router-link></li>
+      <hr class="dropdown-divider">
       <li><a class="dropdown-item" href="#">SDG Statistics</a></li>
       <li>
-        <hr class="dropdown-divider">
       </li>
       <li><a class="dropdown-item" href="#">Something else here</a></li>
     </ul>
