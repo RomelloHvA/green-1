@@ -6,7 +6,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr v-for="plan in filteredActionPlans" :key="plan.id" @click="setSelected(plan)">
+    <tr v-for="plan in filteredActionPlans" :key="plan.id" @click="setSelected(plan)" :class="{ 'table-active' : selectedPlan === plan}">
       <td>{{ plan.title }}</td>
     </tr>
     </tbody>

@@ -7,7 +7,7 @@
       </div>
       <div class="col-md-9">
         <section>
-          Right side
+          <action-plan-editor/>
         </section>
       </div>
     </div>
@@ -20,10 +20,11 @@ import { useRoute } from 'vue-router'
 import { watch, ref } from 'vue'
 import ActionPlanSelectorComponent
   from '@/components/AdminDashboard/ActionPlanEditorComponent/ActionPlanSelectorComponent'
+import ActionPlanEditor from '@/components/AdminDashboard/ActionPlanEditorComponent/ActionPlanEditor'
 
 export default {
   name: 'SectorAllPlansComponent',
-  components: { ActionPlanSelectorComponent },
+  components: { ActionPlanEditor, ActionPlanSelectorComponent },
   props: {
     allActionPlans: ref([])
   },
