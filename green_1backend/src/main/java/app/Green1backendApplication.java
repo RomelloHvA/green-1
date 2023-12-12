@@ -18,7 +18,8 @@ public class Green1backendApplication {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("http://localhost:8080")
+                String frontendUrl = System.getenv("ALLOWED_ORIGIN");
+                registry.addMapping("/**").allowedOrigins(frontendUrl)
                         .allowedMethods("GET", "POST", "PUT", "DELETE");
             }
         };

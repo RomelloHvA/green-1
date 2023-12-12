@@ -1,3 +1,3 @@
 export const CONFIG = {
-  BACKEND_URL: 'http://localhost:8085'
+  BACKEND_URL: process.env.VUE_APP_API_URL
 }
