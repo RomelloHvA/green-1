@@ -69,10 +69,11 @@ export default {
     const handleDeleteplan = async (planId) => {
       console.log('delete clicked')
       const deleteResults = await actionPlanService.deleteActionPlanById(planId, route.params.sector)
-      if (deleteResults.succes) {
+      if (deleteResults.success) {
         editableActionPlans.value = editableActionPlans.value.filter(plan => plan.id !== parseInt(planId))
         // Fix front-end side succes msg
         toast.success('Succesfully deleted plan')
+        await router.push(`${route.params.sector}`)
       } else {
         toast.error('Something went wrong: ' + deleteResults.error)
       }
@@ -110,6 +111,7 @@ export default {
       () => route.params.id,
       newOption => {
         currentRouteParam.value = newOption
+        // console.log(props.sectors.value)
         // Empty paramater
         if (!newOption) {
           selectedPlan.value = null
