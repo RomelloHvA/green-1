@@ -90,7 +90,7 @@ export class ActionPlansAdaptor {
     } catch (err) {
       error.value = err.message
     }
-    return { succes, error }
+    return { succes, error, savedContent }
   }
 
   async deleteActionPlanById (actionPlanId, sectorId) {

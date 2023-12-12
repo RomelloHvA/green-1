@@ -1,25 +1,28 @@
 <template>
   <div class="container mt-4">
+    <button class="btn btn-success m-1" @click="savePlan()">Save plan</button>
+    <button class="btn btn-danger" @click="deletePlan">Delete plan</button>
     <div class="mb-3">
       <label for="title" class="form-label">Title:</label>
-      <input type="text" class="form-control" id="title" v-model="localData.title">
+      <input type="text" class="form-control" id="title" v-model="cloneActionPlan.title">
     </div>
 
     <div class="mb-3">
       <label for="description" class="form-label">Description:</label>
-      <textarea class="form-control" id="description" v-model="localData.description"></textarea>
+      <textarea class="form-control" id="description" v-model="cloneActionPlan.description"></textarea>
     </div>
 
     <div class="mb-3">
-      <label for="numbers" class="form-label">SDG Selector:</label>
-      <select class="form-select" id="numbers" v-model="localData.selectedSdg">
-        <option v-for="sdg in sdgs" :key="sdg.id" :value="sdg.id">{{ sdg.id + " " + sdg.title }}</option>
+      <label for="sdgId" class="form-label">SDG Selector:</label>
+      <select class="form-select" id="sdgId" v-model="this.selectedSdG">
+        <option v-for="sdg in sdgs" :key="sdg.id" :value="sdg.id">{{ sdg.id + ": " + sdg.title }}</option>
       </select>
-      <button @click="addSdgId" class="btn btn-primary" :disabled="localData.selectedSdg === null || pickedSdgs.includes(localData.selectedSdg)">Add SDG</button>
+      <button @click="addSdgId(this.selectedSdG)" class="btn btn-primary" :disabled="cloneActionPlan.sdgArray === null || cloneActionPlan.sdgArray.includes(this.selectedSdG)">
+        Add SDG
+      </button>
     </div>
-
     <ul class="list-group">
-      <li v-for="(number, index) in pickedSdgs" :key="index" class="list-group-item d-flex justify-content-between align-items-center">
+      <li v-for="(number, index) in cloneActionPlan.sdgArray" :key="index" class="list-group-item d-flex justify-content-between align-items-center">
         {{ number }}
         <button @click="removeSdgId(index)" class="btn btn-danger btn-sm">Remove</button>
       </li>
@@ -28,40 +31,52 @@
 </template>
 
 <script>
-
 import { sdgData } from '@/assets/testData/sdgTestData'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
 export default {
   props: {
-    selectedActionPlan: ref([])
+    clonedPlan: Object,
+    selectedPlan: ref(null)
   },
   data () {
     return {
-      localData: {
-        title: '',
-        description: '',
-        selectedSdg: []
-      },
-      pickedSdgs: [],
-      sdgs: sdgData
+      sdgs: sdgData,
+      selectedSdG: null
     }
   },
-  methods: {
-    addSdgId () {
-      if (this.localData.selectedSdg !== null && !this.pickedSdgs.includes(this.localData.selectedSdg)) {
-        this.pickedSdgs.push(this.localData.selectedSdg)
+  setup (props, { emit }) {
+    const cloneActionPlan = ref(JSON.parse(JSON.stringify(props.clonedPlan)))
+    const route = useRoute()
+
+    watch(() => props.clonedPlan, (newValue) => {
+      // Update the ref to trigger reactivity in the component
+      cloneActionPlan.value = JSON.parse(JSON.stringify(newValue))
+    })
+    const savePlan = () => {
+      emit('saveOrUpdatePlan', cloneActionPlan.value)
+    }
+    const deletePlan = () => {
+      emit('deletePlan', route.params.id)
+    }
+
+    const addSdgId = (sdgId) => {
+      if (cloneActionPlan.value.sdgArray !== null && !cloneActionPlan.value.sdgArray.includes(sdgId)) {
+        cloneActionPlan.value.sdgArray.push(sdgId)
       }
-    },
-    removeSdgId (index) {
-      this.pickedSdgs.splice(index, 1)
-    },
-    notifyParent () {
-      // Emit an event to notify the parent component about the changes
-      this.$emit('update-data', this.localData)
     }
-  },
-  setup () {
+    const removeSdgId = (index) => {
+      cloneActionPlan.value.sdgArray.splice(index, 1)
+    }
+
+    return {
+      cloneActionPlan,
+      addSdgId,
+      removeSdgId,
+      savePlan,
+      deletePlan
+    }
   }
 }
 </script>

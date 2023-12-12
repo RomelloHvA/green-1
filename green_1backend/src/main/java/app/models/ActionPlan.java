@@ -10,10 +10,10 @@ public class ActionPlan {
     private Long id;
     private String title;
     private String description;
-    @ManyToOne (cascade = CascadeType.ALL)
+    @ManyToOne (cascade = CascadeType.MERGE)
     private Sector sector;
     @ElementCollection
-    private Set<Long> sdgId;
+    private Set<Long> sdgArray;
 
     public Sector getSector() {
         return sector;
@@ -47,12 +47,12 @@ public class ActionPlan {
         this.description = description;
     }
 
-    public Set<Long> getSdgId() {
-        return sdgId;
+    public Set<Long> getSdgArray() {
+        return sdgArray;
     }
 
-    public void setSdgId(Set<Long> sdgId) {
-        this.sdgId = sdgId;
+    public void setSdgArray(Set<Long> sdgId) {
+        this.sdgArray = sdgId;
     }
 
     public ActionPlan() {

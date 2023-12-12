@@ -78,7 +78,7 @@ public class ActionPlanController {
             return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body("id in Url does not match id in action plan");
         }
         actionPlanRepository.save(actionPlan);
-        return ResponseEntity.ok("Action plan created or saved successfully");
+        return ResponseEntity.ok(actionPlan);
 
     }
 

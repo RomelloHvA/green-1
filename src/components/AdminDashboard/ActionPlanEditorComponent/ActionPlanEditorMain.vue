@@ -3,7 +3,7 @@
   <SectorDropDownComponent @sectorSelected="pushSelectedToRoute" @sectors="setSectors"/>
 
   <h1 v-if="this.$route.params.sector === '1'">No sector selected</h1>
-  <sector-all-plans-component :all-action-plans="editableActionPlans" v-else-if="this.$route.params.sector !== null && isValidSectorRoute"/>
+  <sector-all-plans-component v-else-if="this.$route.params.sector !== null && isValidSectorRoute"/>
   <h1 v-else> Please check the url for a valid route</h1>
 </template>
 
