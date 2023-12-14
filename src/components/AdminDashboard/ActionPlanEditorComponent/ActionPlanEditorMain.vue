@@ -2,7 +2,7 @@
   Select a sector to edit those action plans:
   <SectorDropDownComponent @sectorSelected="pushSelectedToRoute" @sectors="setSectors"/>
 
-  <h1 v-if="this.$route.params.sector === '1'">No sector selected</h1>
+  <h1 v-if="this.$route.params.sector === '0'">No sector selected</h1>
   <sector-all-plans-component :sectors="sectors" :selected-sector="selectedSector" v-else-if="this.$route.params.sector !== null && isValidSectorRoute"/>
   <h1 v-else> Please check the url for a valid route</h1>
 </template>
