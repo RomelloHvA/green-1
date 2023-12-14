@@ -3,14 +3,13 @@
   <SectorDropDownComponent @sectorSelected="pushSelectedToRoute" @sectors="setSectors"/>
 
   <h1 v-if="this.$route.params.sector === '1'">No sector selected</h1>
-  <sector-all-plans-component v-else-if="this.$route.params.sector !== null && isValidSectorRoute"/>
+  <sector-all-plans-component :sectors="sectors" :selected-sector="selectedSector" v-else-if="this.$route.params.sector !== null && isValidSectorRoute"/>
   <h1 v-else> Please check the url for a valid route</h1>
 </template>
 
 <script>
 import router from '@/router'
 import SectorDropDownComponent from '@/components/adminquiz/SectorDropDownComponent'
-import { inject, onBeforeMount, ref } from 'vue'
 import SectorAllPlansComponent from '@/components/AdminDashboard/ActionPlanEditorComponent/SectorAllPlansComponent'
 
 export default {
@@ -18,7 +17,8 @@ export default {
   components: { SectorAllPlansComponent, SectorDropDownComponent },
   data () {
     return {
-      sectors: []
+      sectors: [],
+      selectedSector: null
     }
   },
   methods: {
@@ -26,6 +26,7 @@ export default {
       this.sectors = sectors
     },
     pushSelectedToRoute (selectedOption) {
+      this.selectedSector = selectedOption
       router.push(`/admin_dashboard/action_plans/${selectedOption.id}`)
     }
   },
@@ -34,27 +35,6 @@ export default {
     isValidSectorRoute () {
       return this.sectors.some(sector => sector.id === parseInt(this.$route.params.sector))
     }
-  },
-  setup () {
-    const actionPlanService = inject('actionPlanService')
-    const editableActionPlans = ref([])
-    const isPending = ref(true)
-    const error = ref(null)
-
-    const fetchData = async () => {
-      const APIResults = await actionPlanService.findAll()
-      try {
-        editableActionPlans.value = APIResults.allActionPlans.value
-        isPending.value = APIResults.isPending.value
-        error.value = APIResults.error.value
-      } catch (e) {
-        console.log(e)
-      }
-    }
-    onBeforeMount(() => {
-      fetchData()
-    })
-    return { editableActionPlans, error, isPending }
   }
 }
 </script>

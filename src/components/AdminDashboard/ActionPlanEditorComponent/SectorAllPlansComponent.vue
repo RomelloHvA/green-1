@@ -7,7 +7,7 @@
         <action-plan-selector-component :action-plans="editableActionPlans"/>
       </div>
       <div class="col-md-9">
-          <action-plan-editor v-if="selectedPlan !== null || currentRouteParam === '0' "
+          <action-plan-editor v-if="selectedPlan !== null || currentRouteParam === '0'"
                               :cloned-plan="clonedSelectedPlan"
                               :selected-plan="selectedPlan"
                               @saveOrUpdatePlan="handleSaveOrUpdate"
@@ -32,7 +32,8 @@ export default {
     ActionPlanSelectorComponent
   },
   props: {
-    sectors: ref([])
+    sectors: ref([]),
+    selectedSector: null
   },
   setup (props) {
     const route = useRoute()
@@ -58,8 +59,9 @@ export default {
       }
     }
     const handleNewPlan = () => {
-      console.log('clicked')
-      router.push(route.path + '/0')
+      const currentSector = route.params.sector
+      const id = 0
+      router.push(`/admin_dashboard/action_plans/${currentSector}` + '/' + id)
     }
 
     onBeforeMount(() => {
@@ -123,8 +125,8 @@ export default {
             id: 0,
             title: 'New plan for editing',
             description: 'Write a description here!',
-            sdgArray: []
-            // sector: props.sectors.value.find(sector => sector.id === parseInt(currentRouteParam.value))
+            sdgArray: [],
+            sector: props.selectedSector
           }
           editableActionPlans.value.push(selectedPlan.value)
         } else {
