@@ -25,8 +25,8 @@ export default class MultipleChoiceQuestion extends Question {
    * @param {Array} options array of strings
    * @param {Number} answerLimit number of answers that can be given (default is the amount of options)
    */
-  constructor (id = null, index, question = null, options, answerLimit = 0) {
-    super(id, index, question)
+  constructor (id = null, index, question = null, imgPath = null, options, answerLimit = 0) {
+    super(id, index, question, imgPath)
     this.#initializeOptions(options)
     this.givenAnswers = []
     this.answerLimit = answerLimit
@@ -80,14 +80,14 @@ export default class MultipleChoiceQuestion extends Question {
   }
 
   async clone () {
-    const clone = new MultipleChoiceQuestion(this.id, this.index, this.question, this.options, this.answerLimit)
+    const clone = new MultipleChoiceQuestion(this.id, this.index, this.question, this.imgPath, this.options, this.answerLimit)
     clone.givenAnswers = this.givenAnswers
     return clone
   }
 
   static copyConstructor (questionFromJson) {
     if (questionFromJson !== null && questionFromJson && questionFromJson !== undefined) {
-      return new MultipleChoiceQuestion(questionFromJson.id, questionFromJson.index, questionFromJson.question, questionFromJson.options, questionFromJson.answerLimit)
+      return new MultipleChoiceQuestion(questionFromJson.id, questionFromJson.index, questionFromJson.question, questionFromJson.imgPath, questionFromJson.options, questionFromJson.answerLimit)
     }
     return null
   }

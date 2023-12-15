@@ -17,10 +17,11 @@ export default class YesNoQuestion extends Question {
   /**
    * This class is for questions that only have 2 options as answers
    * @param {String} question
+   * @param {String} imgPath
    * @param {Number} SDG
    */
-  constructor (id = null, index, question = null, sdg = null) {
-    super(id, index, question)
+  constructor (id = null, index, question = null, imgPath = null, sdg = null) {
+    super(id, index, question, imgPath)
     this.givenAnswer = null
     this.sdg = sdg
   }
@@ -39,7 +40,7 @@ export default class YesNoQuestion extends Question {
   }
 
   async clone () {
-    const clone = new YesNoQuestion(this.id, this.index, this.question, this.sdg)
+    const clone = new YesNoQuestion(this.id, this.index, this.question, this.imgPath, this.sdg)
     clone.givenAnswer = this.givenAnswer
     return clone
   }
@@ -53,7 +54,7 @@ export default class YesNoQuestion extends Question {
 
   static copyConstructor (questionFromJson) {
     if (questionFromJson !== null && questionFromJson && questionFromJson !== undefined) {
-      return new YesNoQuestion(questionFromJson.id, questionFromJson.index, questionFromJson.question, questionFromJson.SDG)
+      return new YesNoQuestion(questionFromJson.id, questionFromJson.index, questionFromJson.question, questionFromJson.imgPath, questionFromJson.sdg)
     }
     return null
   }

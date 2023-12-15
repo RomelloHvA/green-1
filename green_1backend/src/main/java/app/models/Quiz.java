@@ -1,9 +1,7 @@
 package app.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import org.hibernate.type.NumericBooleanConverter;
 
 import java.util.List;
 @Entity
@@ -12,7 +10,7 @@ public class Quiz {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String quizName;
+    private String name;
 
     @Column(name = "is_published", columnDefinition = "TINYINT", length = 1)
     private boolean isPublished;
@@ -70,8 +68,8 @@ public class Quiz {
         this.id = id;
     }
 
-    public void setQuizName(String quizName) {
-        this.quizName = quizName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setQuizQuestions(List<Question> quizQuestions) {
@@ -82,8 +80,8 @@ public class Quiz {
         return id;
     }
 
-    public String getQuizName() {
-        return quizName;
+    public String getName() {
+        return name;
     }
 
     public List<Question> getQuizQuestions() {

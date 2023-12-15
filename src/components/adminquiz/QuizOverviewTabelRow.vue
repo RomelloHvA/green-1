@@ -5,7 +5,7 @@
         <div class="">
             <select v-model="selectedQuizForBuilder" class="form-select quizSelect">
             <option value="" selected disabled>Select a quiz</option>
-            <option v-for="quiz in sector.quizzes" :key="quiz.id" :value="quiz"> {{ quiz.quizName}}</option>
+            <option v-for="quiz in sector.quizzes" :key="quiz.id" :value="quiz"> {{ quiz.name}}</option>
             </select>
         </div>
         <div class="">
@@ -21,7 +21,7 @@
                 <select v-model="selectedQuizForLive" class="form-select quizSelect">
                     <option value="" selected disabled>Select a quiz</option>
                     <option value="None" class="text-danger">None</option>
-                    <option v-for="quiz in publishedQuizzes" :key="quiz.id" :value="quiz"> {{ quiz.quizName}}</option>
+                    <option v-for="quiz in publishedQuizzes" :key="quiz.id" :value="quiz"> {{ quiz.name}}</option>
                 </select>
             </div>
             <div class="">
@@ -40,7 +40,7 @@
     </td>
     <td class="selectorData liveQuizText">
         <div v-if="liveQuiz !== null && liveQuiz !== undefined">
-            {{ liveQuiz.quizName }}
+            {{ liveQuiz.name }}
         </div>
         <div v-else class="text-danger">
             no quiz live
@@ -109,7 +109,7 @@ export default {
       } else {
         selectedQuizForLive.value.isLive = true
       }
-      const results = await quizService.asyncSave(selectedQuizForLive.value)
+      const results = await quizService.asyncSave(selectedQuizForLive.value, null, 'PUT')
 
       watchEffect(() => {
         setLiveIsPending.value = results.isPending.value

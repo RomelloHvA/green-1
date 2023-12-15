@@ -23,14 +23,18 @@ public class UploadController {
     @PostMapping()
     public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
         try {
+            System.out.println("File name: " + file.getContentType());
             // Check if the file's content type is an image
             if (file.getContentType().startsWith("image/")) {
                 // Generate a unique filename
                 String filename = UUID.randomUUID().toString() + getFileExtension(file.getOriginalFilename());
 
                 // Define the path to save the image
-                String directoryPath = "/uploaded/images/";
+                String rootPath = System.getProperty("user.dir"); // Gets the root directory of the project
+                String directoryPath = rootPath + "/uploads/images/";
+                Files.createDirectories(Paths.get(directoryPath));
                 Path path = Paths.get(directoryPath + filename);
+                System.out.println("Path: " + path);
                 Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
                 // Save the image information in the database (omitted for brevity)

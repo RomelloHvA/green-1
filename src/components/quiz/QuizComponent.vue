@@ -60,10 +60,10 @@ export default {
     const questionAnswered = ref(null)
     const quizLiveService = inject('quizLiveService')
     const route = useRoute()
-    const sectorID = 1
+    const sectorId = 1
 
     onBeforeMount(async () => {
-      const results = await quizLiveService.asyncCustom('live', 'GET', null, { sectorID: sectorID })
+      const results = await quizLiveService.asyncCustom('live', 'GET', null, { sectorId: sectorId })
 
       watchEffect(() => {
         quiz.value = results.entity.value
@@ -101,6 +101,7 @@ export default {
         if (window.confirm('You have not finished the quiz, your progress will be lost')) {
           totalQuestionsAnswered.value = 0
           next()
+          return
         } else {
           next(false)
         }
@@ -208,6 +209,26 @@ export default {
 </script>
 
 <style>
+.quizImgSpot {
+  display: flex; /* For centering the image */
+  justify-content: center; /* Center image horizontally */
+  align-items: center; /* Center image vertically */
+  width: 60%; /* Width of the container */
+  max-width: 800px; /* Maximum width of the container */
+  max-height: 300px; /* Maximum height of the container */
+  border-radius: 15px;
+  margin: auto; /* Center the container */
+  margin-bottom: 25px; /* Spacing below the container */
+  overflow: hidden; /* In case of border-radius, it clips the image */
+}
+
+/* .imgFit {
+  margin: auto;
+  object-fit: scale-down;
+  max-height: auto;
+  max-width: 100%;
+ } */
+
 .headerText3 {
   font-weight: 500;
   margin-bottom: 0;

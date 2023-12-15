@@ -5,15 +5,18 @@
       <div class="col-lg-6 col-12 m-auto justify-content-center welcomeDiv align-items-lg-start slide-in-animation">
         <div v-show="showItemSequence[0]" class="slide-in-animation">
           <h1 class="text-center text-dark my-2 headerText">{{ contentData.welcomeTitle }}</h1>
-<!--          <p class="paragraphText">-->
-<!--            Unlock your potential for global impact! On this website, you can explore and act on the UN’s Sustainable-->
-<!--            Development Goals tailored to your field of expertise. Ready to make a difference? Take our quiz now!-->
-<!--          </p>-->
+          <!--          <p class="paragraphText">-->
+          <!--            Unlock your potential for global impact! On this website, you can explore and act on the UN’s Sustainable-->
+          <!--            Development Goals tailored to your field of expertise. Ready to make a difference? Take our quiz now!-->
+          <!--          </p>-->
           <p class="paragraphText">{{ contentData.welcomeText }}</p>
-          <button class="btn btn-primary quiz-button" @click="goToQuiz">To Quiz!</button>
-      </div>
-        <img alt="home-image" v-if="imagePath" :src="require('@/assets/img/admin-dashboard/images/' + imagePath)"
-             class="bi-image" :width="image.imageWidth" :height="image.imageHeight">
+          <button class="btn btn-primary quiz-button">To Quiz!</button>
+        </div>
+        <img alt="home-image" v-if="imageClone.fileName && imageClone.fileName !== 'none'"
+             :src="require(`@/assets/img/admin-dashboard/images/${imageClone.fileName}`)"
+             class="bi-image"
+             :width="imageClone.imageWidth"
+             :height="imageClone.imageHeight">
       </div>
       <div class="col-lg-6 col-12 purpose-card">
         <div v-show="showItemSequence[1]" class="slide-in-animation card cardSpecific">
@@ -27,28 +30,30 @@
       <div class="row d-flex justify-content-center">
       </div>
       <!--      SDG overview field rows -->
-        <div  v-show="showItemSequence[2]" class="row gy-3 slide-in-animation"><h2 class="headerText2">{{ contentData.SdgInfoTitle }}</h2></div>
-        <div class="d-flex m-auto justify-content-center">
+      <div  v-show="showItemSequence[2]" class="row gy-3 slide-in-animation"><h2 class="headerText2">{{ contentData.SdgInfoTitle }}</h2></div>
+      <div class="d-flex m-auto justify-content-center">
         <div v-show="!showItemSequence[2]" class="spaceForAnimation"></div>
         <SdgOverview :showItem="showItemSequence[2]" />
       </div>
     </div>
   </div>
 </template>
-
 <script>
-
-import SdgOverview from '@/components/LandingPage/SdgOverview.vue'
-import { inject } from 'vue'
 /**
- * LandingPage Component
- * This is the first page a user will see. Template consists of information about
- * our purpose, a quiz button and a Sustainable Development Goal overview
+ * This component is a replica of the LandingPage.vue and is only used for previewing the Landing page without loading the image from database
+ * @author Jiaming Yan
  */
+import SdgOverview from '@/components/LandingPage/SdgOverview'
+import { inject } from 'vue'
+
 export default {
-  name: 'LandingPage',
-  inject: ['contentService', 'imageService'],
+  name: 'LandingPagePreview',
+  inject: ['contentService'],
   components: { SdgOverview },
+  props: {
+    pageId: Number,
+    imageClone: Object
+  },
   data () {
     return {
       itemShowIndex: 0,
@@ -61,17 +66,15 @@ export default {
         purposeTitle: '',
         purposeText: '',
         SdgInfoTitle: ''
-      },
-      imagePath: null,
-      image: null
+      }
     }
   },
   mounted () {
     /**
-     * This is a function that will be called every 700ms and will show the next item in the showItemSequence array
-     * This is used to show the welcome text in a sequence
-     * @author Marco de Boer
-     */
+         * This is a function that will be called every 700ms and will show the next item in the showItemSequence array
+         * This is used to show the welcome text in a sequence
+         * @author Marco de Boer
+         */
     setInterval(() => {
       if (this.showItemSequence.length === this.textIndex) {
         clearInterval()
@@ -82,57 +85,15 @@ export default {
     }, 500)
   },
   methods: {
-    async loadImage () {
-      try {
-        const imageService = inject('imageService')
-        const image = await imageService.findImageByPageId(1)
-
-        if (image.editableImage.value) {
-          this.image = image.editableImage.value
-          this.imagePath = image.editableImage.value.fileName.toString()
-        } else {
-          console.warn('Image path is null or undefined.')
-        }
-      } catch (error) {
-        console.error('Error while loading image:', error)
-      }
-    },
-    /**
-     * Redirects user to quiz page
-     */
-    goToQuiz () {
-      this.$router.push({ path: '/quiz' })
-      this.scrollToTop()
-    },
-    /**
-     * Redirects to About Us page
-     */
-    goAboutUs () {
-      this.$router.push({ path: '/about_us' })
-      this.scrollToTop()
-    },
-    /**
-     * Scroll user to top
-     */
-    scrollToTop () {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      })
-    },
-    /**
-     * Using the content adaptor, find all content data for a given page
-     * @returns {Promise<void>} an object with content data retrieved from the database
-     */
     async loadContent () {
       const contentService = inject('contentService')
       const APIResults = await contentService.findContentByPageId(1)
       this.setContent(APIResults)
     },
     /**
-     * Fill content fields with the correct data
-     * @param data object that holds content data for given page
-     */
+         * Fill content fields with the correct data
+         * @param data object that holds content data for given page
+         */
     setContent (data) {
       let counter = 0
       try {
@@ -155,7 +116,6 @@ export default {
   beforeMount () {
     // load content data from db
     this.loadContent()
-    this.loadImage()
   }
 }
 </script>
