@@ -14,10 +14,17 @@
         </div>
       </div>
     </section>
-    <div class="">
-      <h1 class="d-flex justify-content-end my-5 mx-auto headerText2">Now choose an actionplan!</h1>
-      <div>
-        <ActionPlan :title="'test'" :description="'decription'" :sdgs="[1,2]" />
+    <div class="my-5">
+      <h1 class="d-flex justify-content-end my-5 mx-auto headerText2 row">Now choose an actionplan! <div class="purpleLine"></div></h1>
+      <div class="d-flex row m-auto gap-5 my-5">
+        <ActionPlan class="col-lg" :id="0" :title="'test'" :description="string" :sdgs="[1,2]" />
+        <ActionPlan class="col-lg" :id="1" :title="'test'" :description="string" :sdgs="[1,2]" />
+        <!-- <ActionPlan class="col" :title="'test'" :description="'decription'" :sdgs="[1,2]" /> -->
+      </div>
+      <div class="d-flex row m-auto gap-5 my-5">
+        <ActionPlan class="col-lg" :id="3" :title="'test'" :description="string" :sdgs="[1,2]" />
+        <ActionPlan class="col-lg" :id="4" :title="'test'" :description="string" :sdgs="[1,2]" />
+        <!-- <ActionPlan class="col" :title="'test'" :description="'decription'" :sdgs="[1,2]" /> -->
       </div>
     </div>
   </div>
@@ -53,7 +60,9 @@ export default {
       },
       options: options,
       sdgData: [],
-      isMounted: false
+      isMounted: false,
+      string: 'To give a button a circular ring using CSS, you ll want to apply specific styles to the button. Here s an example of how you might do it o give a button a circular ring using CSS, you ll want to apply specific styles to the button. Here s an example of how you might do it'
+
     }
   },
   /**
@@ -147,6 +156,7 @@ export default {
       return 0
     }
   }
+
 }
 </script>
 
