@@ -1,10 +1,17 @@
 <template>
     <div class="actionPlan shadow">
         <div class="actionPlanTop">
+          <div class="col-8">
             <h1 class="h2">{{ props.title }}</h1>
+          </div>
+          <div class="col justify-content-end m-auto d-flex px-2 overflow-auto">
+            <div class="overflow-scroll">
+              <img v-for="(value, key) in imgSrcs" :key="key" class="actionPlanSdgImg" alt="..." :src="value">
+            </div>
+          </div>
         </div>
         <div :id="'actionplan' + props.id" class="actionPlanMiddle">
-            <p> {{ props.description }}</p>
+            <p class="textLeft" v-html="props.description"></p>
         </div>
         <div class="actionPlanFooter">
           <div class="col-4"></div>
@@ -24,7 +31,9 @@
     </div>
 </template>
 <script setup>
-import { defineProps, ref } from 'vue'
+import { defineProps, ref, onBeforeMount } from 'vue'
+import { sdgData } from '@/assets/testData/sdgTestData'
+
 const expanded = ref(false)
 
 const props = defineProps({
@@ -46,9 +55,17 @@ const props = defineProps({
   }
 })
 
+const imgSrcs = ref([])
+
+onBeforeMount(() => {
+  for (const sdg of props.sdgs) {
+    imgSrcs.value.push(sdgData.find(sdgInarray => sdgInarray.id === sdg).src)
+  }
+})
+
 const expandActionPlan = () => {
   if (expanded.value) {
-    document.querySelector(`#actionplan${props.id}`).style.maxHeight = '60px'
+    document.querySelector(`#actionplan${props.id}`).style.maxHeight = '1-0px'
     expanded.value = false
   } else {
     document.querySelector(`#actionplan${props.id}`).style.maxHeight = '100%'
@@ -58,6 +75,10 @@ const expandActionPlan = () => {
 
 </script>
 <style>
+.textLeft {
+  text-align: left;
+}
+
 .actionPlan {
   position: relative;
   border-radius: 10px;
@@ -83,7 +104,7 @@ const expandActionPlan = () => {
 .actionPlanMiddle {
     background-color: #FFFFFF;
     min-height: 60px;
-    max-height: 60px;
+    max-height: 150px;
     width: 100%;
     border-radius: 0px 0px 0px 0px;
     display: flex;
@@ -126,4 +147,34 @@ const expandActionPlan = () => {
   padding-bottom: 2px !important;
 }
 
+.actionPlanSdgImg {
+  max-height: 30px;
+  max-width: 30px;
+  margin: 5px;
+  object-fit: cover;
+}
+
+.overflow-scroll {
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
+}
+
+.overflow-scroll::-webkit-scrollbar {
+  height: 0px;
+  top: -10px;
+  width: calc(100% - 48px);
+}
+
+.overflow-scroll::-webkit-scrollbar-track {
+  background: #b1b3b399;
+}
+
+.overflow-scroll::-webkit-scrollbar-thumb {
+  background: #29AB87;
+}
+
+.overflow-scroll::-webkit-scrollbar-track-piece:start {
+  background: #29AB87;
+}
 </style>

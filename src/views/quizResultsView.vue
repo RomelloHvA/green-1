@@ -18,13 +18,11 @@
       <h1 class="d-flex justify-content-end my-5 mx-auto headerText2 row">Now choose an actionplan! <div class="purpleLine"></div></h1>
       <div class="d-flex row m-auto gap-5 my-5">
         <ActionPlan class="col-lg" :id="0" :title="'test'" :description="string" :sdgs="[1,2]" />
-        <ActionPlan class="col-lg" :id="1" :title="'test'" :description="string" :sdgs="[1,2]" />
-        <!-- <ActionPlan class="col" :title="'test'" :description="'decription'" :sdgs="[1,2]" /> -->
+        <ActionPlan class="col-lg" :id="1" :title="'test'" :description="string" :sdgs="[1]" />
       </div>
       <div class="d-flex row m-auto gap-5 my-5">
-        <ActionPlan class="col-lg" :id="3" :title="'test'" :description="string" :sdgs="[1,2]" />
+        <ActionPlan class="col-lg" :id="3" :title="'test'" :description="string" :sdgs="[1,2, 8 ,12, 13, 15]" />
         <ActionPlan class="col-lg" :id="4" :title="'test'" :description="string" :sdgs="[1,2]" />
-        <!-- <ActionPlan class="col" :title="'test'" :description="'decription'" :sdgs="[1,2]" /> -->
       </div>
     </div>
   </div>
@@ -61,7 +59,7 @@ export default {
       options: options,
       sdgData: [],
       isMounted: false,
-      string: 'To give a button a circular ring using CSS, you ll want to apply specific styles to the button. Here s an example of how you might do it o give a button a circular ring using CSS, you ll want to apply specific styles to the button. Here s an example of how you might do it'
+      string: '<strong> This is the title </strong> <br> To give a button a circular ring using CSS, you ll want to apply specific styles to the button. Here s an example of how you might do it o give a button a circular ring using CSS, you ll want to apply specific styles to the button. Here s an example of how you might do it'
 
     }
   },
@@ -99,7 +97,6 @@ export default {
           data: scores
         }]
 
-        console.log(scores)
         // Fill in sdgData to pass as a prop later
         for (let i = 0; i < top7.length; i++) {
           const newTitle = names[i]
