@@ -1,8 +1,12 @@
 package app.rest;
 
+import app.MvcConfig;
 import app.models.User;
 import app.repositories.UsersRepositoryJPA;
+import app.security.JWToken;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,21 +23,39 @@ public class UserController {
     @Autowired
     UsersRepositoryJPA usersRepository;
 
+    @Autowired
+    MvcConfig mvcConfig;
+
     @GetMapping(path = "/all", produces = "application/json")
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() {
         return usersRepository.findAll();
     }
 
     @PostMapping(path = "/login", produces = "application/json")
-    public ResponseEntity<String> login(@RequestBody Map<String, String> userData) {
-        String userName = userData.get("userName");
-        String passWord = userData.get("passWord");
-
+    public ResponseEntity<?> login(@RequestBody Map<String, String> userData) {
         try {
+        String userName = String.valueOf(userData.get("username"));
+        String passWord = String.valueOf(userData.get("password"));
+//        String userName = loginInfo.get("userName").asText();
+//        String passWord = loginInfo.get("passWord").asText();
+
             User user = this.usersRepository.findByUsername(userName);
 
-            if (Objects.equals(passWord, user.getPassword())) {
-                return ResponseEntity.ok("Login successful!");
+            if (user == null) {
+                throw new NullPointerException("This user does not exist!" + userName);
+            } else if (userName.trim().isEmpty()) {
+                throw new IllegalArgumentException("The username must not be empty!");
+            } else if (!Objects.equals(userName, user.getUsername())) {
+                throw new IllegalArgumentException("The username is incorrect!");
+            } else if (Objects.equals(passWord, user.getPassword())) {
+                JWToken jwToken = new JWToken(user.getUsername(), user.getUser_id(), user.getIsAdmin());
+                String tokenString = jwToken.encode(this.mvcConfig.getIssuer(),
+                        this.mvcConfig.getPassphrase(),
+                        this.mvcConfig.getTokenDurationOfValidity());
+//                return ResponseEntity.ok("Login successful!");
+                return ResponseEntity.accepted()
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenString)
+                        .body(user);
             } else if (passWord.trim().isEmpty()) {
                 throw new IllegalArgumentException("The password must not be empty!");
             } else {
@@ -64,6 +86,7 @@ public class UserController {
 
     /**
      * Delete an user with the specified ID.
+     *
      * @param id id of the user to be deleted.
      * @return A ResponseEntity containing the deleted User if the deletion is successful.
      * @throws ResourceNotFoundException if the user with the specified ID is not found.
@@ -81,11 +104,12 @@ public class UserController {
 
     /**
      * Update an user with the specified ID by replacing it with the provided user object.
-     * @param id    The id of the user that is going to be updated.
+     *
+     * @param id   The id of the user that is going to be updated.
      * @param user the user with updated information.
      * @return A ResponseEntity containing the updated user if the update is successful.
      * @throws PreConditionFailedException if the provided ID in the path does not match the ID in the request body.
-     * @throws ResourceNotFoundException    if the offer with the specified ID is not found.
+     * @throws ResourceNotFoundException   if the offer with the specified ID is not found.
      */
     @PutMapping("/{id}")
     public ResponseEntity<User> updateOffer(@PathVariable long id, @RequestBody User user) {
