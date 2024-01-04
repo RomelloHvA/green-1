@@ -16,13 +16,21 @@
     </section>
     <div class="my-5">
       <h1 class="d-flex justify-content-end my-5 mx-auto headerText2 row">Now choose an actionplan! <div class="purpleLine"></div></h1>
-      <div class="d-flex row m-auto gap-5 my-5">
-        <ActionPlan class="col-lg" :id="0" :title="'test'" :description="string" :sdgs="[1,2]" />
-        <ActionPlan class="col-lg" :id="1" :title="'test'" :description="string" :sdgs="[1]" />
+      <div v-if="actionPlansAreLoading">
+        <LoadingComponentVue  />
       </div>
-      <div class="d-flex row m-auto gap-5 my-5">
-        <ActionPlan class="col-lg" :id="3" :title="'test'" :description="string" :sdgs="[1,2, 8 ,12, 13, 15]" />
-        <ActionPlan class="col-lg" :id="4" :title="'test'" :description="string" :sdgs="[1,2]" />
+      <div v-else>
+        <h5 v-if="actionPlans.length == 0" class="d-flex justify-content-center my-5 mx-auto headerText2 row">No actionplans found! </h5>
+        <div v-else>
+          <div class="d-flex row m-auto gap-5 my-5 justify-content-center">
+            <ActionPlan v-if="actionPlans[0]" class="col-lg" :id="0" :title="actionPlans[0].title" :description="actionPlans[0].description" :sdgs="actionPlans[0].sdgArray" />
+            <ActionPlan v-if="actionPlans[1]" class="col-lg" :id="1" :title="actionPlans[1].title" :description="actionPlans[1].description" :sdgs="actionPlans[1].sdgArray" />
+          </div>
+          <div class="d-flex row m-auto gap-5 my-5">
+            <ActionPlan v-if="actionPlans[2]" class="col-lg" :id="3" :title="actionPlans[2].title" :description="actionPlans[2].description" :sdgs="actionPlans[2].sdgArray" />
+            <ActionPlan v-if="actionPlans[3]" class="col-lg" :id="4" :title="actionPlans[3].title" :description="actionPlans[3].description" :sdgs="actionPlans[3].sdgArray" />
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -35,6 +43,7 @@ import { Doughnut } from 'vue-chartjs'
 import { options } from '@/assets/testData/chartOptions'
 import { sdgData } from '@/assets/testData/sdgTestData'
 import ActionPlan from '@/components/quizResultsComponents/ActionPlan'
+import LoadingComponentVue from '@/components/LoadingComponent.vue'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
@@ -43,7 +52,8 @@ export default {
   components: {
     SdgCardComponent,
     Doughnut,
-    ActionPlan
+    ActionPlan,
+    LoadingComponentVue
   },
   data () {
     return {
@@ -59,17 +69,20 @@ export default {
       options: options,
       sdgData: [],
       isMounted: false,
+      actionPlansAreLoading: true,
+      actionPlans: [],
       string: '<strong> This is the title </strong> <br> To give a button a circular ring using CSS, you ll want to apply specific styles to the button. Here s an example of how you might do it o give a button a circular ring using CSS, you ll want to apply specific styles to the button. Here s an example of how you might do it'
 
     }
   },
+  inject: ['actionPlanService'],
   /**
    * This created hook sets up all the data by linking the question scores given by the URL to the right SDG .
    * Sorting them and filling in the appropriate variables which are later passed as props to child components.
    * If there is no data or the url is invalid it redirects back to the quiz.
    * @author Romello ten Broeke
    */
-  created () {
+  async created () {
     if (this.$route.query.quizanswers) {
       // Catch for errors/wrong answer types
       try {
@@ -106,6 +119,7 @@ export default {
           const newSrc = sdgData.find(sdg => sdg.id === top7[i].SDG).src
           const newGifSrc = sdgData.find(sdg => sdg.id === top7[i].SDG).gifSrc
           const newColor = sdgData.find(sdg => sdg.id === top7[i].SDG).color
+          const newId = sdgData.find(sdg => sdg.id === top7[i].SDG).id
           this.sdgData.push({
             title: newTitle,
             generalContribution: newContribution,
@@ -114,13 +128,22 @@ export default {
             gifSrc: newGifSrc,
             color: newColor,
             highestScore: scores[0],
-            score: scores[i]
+            score: scores[i],
+            sdgNumber: newId
           })
         }
       //  Restarts the quiz if the URL cannot be parsed
       } catch (error) {
         this.$router.push('/quiz')
       }
+
+      // retrieve the actionplans
+      const sdgs = this.sdgData.map(sdg => sdg.sdgNumber)
+      this.actionPlanService.asyncForQuizResults('1', sdgs).then((actionPlans) => {
+        this.actionPlans = actionPlans
+        this.actionPlansAreLoading = false
+        console.log(actionPlans)
+      })
     }
 
     /**

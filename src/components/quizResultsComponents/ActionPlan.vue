@@ -1,8 +1,8 @@
 <template>
     <div class="actionPlan shadow">
         <div class="actionPlanTop">
-          <div class="col-8">
-            <h1 class="h2">{{ props.title }}</h1>
+          <div class="col-9 m-auto">
+            <h1 class="h5 paddingLeft10 m-0">{{ props.title }}</h1>
           </div>
           <div class="col justify-content-end m-auto d-flex px-2 overflow-auto">
             <div class="overflow-scroll">
@@ -30,7 +30,11 @@
         </div>
     </div>
 </template>
+
 <script setup>
+/** This component is used to display an actionplan
+ * @author Marco de Boer
+ */
 import { defineProps, ref, onBeforeMount } from 'vue'
 import { sdgData } from '@/assets/testData/sdgTestData'
 
@@ -74,9 +78,21 @@ const expandActionPlan = () => {
 }
 
 </script>
+
 <style>
 .textLeft {
+  text-align: left !important;
+}
+
+.textLeft * {
+  text-align: left !important;
+}
+
+.paddingLeft10 {
+  padding-left: 5px;
+  height: 100%;
   text-align: left;
+  align-self: center;
 }
 
 .actionPlan {
@@ -86,12 +102,13 @@ const expandActionPlan = () => {
   flex-direction: column;
   height: fit-content;
   padding: 0;
+  max-width: 600px;
 }
 
 .actionPlanTop {
-    background-color: #E0DBF1;
+    background-color: #beabf9;
     color: #FFFFFF;
-    max-height: 40px;
+    max-height: fit-content;
     overflow: unset;
     text-overflow: ellipsis;
     width: 100%;
@@ -116,7 +133,7 @@ const expandActionPlan = () => {
 .actionPlanFooter {
     /* position: absolute;
     bottom: 0; */
-    background-color: #E0DBF1;
+    background-color: #beabf9;
     max-height: 45px;
     width: 100%;
     border-radius: 0px 0px 10px 10px;

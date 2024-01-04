@@ -9,8 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/actionplans")
@@ -26,6 +28,45 @@ public class ActionPlanController {
     @GetMapping("")
     public List<ActionPlan> findAll() {
         return actionPlanRepository.findAll();
+    }
+
+
+    //#todo refactor this method
+    /** retrieves all action plans for a given sector id and sdgs (if any)
+    * @author Marco de Boer
+     */
+    @GetMapping("/{sectorId}/quizresultplans")
+    public List<ActionPlan> findAllBySectorIdAndSdgs(@PathVariable Long sectorId, @RequestParam List<Long> sdgs) {
+        int amountOfQuizResultRecommendedSDGs = sdgs.size();
+        List<ActionPlan> actionPlanList = new ArrayList<>();
+        for(int i = 0; i < amountOfQuizResultRecommendedSDGs; i++) {
+            actionPlanList.addAll(actionPlanRepository.findBySectorAndSdgs(sectorId, sdgs.subList(0,(amountOfQuizResultRecommendedSDGs - 1 - i)), sdgs.size() - (amountOfQuizResultRecommendedSDGs - i)));
+            if(actionPlanList.size() >= 4) {
+                return actionPlanList.subList(0, 4);
+            }
+        }
+
+        if(sdgs.size() == 2) {
+            actionPlanList.addAll(actionPlanRepository.findBySectorAndSdgs(sectorId, sdgs.subList(1,1), 1));
+            if(actionPlanList.size() >= 4) {
+                return actionPlanList.subList(0, 4);
+            }
+        }
+
+        if(sdgs.size() == 3) {
+            actionPlanList.addAll(actionPlanRepository.findBySectorAndSdgs(sectorId, sdgs.subList(1,2), 2));
+            if(actionPlanList.size() >= 4) {
+                return actionPlanList.subList(0, 4);
+            }
+
+            actionPlanList.addAll(actionPlanRepository.findBySectorAndSdgs(sectorId, sdgs.subList(2,2), 1));
+
+            if(actionPlanList.size() >= 4) {
+                return actionPlanList.subList(0, 4);
+            }
+        }
+
+        return actionPlanRepository.findBySectorAndSdgsWithoutLengthFiler(sectorId, sdgs);
     }
 
     @GetMapping("/testSector")
@@ -77,6 +118,7 @@ public class ActionPlanController {
         if (!Objects.equals(actionPlanId, actionPlan.getId())) {
             return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body("id in Url does not match id in action plan");
         }
+        System.out.println(actionPlan);
         actionPlanRepository.save(actionPlan);
         return ResponseEntity.ok(actionPlan);
 

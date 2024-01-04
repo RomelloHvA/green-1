@@ -1,5 +1,7 @@
 package app.models;
 import jakarta.persistence.*;
+
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -9,11 +11,12 @@ public class ActionPlan {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String description;
     @ManyToOne (cascade = CascadeType.MERGE)
     private Sector sector;
     @ElementCollection
-    private Set<Long> sdgArray;
+    private List<Long> sdgArray;
 
     public Sector getSector() {
         return sector;
@@ -47,11 +50,11 @@ public class ActionPlan {
         this.description = description;
     }
 
-    public Set<Long> getSdgArray() {
+    public List<Long> getSdgArray() {
         return sdgArray;
     }
 
-    public void setSdgArray(Set<Long> sdgId) {
+    public void setSdgArray(List<Long> sdgId) {
         this.sdgArray = sdgId;
     }
 
