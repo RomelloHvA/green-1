@@ -69,7 +69,7 @@ onBeforeMount(() => {
 
 const expandActionPlan = () => {
   if (expanded.value) {
-    document.querySelector(`#actionplan${props.id}`).style.maxHeight = '1-0px'
+    document.querySelector(`#actionplan${props.id}`).style.maxHeight = '150px'
     expanded.value = false
   } else {
     document.querySelector(`#actionplan${props.id}`).style.maxHeight = '100%'
