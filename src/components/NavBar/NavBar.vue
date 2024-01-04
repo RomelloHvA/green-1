@@ -17,7 +17,7 @@
         <NavBarItem item-text="Quiz" route="/quiz"/>
         <NavBarItem item-text="SDG info" route="/sdg/1"/>
         <NavBarItem v-if="isLoggedIn" item-text="Profile" route="/profile"/>
-        <NavBarItem v-if="isAdmin" item-text="Admin Dashboard" route="/admin_dashboard"/>
+        <NavBarItem v-if="isAdmin && isLoggedIn" item-text="Admin Dashboard" route="/admin_dashboard"/>
       </ul>
       <NavBarItem class="btn btn-navsignup" v-if="!isLoggedIn" item-text="Sign up" route="/signup"/>
       <NavBarItem class="btn btn-navLogin mx-1" v-if="!isLoggedIn" item-text="Log in" route="/login"/>
@@ -34,20 +34,25 @@ import router from '@/router'
 export default {
   name: 'NavBar',
   components: { NavBarItem },
+  inject: ['usersServices'],
   data () {
     return {
-      isAdmin: true,
+      isAdmin: false,
       userName: sessionStorage.getItem('userName'),
       isLoggedIn: this.userName !== null && this.userName !== '' && this.userName !== undefined
     }
   },
-  created () {
+  async created () {
+    let users = []
+    users = await this.usersServices.asyncFindAll()
     /**
      * EventBus is used for listening to emits from LogInView
      * @author Jiaming Yan
      */
     eventBus.on('change-data', (data) => {
       this.userName = sessionStorage.getItem('userName')
+      const currentUser = users.find(user => user.username === this.userName)
+      this.isAdmin = currentUser.isAdmin
       this.isLoggedIn = true
     })
   },

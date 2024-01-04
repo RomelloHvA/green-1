@@ -53,10 +53,7 @@ export class User {
     }
 
     // Basic field comparisons
-    if (user1.userId !== user2.userId ||
-      user1.email !== user2.email ||
-      user1.username !== user2.username ||
-      user1.isAdmin !== user2.isAdmin) {
+    if (user1.user_id !== user2.user_id || user1.email !== user2.email || user1.username !== user2.username || user1.isAdmin !== user2.isAdmin || user1.password !== user2.password) {
       return false
     }
     // All checks passed, objects are equal

@@ -32,12 +32,12 @@ public class ProfilesRepositoryMock implements ProfilesRepository {
 
     private void associateGoalToProfile(Profile profile) {
         List<Goal> goals = new ArrayList<>();
-//        profile.setGoals(goals);
-        for (int i = 0; i < 3; i++) {
-            Goal goal = Goal.createSampleGoal(i+1, profile.getUser_id());
-            goals.add(goal);
-            profile.setGoals(goals);
-        }
+        profile.setGoals(goals);
+//        for (int i = 0; i < 3; i++) {
+//            Goal goal = Goal.createSampleGoal(i+1, profile.getUser_id());
+//            goals.add(goal);
+//            profile.setGoals(goals);
+//        }
     }
 
     @Override

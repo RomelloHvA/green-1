@@ -1,6 +1,6 @@
 <template>
   <div class="mt-5 mb-5 profileBody">
-    <form>
+    <form @click.prevent>
       <div class="container text-center">
         <div class="row align-items-start">
           <div class="col">
@@ -90,8 +90,9 @@
                 </select>
               </div>
             </div>
-            <button @click="showResults" type="button" class="btn btn-primary resultButton">See Quiz Results</button>
-            <button @click="createGoal" type="button" class="btn btn-primary addButton">Add Goals</button>
+            <button @click.prevent="showResults" type="button" class="btn btn-primary resultButton">See Quiz Results
+            </button>
+            <button @click.prevent="createGoal" type="button" class="btn btn-primary addButton">Add Goals</button>
             <div v-if="showGoalSDGEmpty" class="invalid-message border mt-1 error">
               Please select a valid goal.
             </div>
@@ -363,9 +364,10 @@ export default {
           this.profile.last_name === '' ||
           this.profile.date_of_birth === '' ||
           this.profile.occupation === '' ||
-          this.profile.bio === '' ||
-          this.profile.goals.length === 0) {
+          this.profile.bio === '') {
           return alert('Some of the fields are empty')
+        } else if (this.profile.goals.length === 0) {
+          return alert('Please add a goal')
         } else {
           // Check if the user wants to save the changes
           if (confirm('Are you sure you want to save changes?') === true) {
@@ -373,7 +375,7 @@ export default {
             const firstName = this.profile.first_name
             const lastName = this.profile.last_name
             const photo = this.profile.photo
-            const birth = this.profile.date_of_birth
+            const birth = new Date(this.profile.date_of_birth)
             const occupation = this.profile.occupation
             const bio = this.profile.bio
             const goals = this.profile.goals
@@ -398,11 +400,8 @@ export default {
               console.error('Error saving profile data:', error)
               alert('Failed to save changes. Please check the console for errors.')
             }
-            alert('Changes have been saved')
             // Creates a new copy of the profile
             this.oldProfileData = Profile.copyConstructor(this.profile)
-            this.$router
-              .push({ path: '/' })
           }
         }
       } catch (error) {

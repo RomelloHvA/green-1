@@ -5,6 +5,7 @@ import QuizResultsView from '@/views/quizResultsView'
 import SdgInfoPage from '@/components/LandingPage/SdgInfoPage.vue'
 import QuizBuilder from '@/components/adminquiz/QuizBuilder.vue'
 import QuizOverview from '@/components/adminquiz/QuizOverview.vue'
+import ImageEditor from '@/components/AdminDashboard/AdminImageEdit/ImageEditor'
 
 const routes = [
   {
@@ -112,9 +113,41 @@ const routes = [
           }
         ]
       },
+      {
+        path: '/admin_dashboard/image',
+        name: 'ImageOverview',
+        component: ImageEditor,
+        children: [
+          {
+            path: ':id',
+            name: 'ImageChangerComponent',
+            component: () => import('@/components/AdminDashboard/AdminImageEdit/ImageChangerComponent'),
+            props: true
+          },
+          {
+            path: 'preview',
+            name: 'PagePreview',
+            component: () => import('@/components/AdminDashboard/AdminImageEdit/PagePreview'),
+            props: true,
+            children: [{
+              path: 'landing_page_preview',
+              name: 'LandingPagePreview',
+              component: () => import('@/components/AdminDashboard/AdminImageEdit/LandingPagePreview'),
+              props: true
+            }]
+          }
+        ]
+      },
 
       { path: 'intro', component: () => import('@/components/AdminDashboard/AdminIntroComponent') },
-      { path: 'users', component: () => import('@/components/AdminDashboard/AdminUserComponent') }
+      { path: 'users', component: () => import('@/components/AdminDashboard/AdminUserComponent') },
+      {
+        path: 'action_plans',
+        component: () => import('@/components/AdminDashboard/ActionPlanEditorComponent/ActionPlanEditorMain'),
+        children: [
+          { path: ':sector/:id?', component: () => import('@/components/AdminDashboard/ActionPlanEditorComponent/SectorAllPlansComponent') }
+        ]
+      }
     ],
     component: () => import(/* webpackChunkName: "about" */ '../views/AdminDashboardView')
   },
@@ -128,6 +161,11 @@ const routes = [
       }
     ],
     component: () => import('@/components/result/ResultPage')
+  },
+  {
+    path: '/admin_dashboard/isAdmin',
+    name: 'adminVerify',
+    component: () => import('@/components/AdminDashboard/AdminVerifyComponent')
   }
 ]
 

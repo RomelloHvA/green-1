@@ -18,7 +18,7 @@ public class UsersRepositoryMock implements UsersRepository {
         for (int i = 0; i < numberOfUsers ; i++) {
             users.add(User.createSampleUser());
         }
-        users.add(new User("User27", "3927"));
+        users.add(new User("User27", "3927", true));
 
     }
     @Override
@@ -57,7 +57,7 @@ public class UsersRepositoryMock implements UsersRepository {
     @Override
     public User save(User user) {
         if (user.getUser_id() == 0) {
-            int nextId = generateUniqueID();
+            long nextId = generateUniqueID();
             user.setUser_id(nextId);
             users.add(user);
         } else {
@@ -73,8 +73,8 @@ public class UsersRepositoryMock implements UsersRepository {
         return user;
     }
 
-    private int generateUniqueID() {
-        int nextId = 1;
+    private long generateUniqueID() {
+        long nextId = 1;
         for (User existingUser : users) {
             if (existingUser.getUser_id() >= nextId) {
                 nextId = existingUser.getUser_id() + 1;

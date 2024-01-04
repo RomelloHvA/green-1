@@ -1,12 +1,12 @@
 package app.repositories;
 
 import app.models.ActionPlan;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface ActionPlanRepository<E> {
-    List<E> findAll();
+public interface ActionPlanRepository extends JpaRepository<ActionPlan, Long> {
 
-    ActionPlan findById(int id);
-    List<ActionPlan> findBySdgId(int id);
+    List<ActionPlan> findAllBySectorId(Long sectorId);
+
 }

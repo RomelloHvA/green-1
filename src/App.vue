@@ -21,6 +21,8 @@ import CONFIG from '@/app-config'
 import { ProfilesAdaptor } from '@/services/ProfilesAdaptor'
 import { GoalsAdaptor } from '@/services/GoalsAdaptor'
 import { ActionPlansAdaptor } from '@/services/ActionPlansAdaptor'
+import Sector from '@/models/Sector'
+import { RESTImageAdaptor } from '@/services/RESTImageAdaptor'
 export default {
   components: { NavBar, FooterComponent },
   provide () {
@@ -29,7 +31,9 @@ export default {
       quizLiveService: new RESTAdaptorWithFetch(CONFIG.BACKEND_URL + '/quiz', Quiz.copyConstructor),
       questionTrueFalseService: new RESTAdaptorWithFetch(CONFIG.BACKEND_URL + '/question', YesNoQuestion.copyConstructor),
       questionMultipleChoiceService: new RESTAdaptorWithFetch(CONFIG.BACKEND_URL + '/question', MultipleChoiceQuestion.copyConstructor),
+      sectorService: new RESTAdaptorWithFetch(CONFIG.BACKEND_URL + '/sector', Sector.copyConstructor),
       contentService: new RESTContentAdaptor(CONFIG.BACKEND_URL + '/page'),
+      imageService: new RESTImageAdaptor(CONFIG.BACKEND_URL + '/page/image'),
       usersServices: new UsersAdaptor(CONFIG.BACKEND_URL),
       profileService: new ProfilesAdaptor(CONFIG.BACKEND_URL + '/profiles'),
       goalService: new GoalsAdaptor(CONFIG.BACKEND_URL + '/goals'),

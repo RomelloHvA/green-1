@@ -2,6 +2,7 @@ package app.rest;
 
 import app.models.Quiz;
 import app.repositories.QuizRepository;
+import app.services.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +25,10 @@ public class QuizController {
     }
 
     @GetMapping("/live")
-    public Quiz getLiveQuiz(){
-        return quizService.getQuizByIsLive();
+    public ResponseEntity<Quiz> getQuizByLive(@RequestParam Long sectorId) {
+        return quizService.findLiveQuizForSector(sectorId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     // Get all quizzes
@@ -43,25 +46,24 @@ public class QuizController {
     }
 
     // Create a new quiz
-    @PostMapping
-    public Quiz createQuiz(@RequestBody Quiz quiz) {
-        return quizRepository.save(quiz);
+    @PostMapping("/{id}")
+    public ResponseEntity<Quiz>  createQuiz(@RequestBody Quiz quiz) {
+        Quiz newQuiz = quizService.createQuiz(quiz);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newQuiz);
     }
 
     // Update a quiz
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Quiz> updateQuiz(@PathVariable Long id, @RequestBody Quiz quiz) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(quizService.addQuiz(quiz));
+        return quizService.update(id, quiz)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     // Delete a quiz
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteQuiz(@PathVariable Long id) {
-        return quizRepository.findById(id)
-                .map(quiz -> {
-                    quizRepository.delete(quiz);
-                    return ResponseEntity.ok().build();
-                })
-                .orElse(ResponseEntity.notFound().build());
+        quizService.deleteQuiz(id);
+        return ResponseEntity.noContent().build();
     }
 }

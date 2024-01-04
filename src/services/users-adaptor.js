@@ -1,7 +1,7 @@
 import { User } from '@/models/user'
 
 export class UsersAdaptor {
-  resourcesUrl;
+  resourcesUrl
 
   constructor (resourcesUrl) {
     this.resourcesUrl = resourcesUrl
@@ -9,11 +9,16 @@ export class UsersAdaptor {
   }
 
   async fetchJson (url, options = null) {
-    const response = await fetch(url, options)
-    if (response.ok) {
-      return await response.json()
-    } else {
-      console.log(response, !response.bodyUsed ? await response.text() : '')
+    try {
+      const response = await fetch(url, options)
+      if (response.ok) {
+        return await response.json()
+      } else {
+        console.log(response, !response.bodyUsed ? await response.text() : '')
+        return null
+      }
+    } catch (error) {
+      console.error('Error during fetch:', error)
       return null
     }
   }
@@ -34,23 +39,28 @@ export class UsersAdaptor {
     let url
     let method
 
-    if (user.id === 0) {
-      url = `${this.resourcesUrl}/users`
-      method = 'POST'
-    } else {
-      url = `${this.resourcesUrl}/users/${user.id}`
-      method = 'PUT'
-    }
+    try {
+      if (user.userId === 0) {
+        url = `${this.resourcesUrl}/users`
+        method = 'POST'
+      } else {
+        url = `${this.resourcesUrl}/users/${parseInt(user.user_id)}`
+        method = 'PUT'
+      }
 
-    const options = {
-      method,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(user)
-    }
+      const options = {
+        method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(user)
+      }
 
-    return this.fetchJson(url, options)
+      return User.copyConstructor(this.fetchJson(url, options))
+    } catch (error) {
+      console.error('Error during fetch:', error)
+      return null
+    }
   }
 
   async asyncDeleteById (id) {
