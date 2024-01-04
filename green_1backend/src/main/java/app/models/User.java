@@ -1,9 +1,7 @@
 package app.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import org.aspectj.lang.annotation.RequiredTypes;
 
 import java.time.LocalDate;
 import java.util.Random;
@@ -11,8 +9,8 @@ import java.util.Random;
 @Entity
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long user_id = 0L;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long user_id;
     private int sector_id;
     private String first_name;
     private String last_name;
@@ -22,6 +20,7 @@ public class User {
     private String username;
     private String bio;
     private String occupation;
+    @Column(nullable = true)
     private LocalDate date_of_birth;
     private String postalcode;
     private String user_goal;
@@ -46,8 +45,7 @@ public class User {
             "Peace, Justice, and Strong Institutions",
             "Partnerships for the Goals"};
 
-    public User(long user_id, String first_name, String last_name, String email, String username, String user_goal, String password, boolean isAdmin) {
-        this.user_id = user_id;
+    public User(String first_name, String last_name, String email, String username, String user_goal, String password, boolean isAdmin) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.email = email;
@@ -62,7 +60,7 @@ public class User {
 
     public static User createSampleUser() {
         Random random = new Random();
-        return new User(random.nextLong(1000),
+        return new User(
                 FIRST_NAMES[random.nextInt(FIRST_NAMES.length)],
                 LAST_NAMES[random.nextInt(LAST_NAMES.length)],
                 EMAIL_USER[random.nextInt(EMAIL_USER.length)],
@@ -73,8 +71,7 @@ public class User {
         );
     }
 
-    public User(long user_id, int sector_id, String first_name, String last_name, String email, int security_clearance, String password, String username, String bio, String occupation, LocalDate date_of_birth, String postalcode, String user_goal, boolean isAdmin) {
-        this.user_id = user_id;
+    public User(int sector_id, String first_name, String last_name, String email, int security_clearance, String password, String username, String bio, String occupation, LocalDate date_of_birth, String postalcode, String user_goal, boolean isAdmin) {
         this.sector_id = sector_id;
         this.first_name = first_name;
         this.last_name = last_name;

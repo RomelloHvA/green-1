@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -44,6 +45,50 @@ public class UserController {
         } catch (NullPointerException nullPointerException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This user does not exist!");
         }
+    }
+
+    @PostMapping(path = "/signup", produces = "application/json")
+    public ResponseEntity<String> signUp(@RequestBody Map<String, String> userData) {
+        int sectorId = Integer.parseInt(userData.get("sector_id"));
+        String firstName = userData.get("first_name");
+        String lastName = userData.get("last_name");
+        String email = userData.get("email");
+        int securityClearance = Integer.parseInt(userData.get("security_clearance"));
+        String userName = userData.get("username");
+        String passWord = userData.get("password");
+        String postalCode = userData.get("postal_code");
+        LocalDate dateOfBirth = null;
+        if (userData.containsKey("date_of_birth") && !(userData.get("date_of_birth") == null)) {
+            dateOfBirth = LocalDate.parse(userData.get("date_of_birth"));
+        }
+
+        User user = new User(
+                sectorId,
+                firstName,
+                lastName,
+                email,
+                securityClearance,
+                passWord,
+                userName,
+                null,
+                null,
+                dateOfBirth,
+                postalCode,
+                null,
+                false
+                );
+        System.out.println(user);
+        try {
+            this.usersRepository.save(user);
+            if (this.usersRepository.findByUsername(userName) != null) {
+                return ResponseEntity.ok("Sign up successful");
+            } else {
+                throw new PreConditionFailedException("Sign up failed");
+            }
+        } catch (PreConditionFailedException exception) {
+            exception.printStackTrace();
+        }
+        return ResponseEntity.badRequest().body("Something went wrong...");
     }
 
     /**

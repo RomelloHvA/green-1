@@ -90,7 +90,6 @@
 /* eslint-disable */
 import router from '@/router'
 import { useToast } from 'vue-toast-notification'
-import {User} from "@/models/user";
 
 export default {
   name: 'SignUpValidationView',
@@ -113,7 +112,7 @@ export default {
       userName: '',
       password: '',
       confirmPassword: '',
-      dateOfBirth: '',
+      dateOfBirth: null,
       faculties: ['Applied Social Sciences and Law', 'Business and Economics',
         'Digital Media and Creative Industries', 'Education', 'Health', 'Sports and Nutrition',
         'Technology'] // HvA faculties src:https://www.amsterdamuas.com/about-auas/organisation/faculties/faculties.html?_ga=2.137166840.975923899.1700941795-516242571.1663835270
@@ -261,16 +260,31 @@ export default {
     signUp () {
       // TODO
       // setup data object with corrected and verified data -> createUserJson
+      const userJson = this.createUserJson()
+
       // encrypt any sensitive data
       // send a post request to the backend to post a new user entity
       // a methode to put the inputs in the database (later on)
-      router.push({ name: 'login' })
+      // router.push({ name: 'login' })
     },
     createUserJson () {
       // user json requires:
       // [user_id, sector_id, first_name, last_name, email, security_clearance,
       //  password, username, bio (null), occupation (null), date_of_birth, postal_code, user_col (null) ]
-
+      console.log(this.dateOfBirth)
+      const newUser = {
+        user_id: 0,
+        sector_id: this.faculties.indexOf(this.faculty),
+        first_name: this.firstName,
+        last_name: this.lastName,
+        email: this.email,
+        security_clearance: 1,
+        password: this.password,
+        username: this.userName,
+        postal_code: this.postCode,
+        date_of_birth: this.dateOfBirth
+      }
+      return newUser
     },
     // This methode checks the input and validates it
     signUpCheck () {
