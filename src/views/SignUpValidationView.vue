@@ -87,7 +87,10 @@
 </template>
 
 <script>
+/* eslint-disable */
 import router from '@/router'
+import { useToast } from 'vue-toast-notification'
+import {User} from "@/models/user";
 
 export default {
   name: 'SignUpValidationView',
@@ -282,7 +285,7 @@ export default {
       if (this.password === '') {
         this.errorMessagePassword = 'Enter a valid password'
         countError++
-      } else if (!this.passwordChecker(this.password)) {
+      } else if (!this.password.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,255}$/)) {
         this.errorMessagePassword = 'Password must consist of at least 6 characters, 1 capital letter, ' +
           ' 1 lowercase letter and 1 number.'
         countError++
@@ -296,6 +299,7 @@ export default {
         this.errorMessagePasswordRepeat = ''
       }
       if (countError === 0) {
+        useToast().success("Sign Up Successful!")
         this.signUp()
       }
     }
