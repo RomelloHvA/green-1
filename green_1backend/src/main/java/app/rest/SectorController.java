@@ -23,6 +23,11 @@ public class SectorController {
         return sectorRepository.findAll();
     }
 
+    @GetMapping("/all/quizislive") List<Sector> getAllSectorsWithLiveQuiz() {
+        System.out.println(sectorRepository.findAllWithLiveQuiz());
+        return sectorRepository.findAllWithLiveQuiz();
+    }
+
     @GetMapping("/{id}")
     public Sector getSectorById(Long id) {
         return sectorRepository.findById(id).orElse(null);
