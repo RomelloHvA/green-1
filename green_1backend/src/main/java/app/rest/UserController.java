@@ -83,18 +83,18 @@ public class UserController {
         // Attributes that are set to null will be instantiated by the user via their profile page
         System.out.println(user);
         try {
+            User existingUser = this.usersRepository.findByUsername(userName);
+            if (existingUser != null) {
+                throw new PreConditionFailedException("Sign up failed, there is already an existing user with this username!");
+            }
             // Saving the user to the repository
             this.usersRepository.save(user);
             User loggedInUser = this.usersRepository.findByUsername(userName);
-            if (loggedInUser != null) {
-                return ResponseEntity.status(HttpStatus.CREATED).body(loggedInUser);
-            } else {
-                throw new PreConditionFailedException("Sign up failed, there is already an user with this username!");
-            }
+            return ResponseEntity.status(HttpStatus.CREATED).body(loggedInUser);
         } catch (PreConditionFailedException exception) {
             exception.printStackTrace();
+            return ResponseEntity.badRequest().body(exception.getMessage());
         }
-        return ResponseEntity.badRequest().body("Something went wrong...");
     }
 
     /**
