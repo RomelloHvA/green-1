@@ -17,49 +17,56 @@
           <NavBarItem item-text="About us" route="/about_us"/>
           <NavBarItem item-text="Quiz" route="/quiz"/>
           <NavBarItem item-text="SDG info" route="/sdg/1"/>
-          <NavBarItem v-if="isLoggedIn" item-text="Profile" route="/profile"/>
-          <NavBarItem v-if="isAdmin && isLoggedIn" item-text="Admin Dashboard" route="/admin_dashboard"/>
+          <NavBarItem v-if="isAuthenticated" item-text="Profile" route="/profile"/>
+          <NavBarItem v-if="isAdmin & isAuthenticated" item-text="Admin Dashboard" route="/admin_dashboard"/>
         </ul>
-        <NavBarItem class="btn btn-navsignup" v-if="!isLoggedIn" item-text="Sign up" route="/signup"/>
-        <NavBarItem class="btn btn-navLogin mx-1" v-if="!isLoggedIn" item-text="Log in" route="/login"/>
-        <p class="text-white m-1" v-if="isLoggedIn">Welcome {{ JSON.parse(account).username }}</p>
-        <button class="btn btn-navLogin mx-1" v-if="isLoggedIn" @click="logOut">Log out</button>
+        <NavBarItem class="btn btn-navsignup" v-if="!isAuthenticated" item-text="Sign up" route="/signup"/>
+        <NavBarItem class="btn btn-navLogin mx-1" v-if="!isAuthenticated" item-text="Log in" route="/login"/>
+        <p class="text-white m-1" v-if="isAuthenticated">Welcome {{ this.sessionService.getUserName() }}</p>
+        <button class="btn btn-navLogin mx-1" v-if="isAuthenticated" @click="logOut">Log out</button>
       </div>
     </div>
   </nav>
 </template>
 <script>
 import NavBarItem from '@/components/NavBar/NavBarItem'
-import eventBus from 'vue-toast-notification/src/js/bus'
+// import eventBus from 'vue-toast-notification/src/js/bus'
 import router from '@/router'
 
 export default {
   name: 'NavBar',
   components: { NavBarItem },
-  inject: ['usersServices'],
+  inject: ['usersServices', 'sessionService'],
   data () {
     return {
-      isAdmin: false,
-      account: sessionStorage.getItem('ACCOUNT'),
-      isLoggedIn: this.account !== null && this.account !== '' && this.account !== undefined
+      // isAdmin: false,
+      account: sessionStorage.getItem('ACCOUNT')
     }
   },
-  async created () {
-    let users = []
-    users = await this.usersServices.asyncFindAll()
-    /**
-     * EventBus is used for listening to emits from LogInView
-     * @author Jiaming Yan & Justin Chan
-     */
-    eventBus.on('change-data', (data) => {
-      this.account = sessionStorage.getItem('ACCOUNT')
-      console.log(JSON.parse(this.account).username)
-      const currentUser = users.find(user => user.username === JSON.parse(this.account).username)
-      console.log(currentUser)
-      this.isAdmin = currentUser.isAdmin
-      this.isLoggedIn = true
-    })
-  },
+  // async created () {
+  //   let users = []
+  //   users = await this.usersServices.asyncFindAll()
+  //   /**
+  //    * EventBus is used for listening to emits from LogInView
+  //    * @author Jiaming Yan & Justin Chan
+  //    */
+  //   eventBus.on('change-data', async (data) => {
+  //     this.account = sessionStorage.getItem('ACCOUNT')
+  //     const currentUser = users.find(user => user.username === JSON.parse(this.account).username)
+  //     // const currentUser = await this.usersServices.asyncFindById(parseInt(JSON.parse(this.account).user_id))
+  //     console.log('currentUser', currentUser)
+  //     this.isAdmin = currentUser.isAdmin
+  //   })
+  // },
+  // async created () {
+  //   if (!this.sessionService.isAuthenticated()) {
+  //     this.isAdmin = false
+  //   } else {
+  //     this.account = sessionStorage.getItem('ACCOUNT')
+  //     const currentUser = await this.usersServices.asyncFindById(JSON.parse(this.account).user_id)
+  //     this.isAdmin = currentUser.isAdmin
+  //   }
+  // },
   methods: {
     /**
      * This function is responsible for logging the user out of their account
@@ -68,14 +75,24 @@ export default {
      */
     async logOut () {
       try {
-        sessionStorage.removeItem('ACCOUNT')
-        sessionStorage.removeItem('TOKEN')
-        localStorage.removeItem('ACCOUNT')
-        localStorage.removeItem('TOKEN')
-        this.isLoggedIn = false
-        await router.push({ name: 'login' })
+        this.sessionService.signOut()
+        await router.push({ path: '/sign-out' })
       } catch (error) {
         console.error(error)
+      }
+    }
+  },
+  computed: {
+    isAuthenticated () {
+      return this.sessionService.isAuthenticated()
+    },
+    isAdmin () {
+      const currentAccount = this.sessionService.currentAccount
+      console.log('currentAccount', currentAccount)
+      if (currentAccount) {
+        return currentAccount.isAdmin
+      } else {
+        return false
       }
     }
   }

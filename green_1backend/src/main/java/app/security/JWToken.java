@@ -11,21 +11,21 @@ public class JWToken {
 
     private static final String JWT_USERNAME_CLAIM = "sub";
     private static final String JWT_USERID_CLAIM = "id";
-    private static final boolean JWT_ROLE_CLAIM = false;
+    private static final boolean JWT_ADMIN_CLAIM = false;
 
     private static final String JWT_IPADDRESS_CLAIM = "ipa";
 
     public static final String JWT_ATTRIBUTE_NAME = "JWTokenInfo";
 
     private String username = null;
-    private Long userId = null;
-    private boolean admin = false;
+    private Long user_id = null;
+    private boolean isAdmin = false;
 
     private String ipAddress;
-    public JWToken(String username, Long userId, boolean admin) {
+    public JWToken(String username, Long userId, boolean isAdmin) {
         this.username = username;
-        this.userId = userId;
-        this.admin = admin;
+        this.user_id = userId;
+        this.isAdmin = isAdmin;
     }
 
     public String encode(String issuer, String passphrase, int expiration) {
@@ -33,8 +33,8 @@ public class JWToken {
 
         return Jwts.builder()
                 .claim(JWT_USERNAME_CLAIM, this.username)
-                .claim(JWT_USERID_CLAIM, this.userId)
-                .claim(String.valueOf(JWT_ROLE_CLAIM), this.admin)
+                .claim(JWT_USERID_CLAIM, this.user_id)
+                .claim(String.valueOf(JWT_ADMIN_CLAIM), String.valueOf(this.isAdmin))
                 .setIssuer(issuer)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000L))
@@ -54,7 +54,7 @@ public class JWToken {
         JWToken jwToken = new JWToken(
                 claims.get(JWT_USERNAME_CLAIM).toString(),
                 Long.valueOf(claims.get(JWT_USERID_CLAIM).toString()),
-                Boolean.parseBoolean(claims.get(JWT_ROLE_CLAIM).toString())
+                Boolean.parseBoolean(claims.get(JWT_ADMIN_CLAIM).toString())
         );
         jwToken.setIpAddress((String) claims.get(JWT_IPADDRESS_CLAIM));
         return jwToken;
@@ -73,20 +73,20 @@ public class JWToken {
         this.username = username;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getUser_id() {
+        return user_id;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
     }
 
     public boolean isAdmin() {
-        return admin;
+        return isAdmin;
     }
 
     public void setAdmin(boolean admin) {
-        this.admin = admin;
+        this.isAdmin = admin;
     }
 
     public String getIpAddress() {

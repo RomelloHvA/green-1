@@ -28,7 +28,7 @@ public class MvcConfig implements WebMvcConfigurer {
     private int tokenDurationOfValidity;
 
     public Set<String> SECURED_PATHS =
-            Set.of("/scooters");
+            Set.of("/placeholder");
 
     public String getIssuer() {
         return issuer;

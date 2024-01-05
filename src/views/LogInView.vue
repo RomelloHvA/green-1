@@ -9,7 +9,8 @@
                 <h2 class="text-uppercase text-center mb-5">Log In</h2>
                 <form v-on:submit.prevent>
                   <div class="form-outline mb-4">
-                    <input type="text" id="userName" class="form-control" placeholder="Username" v-model="inputUserName"/>
+                    <input type="text" id="userName" class="form-control" placeholder="Username"
+                           v-model="inputUserName"/>
                   </div>
                   <div class="form-outline mb-4">
                     <input type="password" id="password" class="form-control" placeholder="Password"
@@ -36,7 +37,7 @@
 
 <script>
 import router from '@/router'
-import eventBus from 'vue-toast-notification/src/js/bus'
+// import eventBus from 'vue-toast-notification/src/js/bus'
 
 export default {
   name: 'LogInView',
@@ -48,16 +49,25 @@ export default {
       inputPassWord: ''
     }
   },
-
+  created () {
+    const signOutParam = this.$route.query.signOut
+    if (signOutParam) {
+      this.sessionService.signOut()
+    }
+  },
   methods: {
+    /**
+     * This function is responsible for logging the user in to their account
+     * @author Justin Chan & Jiaming Yan
+     */
     async handleLogin () {
       try {
         console.log('Login data:', this.inputUserName, this.inputPassWord)
         const response = await this.sessionService.asyncLogin(this.inputUserName, this.inputPassWord)
         console.log('LoginView response:', response)
         if (response) {
-          // Emitting the username to NavBar so the NavBar knows the user is logged in
-          await eventBus.emit('change-data', this.inputUserName)
+          // // Emitting the username to NavBar so the NavBar knows the user is logged in
+          // await eventBus.emit('change-data', this.inputUserName)
           // Redirects the user back to home after successful login
           await router.push({ name: 'home' })
         } else {
@@ -68,48 +78,6 @@ export default {
         this.errorMessage = error.message
       }
     }
-    // /**
-    //  * This method is responsible for handling user-login
-    //  * @author Jiaming Yan
-    //  * @return {Promise<void>}
-    //  */
-    // async handleLogin () {
-    //   const userData = {
-    //     username: this.userName,
-    //     password: this.passWord
-    //   }
-    //   try {
-    //     const response = await fetch(CONFIG.BACKEND_URL + '/users/login', {
-    //       method: 'POST',
-    //       headers: { 'Content-Type': 'application/json' },
-    //       body: JSON.stringify(userData)
-    //     })
-    //     console.log('Login response:', response)
-    //     console.log(userData)
-    //     if (response.ok) {
-    //       console.log('Login successful:', response.status)
-    //       sessionStorage.setItem('username', this.userName)
-    //       // Emitting the username to NavBar so the NavBar knows the user is logged in
-    //       eventBus.emit('change-data', this.username)
-    //       // Redirects the user back to home after successful login
-    //       await router.push({ name: 'home' })
-    //     } else {
-    //       throw new Error('Something went wrong: ' + await response.text())
-    //     }
-    //   } catch (error) {
-    //     console.error()
-    //     this.errorMessage = error.message
-    //   }
-    // }
-    // A hardcoded account that redirects to the profile page
-    // logInCheck () {
-    //   if (this.userName === 'Santosh1234' && this.password === 'santosh') {
-    //     this.errorMessage = ''
-    //     router.push({ name: 'profile' })
-    //   } else {
-    //     this.errorMessage = 'Please check that you have used the correct email address and password and try again.'
-    //   }
-    // }
   }
 }
 

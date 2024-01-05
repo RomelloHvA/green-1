@@ -56,6 +56,7 @@ const routes = [
     name: 'login',
     component: () => import('../views/LogInView')
   },
+  { path: '/sign-out', redirect: () => ({ path: '/login', query: { signOut: true } }) },
   {
     path: '/profile',
     name: 'profile',
@@ -92,12 +93,18 @@ const routes = [
     name: 'admin_dashboard',
     redirect: '/admin_dashboard/intro',
     children: [
-      { path: 'intro', component: () => import('@/components/AdminDashboard/AdminIntroComponent') },
+      {
+        path: 'intro',
+        component: () => import('@/components/AdminDashboard/AdminIntroComponent')
+      },
       {
         path: 'content',
         component: () => import('@/components/AdminDashboard/content/ContentComponent'),
         children: [
-          { path: ':id', component: () => import('@/components/AdminDashboard/content/PageEditorComponent') }
+          {
+            path: ':id',
+            component: () => import('@/components/AdminDashboard/content/PageEditorComponent')
+          }
         ]
       },
       {
@@ -139,13 +146,22 @@ const routes = [
         ]
       },
 
-      { path: 'intro', component: () => import('@/components/AdminDashboard/AdminIntroComponent') },
-      { path: 'users', component: () => import('@/components/AdminDashboard/AdminUserComponent') },
+      {
+        path: 'intro',
+        component: () => import('@/components/AdminDashboard/AdminIntroComponent')
+      },
+      {
+        path: 'users',
+        component: () => import('@/components/AdminDashboard/AdminUserComponent')
+      },
       {
         path: 'action_plans',
         component: () => import('@/components/AdminDashboard/ActionPlanEditorComponent/ActionPlanEditorMain'),
         children: [
-          { path: ':sector/:id?', component: () => import('@/components/AdminDashboard/ActionPlanEditorComponent/SectorAllPlansComponent') }
+          {
+            path: ':sector/:id?',
+            component: () => import('@/components/AdminDashboard/ActionPlanEditorComponent/SectorAllPlansComponent')
+          }
         ]
       }
     ],
