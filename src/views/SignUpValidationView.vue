@@ -93,6 +93,7 @@ import { useToast } from 'vue-toast-notification'
 
 export default {
   name: 'SignUpValidationView',
+  inject: ['usersServices'],
   data () {
     return {
       errorFirstName: '',
@@ -257,15 +258,16 @@ export default {
       const today = new Date()
       return (today.getFullYear() - date.getFullYear()) >= minYear
     },
-    signUp () {
-      // TODO
-      // setup data object with corrected and verified data -> createUserJson
+    async signUp() {
       const userJson = this.createUserJson()
-
-      // encrypt any sensitive data
-      // send a post request to the backend to post a new user entity
-      // a methode to put the inputs in the database (later on)
-      // router.push({ name: 'login' })
+      try {
+        const response = await this.usersServices.asyncSave(userJson)
+        useToast().success("Sign Up Successful! You will be sent to the login page in a moment...")
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        router.push({ name: 'login' })
+      } catch (error) {
+        useToast().error(error.message)
+      }
     },
     createUserJson () {
       // user json requires:
@@ -274,7 +276,7 @@ export default {
       console.log(this.dateOfBirth)
       const newUser = {
         user_id: 0,
-        sector_id: this.faculties.indexOf(this.faculty),
+        sector_id: this.faculties.indexOf(this.faculty) + 1,
         first_name: this.firstName,
         last_name: this.lastName,
         email: this.email,
@@ -313,7 +315,6 @@ export default {
         this.errorMessagePasswordRepeat = ''
       }
       if (countError === 0) {
-        useToast().success("Sign Up Successful!")
         this.signUp()
       }
     }
