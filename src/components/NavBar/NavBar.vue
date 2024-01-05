@@ -1,36 +1,38 @@
 <template>
-<nav class="navbar navbar-dark navbar-expand-lg bg-navbar-color navbar-item-text ">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#"><img class="navbar-logo" src="@/assets/img/logos/hva_logo_transparant.png" alt="HvA Logo"></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link mx-0 remove-hva-text" href="https://www.hva.nl/">Hogeschool van Amsterdam</a>
-        </li>
-<!--        NavbarItems-->
-        <NavBarItem item-text="Home" route="/"/>
-        <NavBarItem item-text="About us" route="/about_us"/>
-        <NavBarItem item-text="Quiz" route="/quiz"/>
-        <NavBarItem item-text="SDG info" route="/sdg/1"/>
-        <NavBarItem v-if="isLoggedIn" item-text="Profile" route="/profile"/>
-        <NavBarItem v-if="isAdmin && isLoggedIn" item-text="Admin Dashboard" route="/admin_dashboard"/>
-      </ul>
-      <NavBarItem class="btn btn-navsignup" v-if="!isLoggedIn" item-text="Sign up" route="/signup"/>
-      <NavBarItem class="btn btn-navLogin mx-1" v-if="!isLoggedIn" item-text="Log in" route="/login"/>
-      <p class="text-white m-1" v-if="isLoggedIn">Welcome {{ JSON.parse(account).username }}</p>
-      <button class="btn btn-navLogin mx-1" v-if="isLoggedIn" @click="logOut">Log out</button>
+  <nav class="navbar navbar-dark navbar-expand-lg bg-navbar-color navbar-item-text ">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#"><img class="navbar-logo" src="@/assets/img/logos/hva_logo_transparant.png"
+                                            alt="HvA Logo"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link mx-0 remove-hva-text" href="https://www.hva.nl/">Hogeschool van Amsterdam</a>
+          </li>
+          <!--        NavbarItems-->
+          <NavBarItem item-text="Home" route="/"/>
+          <NavBarItem item-text="About us" route="/about_us"/>
+          <NavBarItem item-text="Quiz" route="/quiz"/>
+          <NavBarItem item-text="SDG info" route="/sdg/1"/>
+          <NavBarItem v-if="isLoggedIn" item-text="Profile" route="/profile"/>
+          <NavBarItem v-if="isAdmin && isLoggedIn" item-text="Admin Dashboard" route="/admin_dashboard"/>
+        </ul>
+        <NavBarItem class="btn btn-navsignup" v-if="!isLoggedIn" item-text="Sign up" route="/signup"/>
+        <NavBarItem class="btn btn-navLogin mx-1" v-if="!isLoggedIn" item-text="Log in" route="/login"/>
+        <p class="text-white m-1" v-if="isLoggedIn">Welcome {{ JSON.parse(account).username }}</p>
+        <button class="btn btn-navLogin mx-1" v-if="isLoggedIn" @click="logOut">Log out</button>
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
 </template>
 <script>
 import NavBarItem from '@/components/NavBar/NavBarItem'
 import eventBus from 'vue-toast-notification/src/js/bus'
 import router from '@/router'
+
 export default {
   name: 'NavBar',
   components: { NavBarItem },
@@ -47,7 +49,7 @@ export default {
     users = await this.usersServices.asyncFindAll()
     /**
      * EventBus is used for listening to emits from LogInView
-     * @author Jiaming Yan
+     * @author Jiaming Yan & Justin Chan
      */
     eventBus.on('change-data', (data) => {
       this.account = sessionStorage.getItem('ACCOUNT')
@@ -61,13 +63,20 @@ export default {
   methods: {
     /**
      * This function is responsible for logging the user out of their account
-     * @author Jiaming Yan
+     * @author Jiaming Yan & Justin Chan
      * @return {Promise<void>}
      */
     async logOut () {
-      sessionStorage.removeItem('ACCOUNT')
-      this.isLoggedIn = false
-      await router.push({ name: 'login' })
+      try {
+        sessionStorage.removeItem('ACCOUNT')
+        sessionStorage.removeItem('TOKEN')
+        localStorage.removeItem('ACCOUNT')
+        localStorage.removeItem('TOKEN')
+        this.isLoggedIn = false
+        await router.push({ name: 'login' })
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 }
@@ -77,6 +86,7 @@ export default {
 .text-white {
   margin-right: 5%;
 }
+
 .bg-navbar-color {
   background: #401B96;
 }
