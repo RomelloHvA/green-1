@@ -32,12 +32,10 @@ public class UserController {
     }
 
     @PostMapping(path = "/login", produces = "application/json")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> userData) {
+    public ResponseEntity<?> login(@RequestBody ObjectNode userData) {
         try {
-        String userName = String.valueOf(userData.get("username"));
-        String passWord = String.valueOf(userData.get("password"));
-//        String userName = loginInfo.get("userName").asText();
-//        String passWord = loginInfo.get("passWord").asText();
+            String userName = userData.get("username").asText();
+            String passWord = userData.get("password").asText();
 
             User user = this.usersRepository.findByUsername(userName);
 
