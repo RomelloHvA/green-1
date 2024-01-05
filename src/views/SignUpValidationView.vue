@@ -259,21 +259,29 @@ export default {
       return (today.getFullYear() - date.getFullYear()) >= minYear
     },
     async signUp() {
+      // Start by generating a Json file for the user
       const userJson = this.createUserJson()
       try {
-        const response = await this.usersServices.asyncSave(userJson)
-        useToast().success("Sign Up Successful! You will be sent to the login page in a moment...")
-        await new Promise(resolve => setTimeout(resolve, 5000));
-        router.push({ name: 'login' })
+        // Send a request to the backend with the Json file
+        const user = await this.usersServices.asyncSave(userJson)
+        if (!user.response.ok) {
+          // Displaying the error
+          useToast().error(user.responseText)
+        } else {
+          // Displaying success message
+          useToast().success("Sign Up Successful! You will be sent to the login page in a moment...")
+          // Wait 5 seconds and send the user to the login page
+          await new Promise(resolve => setTimeout(resolve, 5000));
+          router.push({ name: 'login' })
+        }
       } catch (error) {
-        useToast().error(error.message)
+        console.log(error)
       }
     },
     createUserJson () {
       // user json requires:
       // [user_id, sector_id, first_name, last_name, email, security_clearance,
       //  password, username, bio (null), occupation (null), date_of_birth, postal_code, user_col (null) ]
-      console.log(this.dateOfBirth)
       const newUser = {
         user_id: 0,
         sector_id: this.faculties.indexOf(this.faculty) + 1,

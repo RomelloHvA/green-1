@@ -14,8 +14,12 @@ export class UsersAdaptor {
       if (response.ok) {
         return await response.json()
       } else {
-        console.log(response, !response.bodyUsed ? await response.text() : '')
-        return null
+        const responseText = await response.text()
+        console.log(response, !response.bodyUsed ? responseText : '')
+        return {
+          response: response,
+          responseText: responseText
+        }
       }
     } catch (error) {
       console.error('Error during fetch:', error)
