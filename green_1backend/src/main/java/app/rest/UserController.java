@@ -2,8 +2,10 @@ package app.rest;
 
 import app.MvcConfig;
 import app.models.User;
+import app.models.ViewClasses;
 import app.repositories.UsersRepositoryJPA;
 import app.security.JWToken;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -31,6 +33,7 @@ public class UserController {
         return usersRepository.findAll();
     }
 
+    @JsonView({ViewClasses.Summary.class})
     @PostMapping(path = "/login", produces = "application/json")
     public ResponseEntity<?> login(@RequestBody ObjectNode userData) {
         try {

@@ -21,7 +21,7 @@
       </ul>
       <NavBarItem class="btn btn-navsignup" v-if="!isLoggedIn" item-text="Sign up" route="/signup"/>
       <NavBarItem class="btn btn-navLogin mx-1" v-if="!isLoggedIn" item-text="Log in" route="/login"/>
-      <p class="text-white m-1" v-if="isLoggedIn">Welcome {{ userName }}</p>
+      <p class="text-white m-1" v-if="isLoggedIn">Welcome {{ JSON.parse(account).username }}</p>
       <button class="btn btn-navLogin mx-1" v-if="isLoggedIn" @click="logOut">Log out</button>
     </div>
   </div>
@@ -38,8 +38,8 @@ export default {
   data () {
     return {
       isAdmin: false,
-      userName: sessionStorage.getItem('userName'),
-      isLoggedIn: this.userName !== null && this.userName !== '' && this.userName !== undefined
+      account: sessionStorage.getItem('ACCOUNT'),
+      isLoggedIn: this.account !== null && this.account !== '' && this.account !== undefined
     }
   },
   async created () {
@@ -50,8 +50,10 @@ export default {
      * @author Jiaming Yan
      */
     eventBus.on('change-data', (data) => {
-      this.userName = sessionStorage.getItem('userName')
-      const currentUser = users.find(user => user.username === this.userName)
+      this.account = sessionStorage.getItem('ACCOUNT')
+      console.log(JSON.parse(this.account).username)
+      const currentUser = users.find(user => user.username === JSON.parse(this.account).username)
+      console.log(currentUser)
       this.isAdmin = currentUser.isAdmin
       this.isLoggedIn = true
     })
@@ -63,7 +65,7 @@ export default {
      * @return {Promise<void>}
      */
     async logOut () {
-      sessionStorage.removeItem('userName')
+      sessionStorage.removeItem('ACCOUNT')
       this.isLoggedIn = false
       await router.push({ name: 'login' })
     }

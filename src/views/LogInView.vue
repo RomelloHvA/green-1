@@ -7,7 +7,7 @@
             <div class="card" style="border-radius: 15px;">
               <div class="loginBox p-5">
                 <h2 class="text-uppercase text-center mb-5">Log In</h2>
-                <form v-on:submit.prevent="handleLogin">
+                <form v-on:submit.prevent>
                   <div class="form-outline mb-4">
                     <input type="text" id="userName" class="form-control" placeholder="Username" v-model="inputUserName"/>
                   </div>
@@ -54,9 +54,10 @@ export default {
       try {
         console.log('Login data:', this.inputUserName, this.inputPassWord)
         const response = await this.sessionService.asyncLogin(this.inputUserName, this.inputPassWord)
+        console.log('LoginView response:', response)
         if (response) {
           // Emitting the username to NavBar so the NavBar knows the user is logged in
-          await eventBus.emit('change-data', this.username)
+          await eventBus.emit('change-data', this.inputUserName)
           // Redirects the user back to home after successful login
           await router.push({ name: 'home' })
         } else {

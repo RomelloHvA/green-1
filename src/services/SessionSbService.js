@@ -16,15 +16,15 @@ export class SessionSbService {
     console.log('Attempting to recover token from browser storage...')
     if (this._currentToken != null) return this._currentToken
     this._currentToken = window.sessionStorage.getItem('TOKEN')
-    let userAccount = window.sessionStorage.getItem('username')
+    let userAccount = window.sessionStorage.getItem('ACCOUNT')
 
     if (this._currentToken == null) {
       try {
         if (localStorage !== null) {
           this._currentToken = window.localStorage.getItem('TOKEN')
-          userAccount = window.localStorage.getItem('username')
+          userAccount = window.localStorage.getItem('ACCOUNT')
           window.sessionStorage.setItem('TOKEN', this._currentToken)
-          window.sessionStorage.setItem('username', userAccount)
+          window.sessionStorage.setItem('ACCOUNT', userAccount)
         }
       } catch (e) {
         console.log('SessionStorage is not available, using LocalStorage instead.')
@@ -43,21 +43,21 @@ export class SessionSbService {
       if (token == null) {
         this._currentAccount = null
         window.sessionStorage.removeItem('TOKEN')
-        window.sessionStorage.removeItem('username')
+        window.sessionStorage.removeItem('ACCOUNT')
 
         if (localStorage !== sessionStorage) {
           window.localStorage.removeItem('TOKEN')
-          window.localStorage.removeItem('username')
+          window.localStorage.removeItem('ACCOUNT')
         }
       } else {
         console.log('New token for ' + user.username + ': ' + token)
         // insert into sessionStorage
         window.sessionStorage.setItem('TOKEN', token)
-        window.sessionStorage.setItem('username', user.username)
+        window.sessionStorage.setItem('ACCOUNT', JSON.stringify(user))
 
         // insert into localStorage
         window.localStorage.setItem('TOKEN', token)
-        window.localStorage.setItem('username', user.username)
+        window.localStorage.setItem('ACCOUNT', JSON.stringify(user))
       }
     } catch (e) {
       console.log('SessionStorage is not available, using LocalStorage instead.')
@@ -65,7 +65,7 @@ export class SessionSbService {
   }
 
   getUserName () {
-    return this._currentAccount ? this._currentAccount.name : ''
+    return this._currentAccount ? this._currentAccount.username : ''
   }
 
   isAuthenticated () {
@@ -96,34 +96,9 @@ export class SessionSbService {
         console.log('Token:', token)
         console.log('User:', user)
         this.saveTokenIntoBrowserStorage(token, user)
-      } else {
-        throw new Error('Something went wrong: ' + await response.text())
-      }
-    } catch (error) {
-      console.error()
-      this.errorMessage = error.message
-    }
-  }
-
-  async asyncSignIn (email, password) {
-    try {
-      const body = JSON.stringify({
-        email: email,
-        password: password
-      })
-      const response = await fetch(this.RESOURCES_URL + '/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: body
-      })
-      console.log(response)
-      if (response.ok) {
-        const token = await response.json()
-        this.saveTokenIntoBrowserStorage(response.headers.get('Authorization'), token)
         return true
       } else {
+        // throw new Error('Something went wrong: ' + await response.text())
         console.log(response, !response.bodyUsed ? await response.text() : '')
         if (response.status === 401) {
           console.error('Unauthorized. Token may have expired or invalid.')
@@ -132,9 +107,9 @@ export class SessionSbService {
         }
         return false
       }
-    } catch (e) {
-      console.error('Error in asyncSignIn(): ', e)
-      return false
+    } catch (error) {
+      console.error()
+      this.errorMessage = error.message
     }
   }
 
