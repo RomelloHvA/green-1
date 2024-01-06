@@ -124,7 +124,7 @@ import { Goal } from '@/models/goal'
 
 export default {
   name: 'ProfilePage',
-  inject: ['usersServices'],
+  inject: ['usersServices', 'sessionService'],
   data () {
     return {
       profile: null,
@@ -235,8 +235,8 @@ export default {
       // Wait for the asynchronous operation to complete
       this.profile = new Profile()
       // const profileService = await this.profileService.asyncFindAll()
-      const username = sessionStorage.getItem('userName')
-      const user = await this.usersServices.asyncFindByName(username)
+      const account = await this.sessionService.currentAccount
+      const user = await this.usersServices.asyncFindById(account.user_id)
 
       this.profile = user
       // Log the fetched profile data
