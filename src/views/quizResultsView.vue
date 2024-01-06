@@ -1,11 +1,14 @@
 <template>
-  <h2 class="mx-0">These are your top sdgs!</h2>
+  <div>
+    <h2 class="mx-0">These are your top sdgs!</h2>
+    <button @click="saveResults" class="btn btn-primary">Save Results</button>
+  </div>
   <section class="container">
     <div class="row">
       <div style="width: 400px">
         <Doughnut :data="this.data" :options="this.options"/>
       </div>
-      <!--      Loop to add all the sdg-results-->
+      <!-- Loop om alle sdg-results toe te voegen -->
       <div v-for="(sdg, index) in sdgData.slice(0, 7)" :key="index" class="col p-0">
         <sdg-card-component :sdg-data="sdg"/>
       </div>
@@ -40,7 +43,9 @@ export default {
         ]
       },
       options: options,
-      sdgData: []
+      sdgData: [],
+      top7: [],
+      dateOfQuiz: null
     }
   },
   /**
@@ -63,27 +68,28 @@ export default {
           return b.score - a.score
         })
         // Top 7 scores.
-        const top7 = quizanswers.slice(0, 7)
-        const scores = top7.map(item => item.score)
+        this.top7 = quizanswers.slice(0, 7)
+        const scores = this.top7.map(item => item.score)
 
         // set the corresponding labels and colors through the ID.
         const names = []
         const sdgColors = []
-        setNamesAndLabels(top7, names, sdgColors)
+        setNamesAndLabels(this.top7, names, sdgColors)
         // Give the data and labels to the graph .
         this.data.labels = names
         this.data.datasets = [{
           backgroundColor: sdgColors,
           data: scores
         }]
+        console.log(this.data)
         // Fill in sdgData to pass as a prop later
-        for (let i = 0; i < top7.length; i++) {
+        for (let i = 0; i < this.top7.length; i++) {
           const newTitle = names[i]
           // If the user is logged in this should change the action to a not general one. Will be implemented at a later point
-          const newContribution = sdgData.find(sdg => sdg.id === top7[i].SDG).generalContribution
-          const newDescription = sdgData.find(sdg => sdg.id === top7[i].SDG).description
-          const newSrc = sdgData.find(sdg => sdg.id === top7[i].SDG).src
-          const newGifSrc = sdgData.find(sdg => sdg.id === top7[i].SDG).gifSrc
+          const newContribution = sdgData.find(sdg => sdg.id === this.top7[i].SDG).generalContribution
+          const newDescription = sdgData.find(sdg => sdg.id === this.top7[i].SDG).description
+          const newSrc = sdgData.find(sdg => sdg.id === this.top7[i].SDG).src
+          const newGifSrc = sdgData.find(sdg => sdg.id === this.top7[i].SDG).gifSrc
           this.sdgData.push({
             title: newTitle,
             generalContribution: newContribution,
@@ -111,6 +117,14 @@ export default {
         names.push(sdgData.find(sdg => sdg.id === top7[i].SDG).title)
         sdgColors.push(sdgData.find(sdg => sdg.id === top7[i].SDG).color)
       }
+    }
+  },
+  methods: {
+    saveResults () {
+      const top3 = this.top7.slice(0, 3).map(item => item.SDG)
+      this.savedDate = new Date()
+      console.log(top3)
+      console.log(this.savedDate)
     }
   }
 }
