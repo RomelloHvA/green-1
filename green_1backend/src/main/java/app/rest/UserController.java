@@ -107,4 +107,20 @@ public class UserController {
             throw new ResourceNotFoundException("Offer not found with ID: " + id);
         }
     }
+
+    @PostMapping(path = "/name", produces = "application/json")
+    public ResponseEntity<?> findByUsername(@RequestBody String username) {
+        if (username.trim().isEmpty()) throw new ResourceNotFoundException("Please provide an username!");
+        try {
+            User user = this.usersRepository.findByUsername(username);
+            if (user != null) {
+                return ResponseEntity.ok(user);
+            } else {
+                throw new ResourceNotFoundException("No user found with username: " + username);
+            }
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

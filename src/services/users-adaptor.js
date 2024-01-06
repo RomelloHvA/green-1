@@ -23,6 +23,18 @@ export class UsersAdaptor {
     }
   }
 
+  async asyncFindByName (username) {
+    const url = `${this.resourcesUrl}/users/name`
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: username
+    }
+    return this.fetchJson(url, options)
+  }
+
   async asyncFindAll () {
     let response = []
     const url = `${this.resourcesUrl}/users/all`

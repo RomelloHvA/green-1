@@ -41,7 +41,7 @@
                 <div class="mb-3">
                   <label for="inputOccupation" class="form-label">Occupation: </label>
                   <input type="text" autocomplete="off" class="form-control" id="inputOccupation"
-                         v-model="profile.occupation" aria-required="true" required>
+                         v-model="profile.occupation" aria-required="true" required placeholder="Enter your occupation...">
                 </div>
                 <div v-if="isOccupationEmpty" class="invalid-message border mt-1 error">
                   Occupation is required
@@ -55,7 +55,7 @@
             <div class="mb-3">
               <label for="inputBio" class="form-label">Bio: </label>
               <textarea class="form-control" id="inputBio" autocomplete="off"
-                        style="height: 25rem; width: 100%; resize: none" v-model="profile.bio" required></textarea>
+                        style="height: 25rem; width: 100%; resize: none" v-model="profile.bio" required placeholder="Tell us something about you!"></textarea>
               <div v-if="isBioEmpty" class="invalid-message border mt-1 error">
                 Bio is required
               </div>
@@ -124,7 +124,7 @@ import { Goal } from '@/models/goal'
 
 export default {
   name: 'ProfilePage',
-  inject: ['profileService'],
+  inject: ['usersServices'],
   data () {
     return {
       profile: null,
@@ -235,9 +235,10 @@ export default {
       // Wait for the asynchronous operation to complete
       this.profile = new Profile()
       // const profileService = await this.profileService.asyncFindAll()
-      const profileService = await this.profileService.asyncFindById(0)
+      const username = sessionStorage.getItem('userName')
+      const user = await this.usersServices.asyncFindByName(username)
 
-      this.profile = profileService
+      this.profile = user
       // Log the fetched profile data
       console.log(this.profile)
 
