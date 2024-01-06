@@ -56,14 +56,33 @@ const routes = [
     name: 'login',
     component: () => import('../views/LogInView')
   },
-  { path: '/sign-out', redirect: () => ({ path: '/login', query: { signOut: true } }) },
+  {
+    path: '/sign-out',
+    redirect: () => ({
+      path: '/login',
+      query: { signOut: true }
+    })
+  },
   {
     path: '/profile',
     name: 'profile',
     // children: [
     //   { path: ':id', component: () => import('@/components/result/ResultPage') }
     // ],
-    component: () => import('../components/profile/ProfilePage')
+    component: () => import('../components/profile/ProfilePage'),
+    beforeEnter: (to, from, next) => {
+      try {
+        const isAuthenticated = sessionStorage.getItem('TOKEN')
+        if (isAuthenticated !== null) {
+          next()
+        } else {
+          next('/sign-out')
+        }
+      } catch (e) {
+        console.log(e)
+        next('/sign-out')
+      }
+    }
   },
   {
     path: '/quiz',
@@ -165,7 +184,25 @@ const routes = [
         ]
       }
     ],
-    component: () => import(/* webpackChunkName: "about" */ '../views/AdminDashboardView')
+    component: () => import(/* webpackChunkName: "about" */ '../views/AdminDashboardView'),
+    beforeEnter: (to, from, next) => {
+      try {
+        const isAuthenticated = sessionStorage.getItem('TOKEN')
+        const isAdmin = JSON.parse(sessionStorage.getItem('ACCOUNT')).isAdmin
+        if (isAuthenticated !== null) {
+          if (isAdmin === true) {
+            next()
+          } else {
+            next('/sign-out')
+          }
+        } else {
+          next('/sign-out')
+        }
+      } catch (e) {
+        console.log(e)
+        next('/sign-out')
+      }
+    }
   },
   {
     path: '/results',
