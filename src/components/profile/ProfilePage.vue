@@ -46,8 +46,8 @@
                 <div v-if="isOccupationEmpty" class="invalid-message border mt-1 error">
                   Occupation is required
                 </div>
-                <button @click="saveEdit" type="submit" class="btn btn-primary editButton">Save</button>
-                <button @click="cancelEdit" type="button" class="btn btn-primary editButton">Cancel</button>
+                <button @click="saveEdit" :disabled="!isProfileChanged(this.profile, this.oldProfileData)" type="submit" class="btn btn-primary editButton">Save</button>
+                <button @click="cancelEdit" :disabled="!isProfileChanged(this.profile, this.oldProfileData)" type="button" class="btn btn-primary editButton">Cancel</button>
               </div>
             </div>
           </div>
@@ -115,7 +115,7 @@
 <script>
 import { Profile } from '@/models/profile'
 import { Goal } from '@/models/goal'
-
+import { useToast } from 'vue-toast-notification'
 /**
  * ProfilePage compontent
  * This is the page is used so users view their profile information
@@ -127,7 +127,13 @@ export default {
   inject: ['usersServices', 'sessionService'],
   data () {
     return {
-      profile: null,
+      profile: {
+        first_name: '',
+        last_name: '',
+        occupation: '',
+        username: '',
+        date_of_birth: null
+      },
       selectedOption: '',
       sdgGoals: [
         {
@@ -220,7 +226,13 @@ export default {
         image: null,
         profilePic: null
       },
-      oldProfileData: null,
+      oldProfileData: {
+        first_name: '',
+        last_name: '',
+        occupation: '',
+        username: '',
+        date_of_birth: null
+      },
       showGoalSDGEmpty: false,
       showGoalSDGLimit: false,
       showGoalSDGDup: false,
@@ -233,23 +245,25 @@ export default {
   async created () {
     try {
       // Wait for the asynchronous operation to complete
-      this.profile = new Profile()
       // const profileService = await this.profileService.asyncFindAll()
       const account = await this.sessionService.currentAccount
       const user = await this.usersServices.asyncFindById(account.user_id)
 
-      this.profile = user
+      this.profile = { ...user }
       // Log the fetched profile data
-      console.log(this.profile)
+      console.log(this.profile.first_name)
 
       // Create a copy of the profile
-      this.oldProfileData = Profile.copyConstructor(this.profile)
+      this.oldProfileData = { ...this.profile }
       console.log(this.oldProfileData)
     } catch (error) {
       console.error('Error fetching profile data:', error)
     }
   },
   methods: {
+    update: function (attribute, event) {
+      attribute = event.target.value
+    },
     /**
      * Function to show the newly uploaded profile picture
      * @param e
@@ -338,21 +352,8 @@ export default {
     cancelEdit () {
       // Check if the user wants to undo the changes
       if (confirm('Are you sure you want to undo your changes?') === true) {
-        const firstName = this.oldProfileData.first_name
-        const lastName = this.oldProfileData.last_name
-        const photo = this.oldProfileData.photo
-        const birth = this.oldProfileData.date_of_birth
-        const occupation = this.oldProfileData.occupation
-        const bio = this.oldProfileData.bio
-        const goals = this.oldProfileData.goals
-        this.profile.firstName = firstName
-        this.profile.lastName = lastName
-        this.profile.photo = photo
-        this.profile.birth = birth
-        this.profile.occupation = occupation
-        this.profile.bio = bio
-        this.profile.goals = goals
-        alert('Changes have been undone')
+        this.profile = { ...this.oldProfileData }
+        useToast().success('Changes have been undone')
       }
     },
     /**
@@ -408,6 +409,31 @@ export default {
       } catch (error) {
         console.error('Error saving profile data:', error)
       }
+    },
+    isProfileChanged (profileA, profileB) {
+      return !this.deepEqual(profileA, profileB)
+    },
+    deepEqual (obj1, obj2) {
+      if (obj1 === obj2) return true
+
+      if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
+        return false
+      }
+
+      const keys1 = Object.keys(obj1)
+      const keys2 = Object.keys(obj2)
+
+      if (keys1.length !== keys2.length) {
+        return false
+      }
+
+      for (const key of keys1) {
+        if (!keys2.includes(key) || !this.deepEqual(obj1[key], obj2[key])) {
+          return false
+        }
+      }
+
+      return true
     }
   },
   computed: {
