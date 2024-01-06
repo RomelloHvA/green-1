@@ -21,14 +21,14 @@ public class MvcConfig implements WebMvcConfigurer {
     @Value("${jwt.issuer:private company}")
     private String issuer;
 
-    @Value("${jwt.passphrase:This is very secret information for my private encryption key, so don't look at it.}")
+    @Value("${jwt.passphrase:This is very secret information for my private encryption key.}")
     private String passphrase;
 
     @Value("${jwt.duration-of-validity:1200}") // default 20 minutes;
     private int tokenDurationOfValidity;
 
     public Set<String> SECURED_PATHS =
-            Set.of("/placeholder");
+            Set.of("/users");
 
     public String getIssuer() {
         return issuer;

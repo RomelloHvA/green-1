@@ -11,7 +11,7 @@ public class JWToken {
 
     private static final String JWT_USERNAME_CLAIM = "sub";
     private static final String JWT_USERID_CLAIM = "id";
-    private static final boolean JWT_ADMIN_CLAIM = false;
+    private static final String JWT_ADMIN_CLAIM = "admin";
 
     private static final String JWT_IPADDRESS_CLAIM = "ipa";
 
@@ -34,7 +34,7 @@ public class JWToken {
         return Jwts.builder()
                 .claim(JWT_USERNAME_CLAIM, this.username)
                 .claim(JWT_USERID_CLAIM, this.user_id)
-                .claim(String.valueOf(JWT_ADMIN_CLAIM), String.valueOf(this.isAdmin))
+                .claim(JWT_ADMIN_CLAIM, String.valueOf(this.isAdmin))
                 .setIssuer(issuer)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000L))
@@ -54,7 +54,7 @@ public class JWToken {
         JWToken jwToken = new JWToken(
                 claims.get(JWT_USERNAME_CLAIM).toString(),
                 Long.valueOf(claims.get(JWT_USERID_CLAIM).toString()),
-                Boolean.parseBoolean(claims.get(JWT_ADMIN_CLAIM).toString())
+                Boolean.getBoolean(claims.get(JWT_ADMIN_CLAIM).toString())
         );
         jwToken.setIpAddress((String) claims.get(JWT_IPADDRESS_CLAIM));
         return jwToken;
