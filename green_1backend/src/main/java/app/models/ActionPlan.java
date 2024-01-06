@@ -1,30 +1,73 @@
 package app.models;
+import jakarta.persistence.*;
+import java.util.Set;
 
-import java.util.ArrayList;
-import java.util.List;
-
+@Entity
+@Table(name = "action_plan")
 public class ActionPlan {
-    int id;
-    int sdgId;
-    String title;
-    String description;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    private String title;
+    private String description;
+    @ManyToOne (cascade = CascadeType.MERGE)
+    private Sector sector;
+    @ElementCollection
+    private Set<Long> sdgArray;
 
-    public ActionPlan(int id, int sdgId, String title, String description) {
+    public Sector getSector() {
+        return sector;
+    }
+
+    public void setSector(Sector sector) {
+        this.sector = sector;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
         this.id = id;
-        this.sdgId = sdgId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public static List<ActionPlan> createSamplePlan(int id) {
-        List<ActionPlan> plans = new ArrayList<>();
-
-        for (int i = 1; i <= 2; i++) {
-            plans.add(new ActionPlan((id * 2 - 2) + i, id, makeTitle(id), "This is a sample description"));
-        }
-
-        return plans;
+    public Set<Long> getSdgArray() {
+        return sdgArray;
     }
+
+    public void setSdgArray(Set<Long> sdgId) {
+        this.sdgArray = sdgId;
+    }
+
+    public ActionPlan() {
+
+    }
+
+    //    public static List<ActionPlan> createSamplePlan(int id) {
+//        List<ActionPlan> plans = new ArrayList<>();
+//
+//        for (int i = 1; i <= 2; i++) {
+//            plans.add(new ActionPlan((id * 2 - 2) + i, id, makeTitle(id), "This is a sample description"));
+//        }
+//
+//        return plans;
+//    }
 
     private static String makeTitle(int code) {
         switch (code) {
@@ -86,35 +129,4 @@ public class ActionPlan {
         }
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getSdgId() {
-        return sdgId;
-    }
-
-    public void setSdgId(int sdgId) {
-        this.sdgId = sdgId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }

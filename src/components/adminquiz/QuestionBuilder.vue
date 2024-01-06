@@ -124,7 +124,7 @@ const saveQuestion = async () => {
   })
 }
 
-const hasChanged = computed(() => { return !props.question.equals(questionClone.value) && props.question.id !== null })
+const hasChanged = computed(() => { return !props.question.equals(questionClone.value) })
 
 const pendingBusy = computed(() => { return deleteQuestionIsPending.value || saveQuestionIsPending.value })
 

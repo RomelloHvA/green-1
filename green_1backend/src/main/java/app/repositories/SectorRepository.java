@@ -9,4 +9,5 @@ import java.util.List;
 
 @Repository
 public interface SectorRepository extends JpaRepository<Sector, Long> {
+
 }

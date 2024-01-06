@@ -2,7 +2,7 @@
   <div class="flexRow" v-if="questionClone">
     <div class="col-10">
       <label class="justify-content-start h5" :for="questionClone.question">Question:</label>
-      <textarea class="question-text" placeholder="How many of the following SDG goals have you worked on?"
+      <textarea class="question-text" placeholder="Write your question here"
         v-model="questionClone.question" :class="{ 'red-border': questionClone.questionIsEmpty }"></textarea>
       <div class="justify-content-center m-auto">
         <div class="justify-content-between answerBox m-auto row">
