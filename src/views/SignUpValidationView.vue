@@ -1,6 +1,5 @@
 <template>
   <section class="bg-image">
-    TESTTEST VALIDATION TEST
     <div class="mask d-flex align-items-center background">
       <div class="container p-5">
         <div class="row d-flex justify-content-center align-items-center h-100">
@@ -13,21 +12,21 @@
                   <div class="row">
                     <div class="col-md-6 mb-4">
                       <div class="form-outline">
-                        <div class="signup-label">First Name</div>
+                        <div class="signup-label">First Name*</div>
                         <input v-model="firstName" @input="validateInput" type="text" class="form-control" id="firstName" placeholder="" />
                         <p class="text-danger">{{ errorFirstName }}</p>
                       </div>
                     </div>
                     <div class="col-md-6 mb-4">
                       <div class="form-outline">
-                        <div class="signup-label">Last Name</div>
+                        <div class="signup-label">Last Name*</div>
                         <input v-model="lastName" @input="validateInput" type="text" class="form-control" id="lastName" placeholder="" />
                         <p class="text-danger">{{ errorLastName }}</p>
                       </div>
                     </div>
                   </div>
                   <div class="form-outline mb-4">
-                    <div class="signup-label">Email</div>
+                    <div class="signup-label">Email*</div>
                     <input v-model="email" @input="validateInput" type="email" class="form-control" id="emailBox" placeholder="" />
                     <p class="text-danger">{{ errorEmail }}</p>
                   </div>
@@ -40,23 +39,23 @@
                     </select>
                   </div>
                   <div class="form-outline mb-4">
-                    <div class="signup-label">Postal Code</div>
+                    <div class="signup-label">Postal Code*</div>
                     <input v-model="postCode" @input="validateInput" type="text" class="form-control" id="postCodeBox" placeholder="" />
                     <p class="text-danger">{{ errorPostalCode }}</p>
                   </div>
                   <div class="form-outline mb-4">
-                    <div class="signup-label">Username</div>
+                    <div class="signup-label">Username*</div>
                     <input v-model="userName" @input="validateInput" type="text" class="form-control" id="usernameBox" placeholder="" />
                     <p class="text-danger">{{ errorUsername }}</p>
                   </div>
                   <div class="form-outline mb-4">
-                    <div class="signup-label">Password</div>
+                    <div class="signup-label">Password*</div>
                     <input v-model="password" @input="validateInput" type="password" class="form-control" id="passwordBox" placeholder="" />
                     <p class="text-danger">{{ errorPassword }}</p>
                   </div>
                   <div class="form-outline mb-4">
                     <div class="signup-label"></div>
-                    <div class="signup-label">Confirm Password</div>
+                    <div class="signup-label">Confirm Password*</div>
                     <input v-model="confirmPassword" @input="validateInput" type="password" class="form-control" id="confirmPasswordBox" placeholder="" />
                     <p class="text-danger">{{ errorConfirmPassword }}</p>
                   </div>
