@@ -1,5 +1,4 @@
 import { User } from '@/models/user'
-
 export class UsersAdaptor {
   resourcesUrl
 
@@ -56,7 +55,7 @@ export class UsersAdaptor {
         body: JSON.stringify(user)
       }
 
-      return User.copyConstructor(this.fetchJson(url, options))
+      return this.fetchJson(url, options)
     } catch (error) {
       console.error('Error during fetch:', error)
       return null

@@ -9,9 +9,11 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+@Table(name = "quiz_result")
 public class QuizResult {
 
     @Id
+    @GeneratedValue
     private Long resultId;
 
     @ElementCollection
@@ -23,8 +25,7 @@ public class QuizResult {
 
     private LocalDate dateOfQuiz;
 
-    public QuizResult(Long resultId, Set<Long> sdgArray, User user, LocalDate dateOfQuiz) {
-        this.resultId = resultId;
+    public QuizResult(Set<Long> sdgArray, User user, LocalDate dateOfQuiz) {
         this.sdgArray = sdgArray;
         this.user = user;
         this.dateOfQuiz = dateOfQuiz;

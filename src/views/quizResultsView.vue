@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2 class="mx-0">These are your top sdgs!</h2>
-    <button @click="saveResults" class="btn btn-primary">Save Results</button>
+    <button v-if="isAuthenticated" @click="saveResults" class="btn btn-primary">Save Results</button>
   </div>
   <section class="container">
     <div class="row">
@@ -22,17 +22,27 @@ import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js'
 import { Doughnut } from 'vue-chartjs'
 import { options } from '@/assets/testData/chartOptions'
 import { sdgData } from '@/assets/testData/sdgTestData'
-
 ChartJS.register(ArcElement, Tooltip, Legend)
 
 export default {
   name: 'quizResultsView',
+  inject: ['sessionService', 'quizResultService'],
   components: {
     SdgCardComponent,
     Doughnut
   },
+  computed: {
+    isAuthenticated () {
+      return this.sessionService.isAuthenticated()
+    }
+  },
   data () {
     return {
+      resultId: '',
+      sdgArray: '',
+      user: '',
+      dateOfQuiz: null,
+      account: sessionStorage.getItem('ACCOUNT'),
       data: {
         labels: [],
         datasets: [
@@ -44,8 +54,7 @@ export default {
       },
       options: options,
       sdgData: [],
-      top7: [],
-      dateOfQuiz: null
+      top7: []
     }
   },
   /**
@@ -120,11 +129,24 @@ export default {
     }
   },
   methods: {
-    saveResults () {
+    async saveResults () {
+      try {
+        const currentUser = JSON.parse(this.account).user_id
+        const resultJson = this.createJson()
+        console.log(resultJson)
+        await this.quizResultService.saveResults(resultJson, currentUser)
+      } catch (err) {
+        console.error('Something went wrong while fetching:', err)
+      }
+    },
+    createJson () {
       const top3 = this.top7.slice(0, 3).map(item => item.SDG)
-      this.savedDate = new Date()
-      console.log(top3)
-      console.log(this.savedDate)
+      const newResult = {
+        resultId: 0,
+        sdgArray: top3,
+        dateOfQuiz: new Date()
+      }
+      return newResult
     }
   }
 }

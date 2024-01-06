@@ -1,24 +1,28 @@
 package app.rest;
 
 import app.models.QuizResult;
+import app.models.User;
 import app.repositories.QuizResultRepositoryJPA;
+import app.repositories.UsersRepositoryJPA;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 
 @RestController
 @RequestMapping("/quizresult")
 public class QuizResultController {
 
     private final QuizResultRepositoryJPA quizResultRepositoryJPA;
+    private final UsersRepositoryJPA usersRepositoryJPA;
 
     @Autowired
-    public QuizResultController(QuizResultRepositoryJPA quizResultRepositoryJPA) {
+    public QuizResultController(QuizResultRepositoryJPA quizResultRepositoryJPA, UsersRepositoryJPA usersRepositoryJPA) {
         this.quizResultRepositoryJPA = quizResultRepositoryJPA;
+        this.usersRepositoryJPA = usersRepositoryJPA;
     }
 
     @GetMapping("/all")
@@ -52,10 +56,12 @@ public class QuizResultController {
         }
     }
 
-    @PostMapping("/save")
-    public ResponseEntity<QuizResult> saveQuizResult(@RequestBody QuizResult quizResult) {
-        QuizResult savedQuizResult = quizResultRepositoryJPA.save(quizResult);
-        return new ResponseEntity<>(savedQuizResult, HttpStatus.CREATED); // 201 successfully saved
+    @PostMapping("/save/{userId}")
+    public ResponseEntity<QuizResult> saveQuizResult(@RequestBody QuizResult quizResult, @PathVariable long userId) {
+        quizResult.setUser(this.usersRepositoryJPA.findById(userId).orElse(null));
+
+        this.quizResultRepositoryJPA.save(quizResult);
+        return ResponseEntity.ok(quizResult); // 201 successfully saved
     }
 
 

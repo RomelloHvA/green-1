@@ -26,6 +26,7 @@ import { RESTImageAdaptor } from '@/services/RESTImageAdaptor'
 import { SessionSbService } from '@/services/SessionSbService'
 import { shallowReactive } from 'vue'
 import { FetchInterceptor } from '@/services/FetchInterceptor'
+import { RESTQuizResultAdaptor } from '@/services/RESTQuizResultAdaptor'
 
 export default {
   components: {
@@ -49,7 +50,8 @@ export default {
       profileService: new ProfilesAdaptor(CONFIG.BACKEND_URL + '/profiles'),
       goalService: new GoalsAdaptor(CONFIG.BACKEND_URL + '/goals'),
       actionPlanService: new ActionPlansAdaptor(CONFIG.BACKEND_URL + '/actionplans'),
-      sessionService: this.theSessionService
+      sessionService: this.theSessionService,
+      quizResultService: new RESTQuizResultAdaptor(CONFIG.BACKEND_URL + '/quizresult')
     }
   },
   unmounted () {
