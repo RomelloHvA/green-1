@@ -43,7 +43,7 @@ async function saveSector () {
       error.value = result.error.value
     })
     result.load().then(() => {
-      emits('update-sectors', copySector)
+      emits('update-sectors', copySector, result.entity.value.id)
       toast.success('Sector saved')
     })
   } catch (err) {

@@ -66,9 +66,11 @@ onBeforeMount(async () => {
   })
 })
 
-function updateSectors (sectorToUpdate) {
+function updateSectors (sectorToUpdate, id) {
   const index = sectors.value.findIndex(sector => sector.id === sectorToUpdate.id)
   sectors.value[index] = sectorToUpdate
+  sectors.value[index].id = id
+  pushSelectedSectorIdToRoute(id)
 }
 
 function deleteSector (id) {
