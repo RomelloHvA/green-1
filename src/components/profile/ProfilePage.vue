@@ -404,9 +404,17 @@ export default {
                 const [year, month, day] = savedProfile.date_of_birth
                 const formattedDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
                 savedProfile.date_of_birth = formattedDate
-                this.profile = { ...savedProfile }
-                this.oldProfileData = { ...this.profile }
-                useToast().success('Changes have been saved')
+                if (this.profile.username !== this.oldProfileData.username) {
+                  this.profile = { ...savedProfile }
+                  this.oldProfileData = { ...this.profile }
+                  useToast().success('Changes have been saved, please login again!')
+                  await new Promise(resolve => setTimeout(resolve, 5000))
+                  this.$router.push({ path: '/sign-out' })
+                } else {
+                  this.profile = { ...savedProfile }
+                  this.oldProfileData = { ...this.profile }
+                  useToast().success('Changes have been saved!')
+                }
               } else {
                 // If the profile has not been saved, show an error
                 useToast().error('Failed to save changes. Please check the console for errors.')
