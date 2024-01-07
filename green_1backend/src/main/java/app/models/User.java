@@ -1,5 +1,6 @@
 package app.models;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,6 +13,7 @@ import java.util.Random;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonView({ViewClasses.Summary.class})
     private long user_id = 0L;
     private int sector_id;
     private String first_name;
@@ -19,13 +21,14 @@ public class User {
     private String email;
     private int security_clearance;
     private String password;
+    @JsonView({ViewClasses.Summary.class})
     private String username;
     private String bio;
     private String occupation;
     private LocalDate date_of_birth;
     private String postalcode;
     private String user_goal;
-
+    @JsonView({ViewClasses.Summary.class})
     private boolean isAdmin = false;
 
     private static final String[] FIRST_NAMES = {"John", "Mary", "David", "Lisa", "Michael", "Sarah"};
