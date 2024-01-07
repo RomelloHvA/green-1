@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -130,6 +131,40 @@ public class UserController {
             }
         } else {
             throw new ResourceNotFoundException("Offer not found with ID: " + id);
+        }
+    }
+
+    @PutMapping("/profile/{id}")
+    public ResponseEntity<?> updateProfile(@PathVariable long id, @RequestBody Map<String, String> user) {
+        try {
+            Optional<User> existingUser = this.usersRepository.findById(id);
+            if (existingUser.isPresent()) {
+                User userToUpdate = existingUser.get();
+                if (user.containsKey("first_name")) {
+                    userToUpdate.setFirst_name(user.get("first_name"));
+                }
+                if (user.containsKey("last_name")) {
+                    userToUpdate.setLast_name(user.get("last_name"));
+                }
+                if (user.containsKey("occupation")) {
+                    userToUpdate.setOccupation(user.get("occupation"));
+                }
+                if (user.containsKey("username")) {
+                    userToUpdate.setUsername(user.get("username"));
+                }
+                if (user.containsKey("date_of_birth")) {
+                    userToUpdate.setDate_of_birth(LocalDate.parse(user.get("date_of_birth")));
+                }
+                if (user.containsKey("bio")) {
+                    userToUpdate.setBio(user.get("bio"));
+                }
+                return ResponseEntity.ok(this.usersRepository.save(userToUpdate));
+            } else {
+                throw new ResourceNotFoundException("No user is found!");
+            }
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
