@@ -137,8 +137,10 @@ public class UserController {
     @PutMapping("/profile/{id}")
     public ResponseEntity<?> updateProfile(@PathVariable long id, @RequestBody Map<String, String> user) {
         try {
+            // Try to find a user with the given id
             Optional<User> existingUser = this.usersRepository.findById(id);
             if (existingUser.isPresent()) {
+                // Validating if certain attributes are present
                 User userToUpdate = existingUser.get();
                 if (user.containsKey("first_name")) {
                     userToUpdate.setFirst_name(user.get("first_name"));
@@ -152,12 +154,13 @@ public class UserController {
                 if (user.containsKey("username")) {
                     userToUpdate.setUsername(user.get("username"));
                 }
-                if (user.containsKey("date_of_birth")) {
+                if (user.containsKey("date_of_birth") && user.get("date_of_birth") != null) {
                     userToUpdate.setDate_of_birth(LocalDate.parse(user.get("date_of_birth")));
                 }
                 if (user.containsKey("bio")) {
                     userToUpdate.setBio(user.get("bio"));
                 }
+                // Saving the user
                 return ResponseEntity.ok(this.usersRepository.save(userToUpdate));
             } else {
                 throw new ResourceNotFoundException("No user is found!");

@@ -30,6 +30,15 @@
                   </div>
                 </div>
                 <div class="mb-3">
+                  <label for="inputName" class="form-label">Username: </label>
+                  <input type="text" autocomplete="off" class="form-control" id="inputLastName"
+                         v-model="profile.username"
+                         required>
+                  <div v-if="isUserNameEmpty" class="invalid-message border mt-1 error">
+                    Username is required
+                  </div>
+                </div>
+                <div class="mb-3">
                   <label for="inputBirthday" class="form-label">Birthday: </label>
                   <input type="date" min="1900-01-01" class="form-control" id="inputBirthday"
                          v-model="profile.date_of_birth"
@@ -113,11 +122,10 @@
 </template>
 
 <script>
-import { Profile } from '@/models/profile'
 import { Goal } from '@/models/goal'
 import { useToast } from 'vue-toast-notification'
 /**
- * ProfilePage compontent
+ * ProfilePage component
  * This is the page is used so users view their profile information
  * and make changes to them.
  */
@@ -127,12 +135,14 @@ export default {
   inject: ['usersServices', 'sessionService'],
   data () {
     return {
+      user: null,
       profile: {
         first_name: '',
         last_name: '',
         occupation: '',
         username: '',
-        date_of_birth: null
+        date_of_birth: null,
+        bio: ''
       },
       selectedOption: '',
       sdgGoals: [
@@ -231,7 +241,8 @@ export default {
         last_name: '',
         occupation: '',
         username: '',
-        date_of_birth: null
+        date_of_birth: null,
+        bio: ''
       },
       showGoalSDGEmpty: false,
       showGoalSDGLimit: false,
@@ -247,15 +258,12 @@ export default {
       // Wait for the asynchronous operation to complete
       // const profileService = await this.profileService.asyncFindAll()
       const account = await this.sessionService.currentAccount
-      const user = await this.usersServices.asyncFindById(account.user_id)
+      this.user = await this.usersServices.asyncFindById(account.user_id)
 
-      this.profile = { ...user }
-      // Log the fetched profile data
-      console.log(this.profile.first_name)
+      this.profile = { ...this.user }
 
       // Create a copy of the profile
       this.oldProfileData = { ...this.profile }
-      console.log(this.oldProfileData)
     } catch (error) {
       console.error('Error fetching profile data:', error)
     }
@@ -368,42 +376,41 @@ export default {
           this.profile.occupation === '' ||
           this.profile.bio === '') {
           return alert('Some of the fields are empty')
-        } else if (this.profile.goals.length === 0) {
-          return alert('Please add a goal')
+        // } else if (this.profile.user_goal === null) {
+        //   return alert('Please add a goal')
         } else {
           // Check if the user wants to save the changes
           if (confirm('Are you sure you want to save changes?') === true) {
-            const id = this.profile.user_id
-            const firstName = this.profile.first_name
-            const lastName = this.profile.last_name
-            const photo = this.profile.photo
-            const birth = new Date(this.profile.date_of_birth)
-            const occupation = this.profile.occupation
-            const bio = this.profile.bio
-            const goals = this.profile.goals
-
             // Overwrite old data with newely input data
-            this.profile = new Profile(id, firstName, lastName, photo, birth, occupation, bio, goals)
             try {
+              const user = {
+                user_id: this.user.user_id,
+                first_name: this.profile.first_name,
+                last_name: this.profile.last_name,
+                occupation: this.profile.occupation,
+                username: this.profile.username,
+                date_of_birth: this.profile.date_of_birth,
+                bio: this.profile.bio
+              }
+              console.log(user)
               // Wait for the asynchronous operation to complete
-              const savedProfile = await this.profileService.asyncSave(this.profile)
+              const savedProfile = await this.usersServices.asyncUpdateProfile(user)
 
               // Check if the profile has been saved
               if (savedProfile) {
-                this.profile = savedProfile
-                alert('Changes have been saved')
-                // Creates a new copy of the profile
-                this.oldProfileData = Profile.copyConstructor(this.profile)
+                this.profile = { ...savedProfile }
+                this.oldProfileData = { ...this.profile }
+                useToast().success('Changes have been saved')
               } else {
                 // If the profile has not been saved, show an error
-                alert('Failed to save changes. Please check the console for errors.')
+                useToast().error('Failed to save changes. Please check the console for errors.')
               }
             } catch (error) {
               console.error('Error saving profile data:', error)
-              alert('Failed to save changes. Please check the console for errors.')
+              useToast().error('Failed to save changes. Please check the console for errors.')
             }
             // Creates a new copy of the profile
-            this.oldProfileData = Profile.copyConstructor(this.profile)
+            this.oldProfileData = { ...this.profile }
           }
         }
       } catch (error) {
@@ -446,6 +453,10 @@ export default {
       return this.profile.first_name === ''
     },
     isLastNameEmpty () {
+      // Check if the name is an empty string
+      return this.profile.last_name === ''
+    },
+    isUserNameEmpty () {
       // Check if the name is an empty string
       return this.profile.last_name === ''
     },

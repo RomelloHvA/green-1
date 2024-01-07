@@ -52,7 +52,7 @@ export class UsersAdaptor {
     let method
 
     try {
-      if (user.userId === 0) {
+      if (user.user_id === 0) {
         url = `${this.resourcesUrl}/users`
         method = 'POST'
       } else {
@@ -69,6 +69,28 @@ export class UsersAdaptor {
       }
 
       return User.copyConstructor(this.fetchJson(url, options))
+    } catch (error) {
+      console.error('Error during fetch:', error)
+      return null
+    }
+  }
+
+  async asyncUpdateProfile (data) {
+    let url
+    let method
+
+    try {
+      url = `${this.resourcesUrl}/users/profile/${parseInt(data.user_id)}`
+      method = 'PUT'
+      const options = {
+        method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      }
+
+      return this.fetchJson(url, options)
     } catch (error) {
       console.error('Error during fetch:', error)
       return null
