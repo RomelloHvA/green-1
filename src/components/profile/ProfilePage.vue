@@ -259,9 +259,12 @@ export default {
       // const profileService = await this.profileService.asyncFindAll()
       const account = await this.sessionService.currentAccount
       this.user = await this.usersServices.asyncFindById(account.user_id)
-
+      if (this.user.date_of_birth && Array.isArray(this.user.date_of_birth)) {
+        const [year, month, day] = this.user.date_of_birth
+        const formattedDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+        this.user.date_of_birth = formattedDate
+      }
       this.profile = { ...this.user }
-
       // Create a copy of the profile
       this.oldProfileData = { ...this.profile }
     } catch (error) {
@@ -398,6 +401,9 @@ export default {
 
               // Check if the profile has been saved
               if (savedProfile) {
+                const [year, month, day] = savedProfile.date_of_birth
+                const formattedDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+                savedProfile.date_of_birth = formattedDate
                 this.profile = { ...savedProfile }
                 this.oldProfileData = { ...this.profile }
                 useToast().success('Changes have been saved')
