@@ -61,11 +61,13 @@ export class RESTAdaptorWithFetch /* <E> */ {
   }
 
   /**
-     * Saves an entity or updates it if it already exists.
-     * @param {entityToSave} the entity you want to save
-     * @returns  {entity, isPending, error, load, abort, isAborted} you need to make a const and destructure the return value
-     * @author Romello ten Broeke
-     */
+   * Saves an entity or updates it if it already exists.
+   * @returns  {entity, isPending, error, load, abort, isAborted} you need to make a const and destructure the return value
+   * @author Romello ten Broeke
+   * @param entityToSave the entity you want to save
+   * @param quizId the quizId if you want to save a question
+   * @param method the method you want to use, default is POST
+   */
 
   async asyncSave (entityToSave, quizId = null, method = 'POST') {
     const entity = ref(entityToSave)

@@ -27,7 +27,7 @@
         </div>
         <!--        Sector Editor-->
         <div class="col-md-9">
-          <router-view :sectors="sectors"/>
+          <router-view :sectors="sectors" @update-sectors="updateSectors"/>
         </div>
       </div>
     </div>
@@ -40,6 +40,7 @@ import AdminLoaderComponent from '@/components/AdminDashboard/AdminLoaderCompone
 import { useRoute } from 'vue-router'
 import router from '@/router'
 import Sector from '@/models/Sector'
+import { useToast } from 'vue-toast-notification'
 
 const sectorService = inject('sectorService')
 const load = ref(null)
@@ -47,6 +48,7 @@ const isPending = ref(true)
 const error = ref(null)
 const sectors = ref([])
 const route = useRoute()
+const toast = useToast()
 
 onBeforeMount(async () => {
   const results = await sectorService.asyncFindAll()
@@ -60,9 +62,14 @@ onBeforeMount(async () => {
   })
 
   load.value().then(() => {
-    // Emit event or perform other actions
+    toast.success('Sectors loaded')
   })
 })
+
+function updateSectors (sectorToUpdate) {
+  const index = sectors.value.findIndex(sector => sector.id === sectorToUpdate.id)
+  sectors.value[index] = sectorToUpdate
+}
 
 function pushSelectedSectorIdToRoute (id) {
   if (id === parseInt(route.params.id)) {

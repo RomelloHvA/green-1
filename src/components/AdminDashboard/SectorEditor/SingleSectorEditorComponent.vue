@@ -11,14 +11,19 @@
     <label for="description">Description:</label>
     <textarea class="form-control" id="description" v-model="copySector.description" placeholder="Enter description"></textarea>
   </div>
-    <button class="btn btn-primary" @click="logSectors()">Log sectors</button>
+    <button class="btn btn-success m-1" @click="saveSector()">Save changes</button>
+    <button class="btn btn-danger m-1" @click="logSectors()">Delete sector</button>
   </div>
 </template>
 
 <script setup>
-import { defineProps, watchEffect } from 'vue'
+import { defineProps, inject, watchEffect, ref, defineEmits } from 'vue'
 import { useRoute } from 'vue-router'
+import { useToast } from 'vue-toast-notification'
+const sectorService = inject('sectorService')
 const route = useRoute()
+const toast = useToast()
+const emits = defineEmits(['update-sectors', 'delete-sector'])
 const props = defineProps({
   sectors: { type: Array }
 })
@@ -27,7 +32,37 @@ function logSectors () {
   console.log(props.sectors)
   console.log(copySector)
 }
-let copySector = null
+
+let copySector = ref(null)
+const isPending = ref(null)
+const error = ref(null)
+
+async function saveSector () {
+  isPending.value = true
+  error.value = null
+
+  try {
+    const result = await sendData()
+    watchEffect(() => {
+      isPending.value = result.isPending.value
+      error.value = result.error.value
+    })
+    result.load().then(() => {
+      emits('update-sectors', copySector)
+      toast.success('Sector saved')
+    })
+  } catch (err) {
+    console.error('Error saving sector:', err)
+    toast.error('Error saving sector:' + err)
+    error.value = err
+  } finally {
+    isPending.value = false
+  }
+}
+
+async function sendData () {
+  return await sectorService.asyncSave(copySector)
+}
 
 // Watch the route for changes and update the copySector
 watchEffect(() => {
@@ -41,7 +76,7 @@ watchEffect(() => {
     copySector = {
       id: null,
       name: 'Unfound Sector id',
-      description: 'Unfound sector description'
+      description: 'Unfound sectors description'
     }
   }
 })
