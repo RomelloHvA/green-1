@@ -28,6 +28,8 @@ public class User {
     private LocalDate date_of_birth;
     private String postalcode;
     private String user_goal;
+
+    private String img_path;
     @JsonView({ViewClasses.Summary.class})
     private boolean isAdmin = false;
 
@@ -76,7 +78,7 @@ public class User {
         );
     }
 
-    public User(long user_id, int sector_id, String first_name, String last_name, String email, int security_clearance, String password, String username, String bio, String occupation, LocalDate date_of_birth, String postalcode, String user_goal, boolean isAdmin) {
+    public User(long user_id, int sector_id, String first_name, String last_name, String email, int security_clearance, String password, String username, String bio, String occupation, LocalDate date_of_birth, String postalcode, String user_goal, boolean isAdmin, String img_path) {
         this.user_id = user_id;
         this.sector_id = sector_id;
         this.first_name = first_name;
@@ -91,6 +93,7 @@ public class User {
         this.postalcode = postalcode;
         this.user_goal = user_goal;
         this.isAdmin = isAdmin;
+        this.img_path = img_path;
     }
 
     public User(String username, String password, boolean isAdmin) {
@@ -168,6 +171,10 @@ public class User {
         this.bio = bio;
     }
 
+    public String getImg_path() {
+        return img_path;
+    }
+
     public void setOccupation(String occupation) {
         this.occupation = occupation;
     }
@@ -210,5 +217,8 @@ public class User {
 
     public void setIsAdmin(boolean admin) {
         isAdmin = admin;
+    }
+    public void setImg_path(String img_path) {
+        this.img_path = img_path;
     }
 }

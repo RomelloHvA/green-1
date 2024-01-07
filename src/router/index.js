@@ -66,6 +66,7 @@ const routes = [
   {
     path: '/profile',
     name: 'profile',
+    props: true,
     // children: [
     //   { path: ':id', component: () => import('@/components/result/ResultPage') }
     // ],

@@ -1,16 +1,19 @@
 <template>
   <div class="mt-5 mb-5 profileBody">
-    <form @click.prevent>
+    <form>
       <div class="container text-center">
         <div class="row align-items-start">
           <div class="col">
             <div class="container">
               <div class="container-md">
-                <img v-if="item.profilePic" :src="profile.photo" class="pfp" alt="...">
+                <img v-if="profile.img_path" :src="profile.img_path" class="pfp" alt="...">
                 <img v-else src="@/assets/photo/profielfoto-silhouet.jpg" class="pfp" alt="...">
-                <div class="mb-3" style="margin: 1rem;">
-                  <input type="file" accept="image/*" class="form-control" id="inputGroupFile02" @change="onChange">
-                </div>
+                <UploadImageComponent class="uploadImageSpace" ref="uploadImage" :imagePath="profile.img_path"
+                                      @image-previewed="handleImagePreviewed"
+                                      @image-cleared="handleImageCleared"/>
+<!--                <div class="mb-3" style="margin: 1rem;">-->
+<!--                  <input type="file" accept="image/*" class="form-control" id="inputGroupFile02" @change="onChange">-->
+<!--                </div>-->
                 <div class="mb-3">
                   <label for="inputName" class="form-label">First Name: </label>
                   <input type="text" autocomplete="off" class="form-control" id="inputFirstName"
@@ -124,6 +127,7 @@
 <script>
 import { Goal } from '@/models/goal'
 import { useToast } from 'vue-toast-notification'
+import UploadImageComponent from '@/components/UploadImageComponent'
 /**
  * ProfilePage component
  * This is the page is used so users view their profile information
@@ -133,6 +137,9 @@ import { useToast } from 'vue-toast-notification'
 export default {
   name: 'ProfilePage',
   inject: ['usersServices', 'sessionService'],
+  components: {
+    UploadImageComponent
+  },
   data () {
     return {
       user: null,
@@ -142,7 +149,8 @@ export default {
         occupation: '',
         username: '',
         date_of_birth: null,
-        bio: ''
+        bio: '',
+        img_path: null
       },
       selectedOption: '',
       sdgGoals: [
@@ -232,17 +240,14 @@ export default {
           title: 'Partnerships for the Goals'
         }
       ],
-      item: {
-        image: null,
-        profilePic: null
-      },
       oldProfileData: {
         first_name: '',
         last_name: '',
         occupation: '',
         username: '',
         date_of_birth: null,
-        bio: ''
+        bio: '',
+        img_path: null
       },
       showGoalSDGEmpty: false,
       showGoalSDGLimit: false,
@@ -256,7 +261,6 @@ export default {
   async created () {
     try {
       // Wait for the asynchronous operation to complete
-      // const profileService = await this.profileService.asyncFindAll()
       const account = await this.sessionService.currentAccount
       this.user = await this.usersServices.asyncFindById(account.user_id)
       if (this.user.date_of_birth && Array.isArray(this.user.date_of_birth)) {
@@ -272,6 +276,15 @@ export default {
     }
   },
   methods: {
+    handleImagePreviewed (newImagePath) {
+      this.profile.img_path = newImagePath
+      // Here you can also make an API call to update the user's profile photo
+    },
+
+    handleImageCleared () {
+      this.profile.img_path = null
+      // Handle the clearing of the photo in the profile, maybe reset to a default
+    },
     update: function (attribute, event) {
       attribute = event.target.value
     },
@@ -393,7 +406,8 @@ export default {
                 occupation: this.profile.occupation,
                 username: this.profile.username,
                 date_of_birth: this.profile.date_of_birth,
-                bio: this.profile.bio
+                bio: this.profile.bio,
+                img_path: await this.$refs.uploadImage.uploadImage()
               }
               console.log(user)
               // Wait for the asynchronous operation to complete

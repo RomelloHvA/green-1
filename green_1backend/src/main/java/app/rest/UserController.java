@@ -1,22 +1,14 @@
 package app.rest;
 
-import app.MvcConfig;
 import app.models.User;
-import app.models.ViewClasses;
 import app.repositories.UsersRepositoryJPA;
-import app.security.JWToken;
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -77,10 +69,11 @@ public class UserController {
      * @return
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<User>> getOfferById(@PathVariable long id) {
+    public ResponseEntity<User> getOfferById(@PathVariable long id) {
         Optional<User> user = usersRepository.findById(id);
-        if (user != null) {
-            return ResponseEntity.ok(user);
+        if (user.isPresent()) {
+            User foundUser = user.get();
+            return ResponseEntity.ok(foundUser);
         } else {
             throw new ResourceNotFoundException("User not found with ID: " + id);
         }
@@ -159,6 +152,9 @@ public class UserController {
                 }
                 if (user.containsKey("bio")) {
                     userToUpdate.setBio(user.get("bio"));
+                }
+                if (user.containsKey("img_path")) {
+                    userToUpdate.setImg_path(user.get("img_path"));
                 }
                 // Saving the user
                 return ResponseEntity.ok(this.usersRepository.save(userToUpdate));
