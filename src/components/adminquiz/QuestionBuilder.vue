@@ -30,6 +30,7 @@ import QuestionBuilderMultipleChoice from './QuestionBuilderMultipleChoice.vue'
 import DeleteButtonComponent from '@/components/buttons/DeleteButtonComponent'
 import { inject, ref, onBeforeMount, watchEffect, computed, defineProps, defineEmits } from 'vue'
 import { useToast } from 'vue-toast-notification'
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router'
 import Question from '@/models/Question'
 import SaveButtonComponent from '@/components/buttons/SaveButtonComponent'
 
@@ -61,6 +62,28 @@ const saveQuestionIsPending = ref(false)
 const saveQuestionError = ref(null)
 const deleteQuestionIsPending = ref(false)
 const $toast = useToast()
+
+onBeforeRouteLeave((to, from, next) => {
+  if (hasChanged.value) {
+    if (window.confirm('You have unsaved changes, are you sure you want to leave?')) {
+      next()
+    } else {
+      next(false)
+    }
+  }
+  next()
+})
+
+onBeforeRouteUpdate((to, from, next) => {
+  if (hasChanged.value) {
+    if (window.confirm('You have unsaved changes, are you sure you want to leave?')) {
+      next()
+    } else {
+      next(false)
+    }
+  }
+  next()
+})
 
 const cloneQuestion = async () => {
   questionClone.value = await props.question.clone()

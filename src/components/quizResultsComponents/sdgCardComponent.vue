@@ -69,6 +69,9 @@ export default {
       if (this.isMounted && this.isImageLoaded) {
         const imgHeight = document.querySelector('.card-img-top').offsetHeight
         if (imgHeight > 0) {
+          if (this.sdgData.score === undefined || (this.sdgData.highestScore !== this.sdgData.score && this.sdgData.score === 1)) {
+            return '0px'
+          }
           return this.sdgData.score / this.sdgData.highestScore * this.maxHeight - imgHeight + 'px'
         }
       }

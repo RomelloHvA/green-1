@@ -112,6 +112,7 @@ export default {
 
         // Fill in sdgData to pass as a prop later
         for (let i = 0; i < top7.length; i++) {
+          if (scores[i] === 0) break
           const newTitle = names[i]
           // If the user is logged in this should change the action to a not general one. Will be implemented at a later point
           const newContribution = sdgData.find(sdg => sdg.id === top7[i].SDG).generalContribution

@@ -23,7 +23,7 @@
           </button>
           </div>
           <div class="col-4 actionPlanBtn justify-content-end m-auto d-flex">
-            <button class="btn btn-primary ">
+            <button class="btn btn-primary " @click="addPlan">
                 Add Plan
             </button>
           </div>
@@ -75,6 +75,10 @@ const expandActionPlan = () => {
     document.querySelector(`#actionplan${props.id}`).style.maxHeight = '100%'
     expanded.value = true
   }
+}
+
+const addPlan = () => {
+  console.log('add plan')
 }
 
 </script>
