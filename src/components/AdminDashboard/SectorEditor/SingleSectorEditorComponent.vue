@@ -12,7 +12,7 @@
     <textarea class="form-control" id="description" v-model="copySector.description" placeholder="Enter description"></textarea>
   </div>
     <button class="btn btn-success m-1" @click="saveSector()">Save changes</button>
-    <button class="btn btn-danger m-1" @click="logSectors()">Delete sector</button>
+    <button class="btn btn-danger m-1" @click="deleteSector()">Delete sector</button>
   </div>
 </template>
 
@@ -27,11 +27,6 @@ const emits = defineEmits(['update-sectors', 'delete-sector'])
 const props = defineProps({
   sectors: { type: Array }
 })
-
-function logSectors () {
-  console.log(props.sectors)
-  console.log(copySector)
-}
 
 let copySector = ref(null)
 const isPending = ref(null)
@@ -54,6 +49,28 @@ async function saveSector () {
   } catch (err) {
     console.error('Error saving sector:', err)
     toast.error('Error saving sector:' + err)
+    error.value = err
+  } finally {
+    isPending.value = false
+  }
+}
+
+async function deleteSector () {
+  isPending.value = true
+  error.value = null
+  try {
+    const result = await sectorService.asyncDeleteById(parseInt(route.params.id))
+    watchEffect(() => {
+      isPending.value = result.isPending.value
+      error.value = result.error.value
+    })
+    result.load().then(() => {
+      emits('delete-sector', route.params.id)
+      toast.success('Sector deleted')
+    })
+  } catch (err) {
+    console.error('Error deleting sector:', err)
+    toast.error('Error deleting sector:' + err)
     error.value = err
   } finally {
     isPending.value = false

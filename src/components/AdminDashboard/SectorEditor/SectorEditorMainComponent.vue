@@ -27,7 +27,7 @@
         </div>
         <!--        Sector Editor-->
         <div class="col-md-9">
-          <router-view :sectors="sectors" @update-sectors="updateSectors"/>
+          <router-view :sectors="sectors" @update-sectors="updateSectors" @delete-sector="deleteSector"/>
         </div>
       </div>
     </div>
@@ -69,6 +69,12 @@ onBeforeMount(async () => {
 function updateSectors (sectorToUpdate) {
   const index = sectors.value.findIndex(sector => sector.id === sectorToUpdate.id)
   sectors.value[index] = sectorToUpdate
+}
+
+function deleteSector (id) {
+  const index = sectors.value.findIndex(sector => sector.id === id)
+  router.push({ path: '/admin_dashboard/sectors' })
+  sectors.value.splice(index, 1)
 }
 
 function pushSelectedSectorIdToRoute (id) {
