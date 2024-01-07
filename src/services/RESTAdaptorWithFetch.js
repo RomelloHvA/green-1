@@ -17,7 +17,7 @@ export class RESTAdaptorWithFetch /* <E> */ {
   }
 
   /**
-     * function to get all the scooters from the backend
+     * function to get all the entities from the backend
      * @returns {entities, isPending, error, load} you need to make a const and destructure the return value
      * @author Romello ten Broeke
      */
@@ -33,9 +33,9 @@ export class RESTAdaptorWithFetch /* <E> */ {
   }
 
   /**
-     * finds Scooter per id
-     * @param {Number} id  the id of the scooter you want to get
-     * @returns {entity, isPending, error, load, scooterId} you need to make a const and destructure the return value
+     * finds entity per id
+     * @param {Number} id  the id of the entity you want to get
+     * @returns {entity, isPending, error, load, id} you need to make a const and destructure the return value
      * @author Romello ten Broeke
      */
   async asyncFindById (id) {
@@ -61,8 +61,8 @@ export class RESTAdaptorWithFetch /* <E> */ {
   }
 
   /**
-     * Saves a scooter or updates it if it already exists.
-     * @param {Scooter} scooterToSave  the scooter you want to save
+     * Saves an entity or updates it if it already exists.
+     * @param {entityToSave} the entity you want to save
      * @returns  {entity, isPending, error, load, abort, isAborted} you need to make a const and destructure the return value
      * @author Romello ten Broeke
      */
@@ -95,8 +95,8 @@ export class RESTAdaptorWithFetch /* <E> */ {
   }
 
   /**
-     * Deletes a scooter from the backend.
-     * @param {Number} id the id of the scooter you want to delete
+     * Deletes an entity from the backend.
+     * @param {Number} id the id of the entity you want to delete
      * @returns {isPending, error, load} you need to make a const and destructure the return value
      * @author Romello ten Broeke
      */
