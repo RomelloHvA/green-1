@@ -7,7 +7,8 @@
     <div class="container">
       <div class="row">
         <!--        Sector selector-->
-        <div class="col-md-3">
+        <admin-loader-component v-if="isPending"/>
+        <div v-else class="col-md-3">
           <table class="table table-hover">
             <thead>
             <tr>
@@ -34,6 +35,7 @@
 
 <script setup>
 import { inject, onBeforeMount, ref, watch } from 'vue'
+import AdminLoaderComponent from '@/components/AdminDashboard/AdminLoaderComponent'
 const sectorService = inject('sectorService')
 const load = ref(null)
 const isPending = ref(true)
