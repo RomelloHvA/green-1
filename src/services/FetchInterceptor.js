@@ -59,7 +59,7 @@ export class FetchInterceptor {
         console.log('Unauthorized. Token may have expired or invalid.')
         this.router.push({ path: '/sign-out' })
       } else {
-        console.log('Unexpexted error during login.')
+        console.log('Unexpected error during login.')
       }
       this.responseError(response)
     } catch (e) {
