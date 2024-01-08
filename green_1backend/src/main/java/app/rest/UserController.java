@@ -26,41 +26,6 @@ public class UserController {
         return usersRepository.findAll();
     }
 
-//    @JsonView({ViewClasses.Summary.class})
-//    @PostMapping(path = "/login", produces = "application/json")
-//    public ResponseEntity<?> login(@RequestBody ObjectNode userData) {
-//        try {
-//            String userName = userData.get("username").asText();
-//            String passWord = userData.get("password").asText();
-//
-//            User user = this.usersRepository.findByUsername(userName);
-//
-//            if (user == null) {
-//                throw new NullPointerException("This user does not exist!" + userName);
-//            } else if (userName.trim().isEmpty()) {
-//                throw new IllegalArgumentException("The username must not be empty!");
-//            } else if (!Objects.equals(userName, user.getUsername())) {
-//                throw new IllegalArgumentException("The username is incorrect!");
-//            } else if (Objects.equals(passWord, user.getPassword())) {
-//                JWToken jwToken = new JWToken(user.getUsername(), user.getUser_id(), user.getIsAdmin());
-//                String tokenString = jwToken.encode(this.mvcConfig.getIssuer(),
-//                        this.mvcConfig.getPassphrase(),
-//                        this.mvcConfig.getTokenDurationOfValidity());
-////                return ResponseEntity.ok("Login successful!");
-//                return ResponseEntity.accepted()
-//                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenString)
-//                        .body(user);
-//            } else if (passWord.trim().isEmpty()) {
-//                throw new IllegalArgumentException("The password must not be empty!");
-//            } else {
-//                throw new IllegalArgumentException("The password is incorrect");
-//            }
-//        } catch (IllegalArgumentException illegalArgumentException) {
-//            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(illegalArgumentException.getMessage());
-//        } catch (NullPointerException nullPointerException) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This user does not exist!");
-//        }
-//    }
     /**
      * this api is for getting the given ids for users
      *

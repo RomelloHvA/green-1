@@ -370,14 +370,7 @@ export default {
      * Function will show the quiz results
      */
     showResults () {
-      if (this.profile.goals.length === 0) {
-        this.showQuizResultVal = true
-        // dit moet zo weg----------------------------------------------------------
-        this.$router.push({ path: '/results' })
-      } else {
-        this.showQuizResultVal = false
-        this.$router.push({ path: '/results' })
-      }
+      this.$router.push({ path: '/results' })
     },
     /**
      * Function will undo any changes that has been made

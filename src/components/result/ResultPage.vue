@@ -44,11 +44,7 @@ export default {
   data () {
     return {
       account: sessionStorage.getItem('ACCOUNT'),
-      loading: true,
-      goals: [],
       quizResults: [],
-      selectedGoal: null,
-      profile: null,
       sdgData: sdgData,
       sortedQuizResults: [],
       sortDirection: 'desc'
@@ -99,22 +95,9 @@ export default {
   margin-left: 65vh;
   margin-right: 27vh;
 }
-.sortDropdown {
-  margin: 0.5rem;
-  width: 5rem;
-  border-radius: 20px;
-  align-self: center;
-  cursor: pointer;
-  background-color: #6D3FD9; /* Achtergrondkleur toegevoegd */
-  color: Black; /* Tekstkleur toegevoegd */
-}
 
 .dropdown-item{
   cursor: pointer;
-}
-
-.dropdown{
-  color: black;
 }
 
 .goBackButton {
