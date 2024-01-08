@@ -263,11 +263,6 @@ export default {
       // Wait for the asynchronous operation to complete
       const account = await this.sessionService.currentAccount
       this.user = await this.usersServices.asyncFindById(account.user_id)
-      if (this.user.date_of_birth && Array.isArray(this.user.date_of_birth)) {
-        const [year, month, day] = this.user.date_of_birth
-        const formattedDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
-        this.user.date_of_birth = formattedDate
-      }
       this.profile = { ...this.user }
       // Create a copy of the profile
       this.oldProfileData = { ...this.profile }
@@ -276,6 +271,18 @@ export default {
     }
   },
   methods: {
+    formatDateForBE (date) {
+      const dateParts = date.split('-')
+      if (dateParts.length === 3) {
+        const year = parseInt(dateParts[0], 10)
+        const month = parseInt(dateParts[1], 10)
+        const day = parseInt(dateParts[2], 10)
+        if (!isNaN(year) && !isNaN(month) && !isNaN(day)) {
+          return { year, month, day }
+        }
+      }
+      return null // Handle invalid input gracefully
+    },
     handleImagePreviewed (newImagePath) {
       this.profile.img_path = newImagePath
       // Here you can also make an API call to update the user's profile photo
@@ -400,24 +407,20 @@ export default {
             // Overwrite old data with newely input data
             try {
               const user = {
-                user_id: this.user.user_id,
                 first_name: this.profile.first_name,
                 last_name: this.profile.last_name,
                 occupation: this.profile.occupation,
                 username: this.profile.username,
                 date_of_birth: this.profile.date_of_birth,
-                bio: this.profile.bio,
-                img_path: await this.$refs.uploadImage.uploadImage()
+                bio: this.profile.bio
               }
-              console.log(user)
+              if (this.profile.img_path !== this.oldProfileData.img_path) {
+                user.img_path = await this.$refs.uploadImage.uploadImage()
+              }
               // Wait for the asynchronous operation to complete
-              const savedProfile = await this.usersServices.asyncUpdateProfile(user)
-
+              const savedProfile = await this.usersServices.asyncUpdateProfile(JSON.stringify(user), this.user.user_id)
               // Check if the profile has been saved
               if (savedProfile) {
-                const [year, month, day] = savedProfile.date_of_birth
-                const formattedDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
-                savedProfile.date_of_birth = formattedDate
                 if (this.profile.username !== this.oldProfileData.username) {
                   this.profile = { ...savedProfile }
                   this.oldProfileData = { ...this.profile }

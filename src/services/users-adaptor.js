@@ -75,19 +75,18 @@ export class UsersAdaptor {
     }
   }
 
-  async asyncUpdateProfile (data) {
+  async asyncUpdateProfile (data, id) {
     let url
     let method
-
     try {
-      url = `${this.resourcesUrl}/users/profile/${parseInt(data.user_id)}`
+      url = `${this.resourcesUrl}/users/profile/${parseInt(id)}`
       method = 'PUT'
       const options = {
         method,
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: data
       }
 
       return this.fetchJson(url, options)

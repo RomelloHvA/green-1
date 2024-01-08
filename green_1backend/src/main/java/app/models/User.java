@@ -1,5 +1,6 @@
 package app.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +26,7 @@ public class User {
     private String username;
     private String bio;
     private String occupation;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date_of_birth;
     private String postalcode;
     private String user_goal;
