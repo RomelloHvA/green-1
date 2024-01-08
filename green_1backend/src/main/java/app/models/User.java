@@ -1,10 +1,8 @@
 package app.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.Random;
@@ -25,9 +23,13 @@ public class User {
     private String username;
     private String bio;
     private String occupation;
+    @Column(nullable = true)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date_of_birth;
     private String postalcode;
     private String user_goal;
+
+    private String img_path;
     @JsonView({ViewClasses.Summary.class})
     private boolean isAdmin = false;
 
@@ -49,8 +51,7 @@ public class User {
             "Peace, Justice, and Strong Institutions",
             "Partnerships for the Goals"};
 
-    public User(long user_id, String first_name, String last_name, String email, String username, String user_goal, String password, boolean isAdmin) {
-        this.user_id = user_id;
+    public User(String first_name, String last_name, String email, String username, String user_goal, String password, boolean isAdmin) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.email = email;
@@ -65,7 +66,7 @@ public class User {
 
     public static User createSampleUser() {
         Random random = new Random();
-        return new User(random.nextLong(1000),
+        return new User(
                 FIRST_NAMES[random.nextInt(FIRST_NAMES.length)],
                 LAST_NAMES[random.nextInt(LAST_NAMES.length)],
                 EMAIL_USER[random.nextInt(EMAIL_USER.length)],
@@ -76,8 +77,7 @@ public class User {
         );
     }
 
-    public User(long user_id, int sector_id, String first_name, String last_name, String email, int security_clearance, String password, String username, String bio, String occupation, LocalDate date_of_birth, String postalcode, String user_goal, boolean isAdmin) {
-        this.user_id = user_id;
+    public User(int sector_id, String first_name, String last_name, String email, int security_clearance, String password, String username, String bio, String occupation, LocalDate date_of_birth, String postalcode, String user_goal, boolean isAdmin) {
         this.sector_id = sector_id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -91,6 +91,7 @@ public class User {
         this.postalcode = postalcode;
         this.user_goal = user_goal;
         this.isAdmin = isAdmin;
+        this.img_path = img_path;
     }
 
     public User(String username, String password, boolean isAdmin) {
@@ -168,6 +169,10 @@ public class User {
         this.bio = bio;
     }
 
+    public String getImg_path() {
+        return img_path;
+    }
+
     public void setOccupation(String occupation) {
         this.occupation = occupation;
     }
@@ -210,5 +215,8 @@ public class User {
 
     public void setIsAdmin(boolean admin) {
         isAdmin = admin;
+    }
+    public void setImg_path(String img_path) {
+        this.img_path = img_path;
     }
 }
