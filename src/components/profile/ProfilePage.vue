@@ -68,6 +68,7 @@
               You don't have any quiz results.
             </div>
             <div>
+              <h5>Your Action Plans</h5>
               <ProfileActionPlans />
             </div>
           </div>

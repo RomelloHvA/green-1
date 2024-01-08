@@ -1,5 +1,6 @@
 <template>
     <div class="d-flex row row-gap-4 overflowScroll">
+        <p v-if="actionPlans.length === 0"> Looking kinda empty...</p>
         <ActionPlan v-for="actionPlan in actionPlans" :key="actionPlan.id"
         :id="actionPlan.id"
         :title="actionPlan.title"
