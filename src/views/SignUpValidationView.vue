@@ -263,7 +263,7 @@ export default {
       try {
         // Send a request to the backend with the Json file
         const user = await this.usersServices.asyncSave(userJson)
-        if (!user.response.ok) {
+        if (!user) {
           // Displaying the error
           useToast().error(user.responseText)
         } else {
@@ -297,7 +297,6 @@ export default {
     },
     // This methode checks the input and validates it
     signUpCheck () {
-      console.log(this.firstName)
       let countError = 0
       if (this.userName === '') {
         this.errorMessageName = 'Enter a valid username'

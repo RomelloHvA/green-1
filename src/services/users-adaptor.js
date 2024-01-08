@@ -45,7 +45,7 @@ export class UsersAdaptor {
 
     try {
       if (user.user_id === undefined || user.user_id === 0) {
-        url = `${this.resourcesUrl}/users/signup`
+        url = `${this.resourcesUrl}/authentication/signup`
         method = 'POST'
       } else {
         url = `${this.resourcesUrl}/users/${parseInt(user.user_id)}`
