@@ -282,7 +282,6 @@ export default {
       // [user_id, sector_id, first_name, last_name, email, security_clearance,
       //  password, username, bio (null), occupation (null), date_of_birth, postal_code, user_col (null) ]
       const newUser = {
-        user_id: 0,
         sector_id: this.faculties.indexOf(this.faculty) + 1,
         first_name: this.firstName,
         last_name: this.lastName,
