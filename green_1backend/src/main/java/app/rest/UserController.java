@@ -1,8 +1,10 @@
 package app.rest;
 
 import app.MvcConfig;
+import app.models.ActionPlan;
 import app.models.User;
 import app.models.ViewClasses;
+import app.repositories.ActionPlanRepository;
 import app.repositories.UsersRepositoryJPA;
 import app.security.JWToken;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -24,6 +26,9 @@ public class UserController {
 
     @Autowired
     UsersRepositoryJPA usersRepository;
+
+    @Autowired
+    ActionPlanRepository actionPlanRepository;
 
 //    @Autowired
 //    MvcConfig mvcConfig;
@@ -80,6 +85,32 @@ public class UserController {
         Optional<User> user = usersRepository.findById(id);
         if (user != null) {
             return ResponseEntity.ok(user);
+        } else {
+            throw new ResourceNotFoundException("User not found with ID: " + id);
+        }
+    }
+
+    @GetMapping("/{id}/actionplans")
+    public ResponseEntity<List<ActionPlan>> getAllUsersWithActionPlans(@PathVariable long id) {
+        Optional<User> user = usersRepository.findById(id);
+        if (user != null) {
+            return ResponseEntity.ok(user.get().getActionplans());
+        } else {
+            throw new ResourceNotFoundException("User not found with ID: " + id);
+        }
+    }
+
+    @DeleteMapping("/{id}/actionplans/{actionPlanId}")
+    public ResponseEntity<Object> deleteActionPlanFromUser(@PathVariable long id, @PathVariable long actionPlanId) {
+        Optional<User> user = usersRepository.findById(id);
+        if (user != null) {
+            if (user.get().getActionplans().contains(this.actionPlanRepository.findById(actionPlanId).orElse(null))) {
+                user.get().getActionplans().remove(this.actionPlanRepository.findById(actionPlanId).orElse(null));
+                this.usersRepository.save(user.get());
+                return ResponseEntity.ok(user.get().getActionplans());
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Action plan with id: " + actionPlanId + " not found.");
+            }
         } else {
             throw new ResourceNotFoundException("User not found with ID: " + id);
         }

@@ -62,48 +62,13 @@
             </div>
           </div>
           <div class="col">
-            <div class="mb-3">
-              <label for="inputGoals">Goals</label>
-            </div>
-            <div class="container goalContainer">
-              <div v-for="goal in profile.goals" :key="goal.id">
-                <div class="container border rounded-4 mb-4 goals">
-                  <img :src="getGoalImage(goal.image)" class="col-1 goalImage mt-2" alt="...">
-                  <h6 class="col-6 goalTitle">{{ goal.title }}</h6>
-                  <img @click="deleteGoal(goal.id)" src="@/assets/img/trashcan/trash-can.png"
-                       class="col-2 deleteGoalButton">
-                </div>
-              </div>
-            </div>
-            <div v-if="isGoalEmpty" class="invalid-message border mt-1 error">
-              Goal is required
-            </div>
-            <div class="row mt-1">
-              <div class="col-5">
-                <label for="selectList">Select a goal:</label>
-              </div>
-              <div class="col">
-                <select class="form-select selectGoal" v-model="selectedOption">
-                  <option v-for="goal in sdgGoals" :key="goal.id" :value="goal.sdgId">
-                    {{ goal.title }}
-                  </option>
-                </select>
-              </div>
-            </div>
             <button @click.prevent="showResults" type="button" class="btn btn-primary resultButton">See Quiz Results
             </button>
-            <button @click.prevent="createGoal" type="button" class="btn btn-primary addButton">Add Goals</button>
-            <div v-if="showGoalSDGEmpty" class="invalid-message border mt-1 error">
-              Please select a valid goal.
-            </div>
-            <div v-if="showGoalSDGLimit" class="invalid-message border mt-1 error">
-              You can't have more than three goals at the time.
-            </div>
-            <div v-if="showGoalSDGDup" class="invalid-message border mt-1 error">
-              You can't add the same goal.
-            </div>
             <div v-if="showQuizResultVal" class="invalid-message border mt-1 error">
               You don't have any quiz results.
+            </div>
+            <div>
+              <ProfileActionPlans />
             </div>
           </div>
         </div>
@@ -115,6 +80,7 @@
 <script>
 import { Profile } from '@/models/profile'
 import { Goal } from '@/models/goal'
+import ProfileActionPlans from '@/components/profile/ProfileActionPlans.vue'
 
 /**
  * ProfilePage compontent
@@ -125,6 +91,9 @@ import { Goal } from '@/models/goal'
 export default {
   name: 'ProfilePage',
   inject: ['profileService'],
+  components: {
+    ProfileActionPlans
+  },
   data () {
     return {
       profile: null,

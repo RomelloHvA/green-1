@@ -23,8 +23,11 @@
           </button>
           </div>
           <div class="col-4 actionPlanBtn justify-content-end m-auto d-flex">
-            <button class="btn btn-primary d-inline" @click="addPlan" :disabled="disableButton">
-                Add Plan
+            <button v-if="!isFromProfile" class="btn btn-primary d-inline" @click="addPlan" :disabled="disableButton">
+                {{ addPlanButtonText }}
+            </button>
+            <button v-else class="btn btn-primary d-inline" @click="completePlan" :disabled="disableButton">
+                {{ completedPlanButtonText }}
             </button>
           </div>
         </div>
@@ -35,7 +38,7 @@
 /** This component is used to display an actionplan
  * @author Marco de Boer
  */
-import { defineProps, ref, onBeforeMount } from 'vue'
+import { defineProps, ref, onBeforeMount, defineEmits } from 'vue'
 import { sdgData } from '@/assets/testData/sdgTestData'
 import useFetch from '@/utils/useFetch'
 import CONFIG from '@/app-config'
@@ -44,6 +47,8 @@ import { useToast } from 'vue-toast-notification'
 const expanded = ref(false)
 const disableButton = ref(false)
 const toast = useToast()
+
+const emits = defineEmits(['refreshPlans'])
 
 const props = defineProps({
   title: {
@@ -61,12 +66,19 @@ const props = defineProps({
   id: {
     type: Number,
     required: true
+  },
+  isFromProfile: {
+    type: Boolean,
+    required: false,
+    default: false
   }
 })
 
 const imgSrcs = ref([])
 const user = JSON.parse(window.sessionStorage.getItem('ACCOUNT'))
 const addPlanIsPending = ref(false)
+const addPlanButtonText = ref('Add Plan')
+const completedPlanButtonText = ref('Complete')
 
 onBeforeMount(() => {
   for (const sdg of props.sdgs) {
@@ -89,22 +101,43 @@ const addPlan = () => {
     const body = { actionPlanId: props.id, userId: user.user_id }
     const result = useFetch(`${CONFIG.BACKEND_URL}/actionplans/add`, body, 'POST')
     addPlanIsPending.value = true
+    addPlanButtonText.value = 'Adding...'
 
     result.load().then(() => {
       addPlanIsPending.value = false
       if (result.error.value === null) {
         toast.success('Actionplan added')
+        addPlanButtonText.value = 'Added'
         disableButton.value = true
       } else if (result.error.value === 'user already has this action plan') {
         toast.info('Actionplan already added')
+        addPlanButtonText.value = 'Added'
         disableButton.value = true
       } else {
         toast.error(result.error.value)
+        addPlanButtonText.value = 'Add Plan'
       }
     })
   } else {
-    // window.location.href = '/login'
+    window.location.href = '/login'
   }
+}
+
+const completePlan = () => {
+  const result = useFetch(`${CONFIG.BACKEND_URL}/users/${user.user_id}/actionplans/${props.id}`, null, 'DELETE')
+  completedPlanButtonText.value = 'Completing...'
+
+  result.load().then(() => {
+    if (result.error.value === null) {
+      toast.success('Actionplan completed')
+      completedPlanButtonText.value = 'Completed'
+      disableButton.value = true
+      emits('refreshPlans', result.data.value)
+    } else {
+      toast.error(result.error.value)
+      completedPlanButtonText.value = 'Complete'
+    }
+  })
 }
 
 </script>
