@@ -1,16 +1,19 @@
 <template>
   <div class="mt-5 mb-5 profileBody">
-    <form @click.prevent>
+    <form>
       <div class="container text-center">
         <div class="row align-items-start">
           <div class="col">
             <div class="container">
               <div class="container-md">
-                <img v-if="item.profilePic" :src="profile.photo" class="pfp" alt="...">
+                <img v-if="profile.img_path" :src="profile.img_path" class="pfp" alt="...">
                 <img v-else src="@/assets/photo/profielfoto-silhouet.jpg" class="pfp" alt="...">
-                <div class="mb-3" style="margin: 1rem;">
-                  <input type="file" accept="image/*" class="form-control" id="inputGroupFile02" @change="onChange">
-                </div>
+                <UploadImageComponent class="uploadImageSpace" ref="uploadImage" :imagePath="profile.img_path"
+                                      @image-previewed="handleImagePreviewed"
+                                      @image-cleared="handleImageCleared"/>
+<!--                <div class="mb-3" style="margin: 1rem;">-->
+<!--                  <input type="file" accept="image/*" class="form-control" id="inputGroupFile02" @change="onChange">-->
+<!--                </div>-->
                 <div class="mb-3">
                   <label for="inputName" class="form-label">First Name: </label>
                   <input type="text" autocomplete="off" class="form-control" id="inputFirstName"
@@ -30,6 +33,15 @@
                   </div>
                 </div>
                 <div class="mb-3">
+                  <label for="inputName" class="form-label">Username: </label>
+                  <input type="text" autocomplete="off" class="form-control" id="inputLastName"
+                         v-model="profile.username"
+                         required>
+                  <div v-if="isUserNameEmpty" class="invalid-message border mt-1 error">
+                    Username is required
+                  </div>
+                </div>
+                <div class="mb-3">
                   <label for="inputBirthday" class="form-label">Birthday: </label>
                   <input type="date" min="1900-01-01" class="form-control" id="inputBirthday"
                          v-model="profile.date_of_birth"
@@ -41,13 +53,13 @@
                 <div class="mb-3">
                   <label for="inputOccupation" class="form-label">Occupation: </label>
                   <input type="text" autocomplete="off" class="form-control" id="inputOccupation"
-                         v-model="profile.occupation" aria-required="true" required>
+                         v-model="profile.occupation" aria-required="true" required placeholder="Enter your occupation...">
                 </div>
                 <div v-if="isOccupationEmpty" class="invalid-message border mt-1 error">
                   Occupation is required
                 </div>
-                <button @click="saveEdit" type="submit" class="btn btn-primary editButton">Save</button>
-                <button @click="cancelEdit" type="button" class="btn btn-primary editButton">Cancel</button>
+                <button @click="saveEdit" :disabled="!isProfileChanged(this.profile, this.oldProfileData)" type="submit" class="btn btn-primary editButton">Save</button>
+                <button @click="cancelEdit" :disabled="!isProfileChanged(this.profile, this.oldProfileData)" type="button" class="btn btn-primary editButton">Cancel</button>
               </div>
             </div>
           </div>
@@ -55,7 +67,7 @@
             <div class="mb-3">
               <label for="inputBio" class="form-label">Bio: </label>
               <textarea class="form-control" id="inputBio" autocomplete="off"
-                        style="height: 25rem; width: 100%; resize: none" v-model="profile.bio" required></textarea>
+                        style="height: 25rem; width: 100%; resize: none" v-model="profile.bio" required placeholder="Tell us something about you!"></textarea>
               <div v-if="isBioEmpty" class="invalid-message border mt-1 error">
                 Bio is required
               </div>
@@ -113,21 +125,33 @@
 </template>
 
 <script>
-import { Profile } from '@/models/profile'
 import { Goal } from '@/models/goal'
-
+import { useToast } from 'vue-toast-notification'
+import UploadImageComponent from '@/components/UploadImageComponent'
 /**
- * ProfilePage compontent
+ * ProfilePage component
  * This is the page is used so users view their profile information
  * and make changes to them.
  */
 
 export default {
   name: 'ProfilePage',
-  inject: ['profileService'],
+  inject: ['usersServices', 'sessionService'],
+  components: {
+    UploadImageComponent
+  },
   data () {
     return {
-      profile: null,
+      user: null,
+      profile: {
+        first_name: '',
+        last_name: '',
+        occupation: '',
+        username: '',
+        date_of_birth: null,
+        bio: '',
+        img_path: null
+      },
       selectedOption: '',
       sdgGoals: [
         {
@@ -216,11 +240,15 @@ export default {
           title: 'Partnerships for the Goals'
         }
       ],
-      item: {
-        image: null,
-        profilePic: null
+      oldProfileData: {
+        first_name: '',
+        last_name: '',
+        occupation: '',
+        username: '',
+        date_of_birth: null,
+        bio: '',
+        img_path: null
       },
-      oldProfileData: null,
       showGoalSDGEmpty: false,
       showGoalSDGLimit: false,
       showGoalSDGDup: false,
@@ -233,22 +261,40 @@ export default {
   async created () {
     try {
       // Wait for the asynchronous operation to complete
-      this.profile = new Profile()
-      // const profileService = await this.profileService.asyncFindAll()
-      const profileService = await this.profileService.asyncFindById(0)
-
-      this.profile = profileService
-      // Log the fetched profile data
-      console.log(this.profile)
-
+      const account = await this.sessionService.currentAccount
+      this.user = await this.usersServices.asyncFindById(account.user_id)
+      this.profile = { ...this.user }
       // Create a copy of the profile
-      this.oldProfileData = Profile.copyConstructor(this.profile)
-      console.log(this.oldProfileData)
+      this.oldProfileData = { ...this.profile }
     } catch (error) {
       console.error('Error fetching profile data:', error)
     }
   },
   methods: {
+    formatDateForBE (date) {
+      const dateParts = date.split('-')
+      if (dateParts.length === 3) {
+        const year = parseInt(dateParts[0], 10)
+        const month = parseInt(dateParts[1], 10)
+        const day = parseInt(dateParts[2], 10)
+        if (!isNaN(year) && !isNaN(month) && !isNaN(day)) {
+          return { year, month, day }
+        }
+      }
+      return null // Handle invalid input gracefully
+    },
+    handleImagePreviewed (newImagePath) {
+      this.profile.img_path = newImagePath
+      // Here you can also make an API call to update the user's profile photo
+    },
+
+    handleImageCleared () {
+      this.profile.img_path = null
+      // Handle the clearing of the photo in the profile, maybe reset to a default
+    },
+    update: function (attribute, event) {
+      attribute = event.target.value
+    },
     /**
      * Function to show the newly uploaded profile picture
      * @param e
@@ -337,21 +383,8 @@ export default {
     cancelEdit () {
       // Check if the user wants to undo the changes
       if (confirm('Are you sure you want to undo your changes?') === true) {
-        const firstName = this.oldProfileData.first_name
-        const lastName = this.oldProfileData.last_name
-        const photo = this.oldProfileData.photo
-        const birth = this.oldProfileData.date_of_birth
-        const occupation = this.oldProfileData.occupation
-        const bio = this.oldProfileData.bio
-        const goals = this.oldProfileData.goals
-        this.profile.firstName = firstName
-        this.profile.lastName = lastName
-        this.profile.photo = photo
-        this.profile.birth = birth
-        this.profile.occupation = occupation
-        this.profile.bio = bio
-        this.profile.goals = goals
-        alert('Changes have been undone')
+        this.profile = { ...this.oldProfileData }
+        useToast().success('Changes have been undone')
       }
     },
     /**
@@ -366,47 +399,79 @@ export default {
           this.profile.occupation === '' ||
           this.profile.bio === '') {
           return alert('Some of the fields are empty')
-        } else if (this.profile.goals.length === 0) {
-          return alert('Please add a goal')
+        // } else if (this.profile.user_goal === null) {
+        //   return alert('Please add a goal')
         } else {
           // Check if the user wants to save the changes
           if (confirm('Are you sure you want to save changes?') === true) {
-            const id = this.profile.user_id
-            const firstName = this.profile.first_name
-            const lastName = this.profile.last_name
-            const photo = this.profile.photo
-            const birth = new Date(this.profile.date_of_birth)
-            const occupation = this.profile.occupation
-            const bio = this.profile.bio
-            const goals = this.profile.goals
-
             // Overwrite old data with newely input data
-            this.profile = new Profile(id, firstName, lastName, photo, birth, occupation, bio, goals)
             try {
+              const user = {
+                first_name: this.profile.first_name,
+                last_name: this.profile.last_name,
+                occupation: this.profile.occupation,
+                username: this.profile.username,
+                date_of_birth: this.profile.date_of_birth,
+                bio: this.profile.bio
+              }
+              if (this.profile.img_path !== this.oldProfileData.img_path) {
+                user.img_path = await this.$refs.uploadImage.uploadImage()
+              }
               // Wait for the asynchronous operation to complete
-              const savedProfile = await this.profileService.asyncSave(this.profile)
-
+              const savedProfile = await this.usersServices.asyncUpdateProfile(JSON.stringify(user), this.user.user_id)
               // Check if the profile has been saved
               if (savedProfile) {
-                this.profile = savedProfile
-                alert('Changes have been saved')
-                // Creates a new copy of the profile
-                this.oldProfileData = Profile.copyConstructor(this.profile)
+                if (this.profile.username !== this.oldProfileData.username) {
+                  this.profile = { ...savedProfile }
+                  this.oldProfileData = { ...this.profile }
+                  useToast().success('Changes have been saved, please login again!')
+                  await new Promise(resolve => setTimeout(resolve, 5000))
+                  this.$router.push({ path: '/sign-out' })
+                } else {
+                  this.profile = { ...savedProfile }
+                  this.oldProfileData = { ...this.profile }
+                  useToast().success('Changes have been saved!')
+                }
               } else {
                 // If the profile has not been saved, show an error
-                alert('Failed to save changes. Please check the console for errors.')
+                useToast().error('Failed to save changes. Please check the console for errors.')
               }
             } catch (error) {
               console.error('Error saving profile data:', error)
-              alert('Failed to save changes. Please check the console for errors.')
+              useToast().error('Failed to save changes. Please check the console for errors.')
             }
             // Creates a new copy of the profile
-            this.oldProfileData = Profile.copyConstructor(this.profile)
+            this.oldProfileData = { ...this.profile }
           }
         }
       } catch (error) {
         console.error('Error saving profile data:', error)
       }
+    },
+    isProfileChanged (profileA, profileB) {
+      return !this.deepEqual(profileA, profileB)
+    },
+    deepEqual (obj1, obj2) {
+      if (obj1 === obj2) return true
+
+      if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
+        return false
+      }
+
+      const keys1 = Object.keys(obj1)
+      const keys2 = Object.keys(obj2)
+
+      if (keys1.length !== keys2.length) {
+        return false
+      }
+
+      for (const key of keys1) {
+        if (!keys2.includes(key) || !this.deepEqual(obj1[key], obj2[key])) {
+          return false
+        }
+      }
+
+      return true
     }
   },
   computed: {
@@ -419,6 +484,10 @@ export default {
       return this.profile.first_name === ''
     },
     isLastNameEmpty () {
+      // Check if the name is an empty string
+      return this.profile.last_name === ''
+    },
+    isUserNameEmpty () {
       // Check if the name is an empty string
       return this.profile.last_name === ''
     },
