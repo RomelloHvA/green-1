@@ -25,8 +25,6 @@
         </button>
       </div>
       <div class="col-4 actionPlanBtn justify-content-end m-auto d-flex">
-        <button class="btn btn-primary d-inline" @click="addPlan" :disabled="disableButton">
-          Add Plan
           <button v-if="!isFromProfile" class="btn btn-primary d-inline" @click="addPlan" :disabled="disableButton">
             {{ addPlanButtonText }}
           </button>
