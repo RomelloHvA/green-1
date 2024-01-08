@@ -128,6 +128,14 @@ const routes = [
         ]
       },
       {
+        path: 'sectors',
+        name: 'sectors',
+        component: () => import('@/components/AdminDashboard/SectorEditor/SectorEditorMainComponent'),
+        children: [
+          { path: ':id', component: () => import('@/components/AdminDashboard/SectorEditor/SingleSectorEditorComponent') }
+        ]
+      },
+      {
         path: '/admin_dashboard/quiz',
         name: 'QuizOverview',
         component: QuizOverview,
