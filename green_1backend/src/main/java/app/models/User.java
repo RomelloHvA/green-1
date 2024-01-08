@@ -35,8 +35,6 @@ public class User {
 
     private String img_path;
 
-    @OneToMany
-    private List<ActionPlan> actionplans;
     @JsonView({ViewClasses.Summary.class})
     private boolean isAdmin = false;
 
