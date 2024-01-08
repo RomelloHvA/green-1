@@ -18,7 +18,6 @@ export class FetchInterceptor {
 
   request (url, options) {
     const token = FetchInterceptor.theInstance.sessionService.currentToken
-    console.log('FetchInterceptor request: ', url, options, token)
     if (token == null) {
       return [url, options]
     } else if (options == null) {
@@ -58,11 +57,11 @@ export class FetchInterceptor {
     try {
       if (response.status === 401) {
         console.log('Unauthorized. Token may have expired or invalid.')
+        this.router.push({ path: '/sign-out' })
       } else {
         console.log('Unexpected error during login.')
       }
       this.responseError(response)
-      this.router.push({ path: '/sign-out' })
     } catch (e) {
       console.error('FetchInterceptor handleErrorInResponse: ', e)
     }

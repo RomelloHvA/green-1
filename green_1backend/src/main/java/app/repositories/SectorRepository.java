@@ -10,4 +10,7 @@ import java.util.List;
 @Repository
 public interface SectorRepository extends JpaRepository<Sector, Long> {
 
+    @Query("SELECT s FROM Sector s JOIN Quiz q ON q.sector.id = s.id WHERE q.isLive = TRUE")
+    List<Sector> findAllWithLiveQuiz();
+
 }

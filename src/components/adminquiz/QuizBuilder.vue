@@ -72,7 +72,7 @@
 </template>
 <script>
 import { ref, inject, onBeforeMount, watchEffect, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRoute } from 'vue-router'
 import YesNoQuestion from '@/models/YesNoQuestion'
 import QuestionBuilder from './QuestionBuilder.vue'
 import MultipleChoiceQuestion from '@/models/MultipleChoiceQuestion'
@@ -132,6 +132,28 @@ export default {
           error.value = 'Could not find quiz with id: ' + route.params.id
         }
       })
+    })
+
+    onBeforeRouteLeave((to, from, next) => {
+      if (hasChanged.value) {
+        if (window.confirm('You have unsaved changes, are you sure you want to leave?')) {
+          next()
+        } else {
+          next(false)
+        }
+      }
+      next()
+    })
+
+    onBeforeRouteUpdate((to, from, next) => {
+      if (hasChanged.value) {
+        if (window.confirm('You have unsaved changes, are you sure you want to leave?')) {
+          next()
+        } else {
+          next(false)
+        }
+      }
+      next()
     })
 
     /**
@@ -222,7 +244,9 @@ export default {
 
     const setSector = (sector) => {
       quiz.value.sector = sector
-      quiz.value.isLive = false
+      if (sector.id !== quizOriginal.value.sector.id) {
+        quiz.value.isLive = false
+      }
     }
 
     const deleteQuiz = async () => {

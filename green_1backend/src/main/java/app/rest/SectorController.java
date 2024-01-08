@@ -25,6 +25,11 @@ public class SectorController {
         return sectorRepository.findAll();
     }
 
+    @GetMapping("/all/quizislive") List<Sector> getAllSectorsWithLiveQuiz() {
+        System.out.println(sectorRepository.findAllWithLiveQuiz());
+        return sectorRepository.findAllWithLiveQuiz();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Object> getSectorById(@PathVariable Long id) {
         Sector sector = sectorRepository.findById(id).orElse(null);

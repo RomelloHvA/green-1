@@ -1,8 +1,11 @@
 package app.rest;
 
+import app.models.ActionPlan;
 import app.models.User;
+import app.repositories.ActionPlanRepository;
 import app.repositories.UsersRepositoryJPA;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +21,8 @@ public class UserController {
     @Autowired
     UsersRepositoryJPA usersRepository;
 
-//    @Autowired
-//    MvcConfig mvcConfig;
+    @Autowired
+    ActionPlanRepository actionPlanRepository;
 
     @GetMapping(path = "/all", produces = "application/json")
     public List<User> getAllUsers() {
@@ -38,6 +41,32 @@ public class UserController {
         if (user.isPresent()) {
             User foundUser = user.get();
             return ResponseEntity.ok(foundUser);
+        } else {
+            throw new ResourceNotFoundException("User not found with ID: " + id);
+        }
+    }
+
+    @GetMapping("/{id}/actionplans")
+    public ResponseEntity<List<ActionPlan>> getAllUsersWithActionPlans(@PathVariable long id) {
+        Optional<User> user = usersRepository.findById(id);
+        if (user != null) {
+            return ResponseEntity.ok(user.get().getActionplans());
+        } else {
+            throw new ResourceNotFoundException("User not found with ID: " + id);
+        }
+    }
+
+    @DeleteMapping("/{id}/actionplans/{actionPlanId}")
+    public ResponseEntity<Object> deleteActionPlanFromUser(@PathVariable long id, @PathVariable long actionPlanId) {
+        Optional<User> user = usersRepository.findById(id);
+        if (user != null) {
+            if (user.get().getActionplans().contains(this.actionPlanRepository.findById(actionPlanId).orElse(null))) {
+                user.get().getActionplans().remove(this.actionPlanRepository.findById(actionPlanId).orElse(null));
+                this.usersRepository.save(user.get());
+                return ResponseEntity.ok(user.get().getActionplans());
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Action plan with id: " + actionPlanId + " not found.");
+            }
         } else {
             throw new ResourceNotFoundException("User not found with ID: " + id);
         }

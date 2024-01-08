@@ -2,15 +2,20 @@ package app.rest;
 
 import app.models.ActionPlan;
 import app.models.Sector;
+import app.models.User;
 import app.repositories.ActionPlanRepository;
 import app.repositories.SectorRepository;
+import app.repositories.UsersRepository;
+import app.repositories.UsersRepositoryJPA;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @RestController
 @RequestMapping("/actionplans")
@@ -19,6 +24,10 @@ public class ActionPlanController {
     @Autowired
     ActionPlanRepository actionPlanRepository;
 
+
+    @Autowired
+    UsersRepositoryJPA usersRepository;
+
     @Autowired
     SectorRepository sectorRepo;
 
@@ -26,6 +35,45 @@ public class ActionPlanController {
     @GetMapping("")
     public List<ActionPlan> findAll() {
         return actionPlanRepository.findAll();
+    }
+
+
+    //#todo refactor this method
+    /** retrieves all action plans for a given sector id and sdgs (if any)
+    * @author Marco de Boer
+     */
+    @GetMapping("/{sectorId}/quizresultplans")
+    public List<ActionPlan> findAllBySectorIdAndSdgs(@PathVariable Long sectorId, @RequestParam List<Long> sdgs) {
+        int amountOfQuizResultRecommendedSDGs = sdgs.size();
+        List<ActionPlan> actionPlanList = new ArrayList<>();
+        for(int i = 0; i < amountOfQuizResultRecommendedSDGs; i++) {
+            actionPlanList.addAll(actionPlanRepository.findBySectorAndSdgs(sectorId, sdgs.subList(0,(amountOfQuizResultRecommendedSDGs - 1 - i)), sdgs.size() - (amountOfQuizResultRecommendedSDGs - i)));
+            if(actionPlanList.size() >= 4) {
+                return actionPlanList.subList(0, 4);
+            }
+        }
+
+        if(sdgs.size() == 2) {
+            actionPlanList.addAll(actionPlanRepository.findBySectorAndSdgs(sectorId, sdgs.subList(1,1), 1));
+            if(actionPlanList.size() >= 4) {
+                return actionPlanList.subList(0, 4);
+            }
+        }
+
+        if(sdgs.size() == 3) {
+            actionPlanList.addAll(actionPlanRepository.findBySectorAndSdgs(sectorId, sdgs.subList(1,2), 2));
+            if(actionPlanList.size() >= 4) {
+                return actionPlanList.subList(0, 4);
+            }
+
+            actionPlanList.addAll(actionPlanRepository.findBySectorAndSdgs(sectorId, sdgs.subList(2,2), 1));
+
+            if(actionPlanList.size() >= 4) {
+                return actionPlanList.subList(0, 4);
+            }
+        }
+
+        return actionPlanRepository.findBySectorAndSdgsWithoutLengthFiler(sectorId, sdgs);
     }
 
     @GetMapping("/testSector")
@@ -77,9 +125,31 @@ public class ActionPlanController {
         if (!Objects.equals(actionPlanId, actionPlan.getId())) {
             return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body("id in Url does not match id in action plan");
         }
+        System.out.println(actionPlan);
         actionPlanRepository.save(actionPlan);
         return ResponseEntity.ok(actionPlan);
 
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<Object> addPlanToUserAccount(@RequestBody Map<String, Long> requestData) {
+        long userId = requestData.get("userId");
+        Long actionPlanId = requestData.get("actionPlanId");
+
+        User user = this.usersRepository.findById(userId).orElse(null);
+
+        if (user == null) {
+            return ResponseEntity.badRequest().body("user not found");
+        }
+
+        if (user.getActionplans().contains(this.actionPlanRepository.findById(actionPlanId).orElse(null))) {
+            return ResponseEntity.ok(user.getActionplans());
+        }
+
+        user.getActionplans().add(this.actionPlanRepository.findById(actionPlanId).orElse(null));
+        this.usersRepository.save(user);
+
+        return ResponseEntity.ok(user.getActionplans());
     }
 
 }

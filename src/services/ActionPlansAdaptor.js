@@ -125,4 +125,10 @@ export class ActionPlansAdaptor {
     const actionPlansData = await this.fetchJson(this.resourcesUrl + '/sdg/' + parseInt(id))
     return actionPlansData
   }
+
+  async asyncForQuizResults (sectorId, sdgs) {
+    const requestParams = sdgs.map(sdg => 'sdgs=' + sdg).join('&')
+    const actionPlanData = await this.fetchJson(this.resourcesUrl + '/' + sectorId + '/quizresultplans?' + requestParams)
+    return actionPlanData
+  }
 }

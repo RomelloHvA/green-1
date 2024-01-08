@@ -32,7 +32,6 @@ export function useFetch (url, object, method = 'GET', params = null) {
     headers: headers,
     signal: abortController.signal
   }
-
   if (method !== 'GET' && object) {
     fetchOptions.body = isFormData ? object : JSON.stringify(object)
   }

@@ -112,14 +112,18 @@ export class RESTAdaptorWithFetch /* <E> */ {
   }
 
   async asyncCustom (endpoint, method, body, params) {
-    const entity = ref(null)
+    const entity = ref([])
     endpoint = this.resourcesUrl + '/' + endpoint
 
     const { data, isPending, error, load, abort, isAborted } = await useFetch(endpoint, body, method, params)
 
     watchEffect(() => {
       if (data.value === null || data.value.length === 0) return
-      entity.value = this.copyConstructor(data.value)
+      if (Array.isArray(data.value)) {
+        entity.value = data.value.map(entity => this.copyConstructor(entity))
+      } else {
+        entity.value = this.copyConstructor(data.value)
+      }
     })
 
     return { entity, isPending, error, load, abort, isAborted }

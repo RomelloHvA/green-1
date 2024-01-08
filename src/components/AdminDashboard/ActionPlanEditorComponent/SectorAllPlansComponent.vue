@@ -89,6 +89,7 @@ export default {
         editableActionPlans.value[index].title = plan.title
         editableActionPlans.value[index].description = plan.description
         editableActionPlans.value[index].sdgArray = plan.sdgArray
+        editableActionPlans.value[index].sector = plan.sector
         saveResults.value = await actionPlanService.saveActionPlanById(editableActionPlans.value[index], route.params.sector)
         if (saveResults.value.succes) {
           toast.success('Saved succesfully')

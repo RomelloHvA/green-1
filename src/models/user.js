@@ -8,9 +8,10 @@ export class User {
   username
   password
   dateOfBirth
+  isAdmin
 
   constructor (userId, sectorId, firstName, lastName, email, securityClearance, username,
-    password, dateOfBirth) {
+    password, dateOfBirth, isAdmin) {
     this.userId = userId
     this.sectorId = sectorId
     this.firstName = firstName
@@ -20,11 +21,12 @@ export class User {
     this.username = username
     this.password = password
     this.dateOfBirth = dateOfBirth
+    this.isAdmin = isAdmin
   }
 
   async clone () {
     return new User(this.userId, this.sectorId, this.firstName, this.lastName,
-      this.email, this.securityClearance, this.username, this.password, this.dateOfBirth)
+      this.email, this.securityClearance, this.username, this.password, this.dateOfBirth, this.isAdmin)
   }
 
   static copyConstructor (user) {
@@ -38,7 +40,8 @@ export class User {
       user.security_clearance,
       user.username,
       user.password,
-      user.date_of_birth
+      user.date_of_birth,
+      user.isAdmin
     )
     return clonedUser
   }
