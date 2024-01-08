@@ -1,7 +1,10 @@
 package app.models;
 
-import jakarta.persistence.*;
-import org.aspectj.lang.annotation.RequiredTypes;
+import com.fasterxml.jackson.annotation.JsonView;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 import java.time.LocalDate;
 import java.util.Random;
@@ -9,14 +12,16 @@ import java.util.Random;
 @Entity
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long user_id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonView({ViewClasses.Summary.class})
+    private long user_id = 0L;
     private int sector_id;
     private String first_name;
     private String last_name;
     private String email;
     private int security_clearance;
     private String password;
+    @JsonView({ViewClasses.Summary.class})
     private String username;
     private String bio;
     private String occupation;
@@ -24,7 +29,7 @@ public class User {
     private LocalDate date_of_birth;
     private String postalcode;
     private String user_goal;
-
+    @JsonView({ViewClasses.Summary.class})
     private boolean isAdmin = false;
 
     private static final String[] FIRST_NAMES = {"John", "Mary", "David", "Lisa", "Michael", "Sarah"};
