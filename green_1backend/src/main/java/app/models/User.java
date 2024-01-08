@@ -1,12 +1,10 @@
 package app.models;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Random;
 
 @Entity
@@ -28,6 +26,9 @@ public class User {
     private LocalDate date_of_birth;
     private String postalcode;
     private String user_goal;
+
+    @OneToMany
+    private List<ActionPlan> actionplans;
     @JsonView({ViewClasses.Summary.class})
     private boolean isAdmin = false;
 
@@ -97,6 +98,14 @@ public class User {
         this.username = username;
         this.password = password;
         this.isAdmin = isAdmin;
+    }
+
+    public void setActionplans(List<ActionPlan> actionplans) {
+        this.actionplans = actionplans;
+    }
+
+    public List<ActionPlan> getActionplans() {
+        return actionplans;
     }
 
     public void setUser_id(long user_id) {

@@ -2,17 +2,20 @@ package app.rest;
 
 import app.models.ActionPlan;
 import app.models.Sector;
+import app.models.User;
 import app.repositories.ActionPlanRepository;
 import app.repositories.SectorRepository;
+import app.repositories.UsersRepository;
+import app.repositories.UsersRepositoryJPA;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/actionplans")
@@ -20,6 +23,10 @@ public class ActionPlanController {
 
     @Autowired
     ActionPlanRepository actionPlanRepository;
+
+
+    @Autowired
+    UsersRepositoryJPA usersRepository;
 
     @Autowired
     SectorRepository sectorRepo;
@@ -122,6 +129,27 @@ public class ActionPlanController {
         actionPlanRepository.save(actionPlan);
         return ResponseEntity.ok(actionPlan);
 
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<Object> addPlanToUserAccount(@RequestBody Map<String, Long> requestData) {
+        long userId = requestData.get("userId");
+        Long actionPlanId = requestData.get("actionPlanId");
+
+        User user = this.usersRepository.findById(userId).orElse(null);
+
+        if (user == null) {
+            return ResponseEntity.badRequest().body("user not found");
+        }
+
+        if (user.getActionplans().contains(this.actionPlanRepository.findById(actionPlanId).orElse(null))) {
+            return ResponseEntity.ok(user.getActionplans());
+        }
+
+        user.getActionplans().add(this.actionPlanRepository.findById(actionPlanId).orElse(null));
+        this.usersRepository.save(user);
+
+        return ResponseEntity.ok(user.getActionplans());
     }
 
 }

@@ -9,7 +9,7 @@
         <!--      Loop to add all the sdg-results-->
         <div class="col-sm-6 col d-flex  flexRow gap-3 barss">
           <div v-for="(sdg, index) in sdgData.slice(0, 3)" :key="index" class="col-sm-3 col-4 containerrr">
-            <sdg-card-component :sdg-data="sdg" :maxHeight="getMaxBarHeight"/>
+            <sdg-card-component :sdg-data="sdg" :maxHeight="getMaxBarHeight" :isFromQuizResults="true"/>
           </div>
         </div>
       </div>
@@ -23,12 +23,12 @@
         <h5 v-if="actionPlans.length == 0" class="d-flex justify-content-center my-5 mx-auto headerText2 row">No actionplans found! </h5>
         <div v-else>
           <div class="d-flex row m-auto gap-5 my-5 justify-content-center">
-            <ActionPlan v-if="actionPlans[0]" class="col-lg" :id="0" :title="actionPlans[0].title" :description="actionPlans[0].description" :sdgs="actionPlans[0].sdgArray" />
-            <ActionPlan v-if="actionPlans[1]" class="col-lg" :id="1" :title="actionPlans[1].title" :description="actionPlans[1].description" :sdgs="actionPlans[1].sdgArray" />
+            <ActionPlan v-if="actionPlans[0]" class="col-lg" :id="actionPlans[0].id" :title="actionPlans[0].title" :description="actionPlans[0].description" :sdgs="actionPlans[0].sdgArray" />
+            <ActionPlan v-if="actionPlans[1]" class="col-lg" :id="actionPlans[1].id" :title="actionPlans[1].title" :description="actionPlans[1].description" :sdgs="actionPlans[1].sdgArray" />
           </div>
           <div class="d-flex row m-auto gap-5 my-5">
-            <ActionPlan v-if="actionPlans[2]" class="col-lg" :id="3" :title="actionPlans[2].title" :description="actionPlans[2].description" :sdgs="actionPlans[2].sdgArray" />
-            <ActionPlan v-if="actionPlans[3]" class="col-lg" :id="4" :title="actionPlans[3].title" :description="actionPlans[3].description" :sdgs="actionPlans[3].sdgArray" />
+            <ActionPlan v-if="actionPlans[2]" class="col-lg" :id="actionPlans[2].id" :title="actionPlans[2].title" :description="actionPlans[2].description" :sdgs="actionPlans[2].sdgArray" />
+            <ActionPlan v-if="actionPlans[3]" class="col-lg" :id="actionPlans[3].id" :title="actionPlans[3].title" :description="actionPlans[3].description" :sdgs="actionPlans[3].sdgArray" />
           </div>
         </div>
       </div>
@@ -143,7 +143,6 @@ export default {
       this.actionPlanService.asyncForQuizResults('1', sdgs).then((actionPlans) => {
         this.actionPlans = actionPlans
         this.actionPlansAreLoading = false
-        console.log(actionPlans)
       })
     }
 

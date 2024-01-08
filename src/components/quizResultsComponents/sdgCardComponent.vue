@@ -2,20 +2,22 @@
   <div class="card child">
     <img class="card-img-top" alt="..." :src="imgsrc">
     <div :style="{ backgroundColor: sdgData.color, height: bottomHeight }"  class="card-body bottompart p-0">
-      <!-- <h5 class="card-title">{{sdgData.title}}</h5>
-      <p class="card-text">{{cardDescription}}</p>
-      <div class="card-footer">
-        <flip-button-component @click="changeClicked" :is-clicked="isClicked"/>
-      </div> -->
+      <div v-if="!isFromQuizResults">
+        <h5 class="card-title">{{sdgData.title}}</h5>
+        <p class="card-text">{{cardDescription}}</p>
+        <div class="card-footer">
+          <flip-button-component @click="changeClicked" :is-clicked="isClicked"/>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-// import FlipButtonComponent from '@/components/quizResultsComponents/flipButtonComponent'
+import FlipButtonComponent from '@/components/quizResultsComponents/flipButtonComponent'
 export default {
   name: 'sdgCardComponent',
-  // components: { FlipButtonComponent },
+  components: { FlipButtonComponent },
   data () {
     return {
       isClicked: false,
@@ -43,6 +45,10 @@ export default {
     },
     maxHeight: {
       type: Number
+    },
+    isFromQuizResults: {
+      type: Boolean,
+      default: false
     }
   },
   mounted () {

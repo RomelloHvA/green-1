@@ -23,7 +23,7 @@
           </button>
           </div>
           <div class="col-4 actionPlanBtn justify-content-end m-auto d-flex">
-            <button class="btn btn-primary " @click="addPlan">
+            <button class="btn btn-primary d-inline" @click="addPlan" :disabled="disableButton">
                 Add Plan
             </button>
           </div>
@@ -37,8 +37,13 @@
  */
 import { defineProps, ref, onBeforeMount } from 'vue'
 import { sdgData } from '@/assets/testData/sdgTestData'
+import useFetch from '@/utils/useFetch'
+import CONFIG from '@/app-config'
+import { useToast } from 'vue-toast-notification'
 
 const expanded = ref(false)
+const disableButton = ref(false)
+const toast = useToast()
 
 const props = defineProps({
   title: {
@@ -60,6 +65,8 @@ const props = defineProps({
 })
 
 const imgSrcs = ref([])
+const user = JSON.parse(window.sessionStorage.getItem('ACCOUNT'))
+const addPlanIsPending = ref(false)
 
 onBeforeMount(() => {
   for (const sdg of props.sdgs) {
@@ -78,7 +85,26 @@ const expandActionPlan = () => {
 }
 
 const addPlan = () => {
-  console.log('add plan')
+  if (user !== null) {
+    const body = { actionPlanId: props.id, userId: user.user_id }
+    const result = useFetch(`${CONFIG.BACKEND_URL}/actionplans/add`, body, 'POST')
+    addPlanIsPending.value = true
+
+    result.load().then(() => {
+      addPlanIsPending.value = false
+      if (result.error.value === null) {
+        toast.success('Actionplan added')
+        disableButton.value = true
+      } else if (result.error.value === 'user already has this action plan') {
+        toast.info('Actionplan already added')
+        disableButton.value = true
+      } else {
+        toast.error(result.error.value)
+      }
+    })
+  } else {
+    // window.location.href = '/login'
+  }
 }
 
 </script>
