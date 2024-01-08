@@ -34,6 +34,9 @@ public class User {
     private List<ActionPlan> actionplans;
 
     private String img_path;
+
+    @OneToMany
+    private List<ActionPlan> actionplans;
     @JsonView({ViewClasses.Summary.class})
     private boolean isAdmin = false;
 
@@ -66,19 +69,6 @@ public class User {
     }
 
     public User() {
-    }
-
-    public static User createSampleUser() {
-        Random random = new Random();
-        return new User(
-                FIRST_NAMES[random.nextInt(FIRST_NAMES.length)],
-                LAST_NAMES[random.nextInt(LAST_NAMES.length)],
-                EMAIL_USER[random.nextInt(EMAIL_USER.length)],
-                USER_NAMES[random.nextInt(USER_NAMES.length)],
-                USER_GOALS[random.nextInt(USER_GOALS.length)],
-                USER_PASSWORD[random.nextInt(USER_PASSWORD.length)],
-                false
-        );
     }
 
     public User(int sector_id, String first_name, String last_name, String email, int security_clearance, String password, String username, String bio, String occupation, LocalDate date_of_birth, String postalcode, String user_goal, boolean isAdmin) {

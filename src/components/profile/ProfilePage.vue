@@ -1,6 +1,6 @@
 <template>
   <div class="mt-5 mb-5 profileBody">
-    <form>
+    <form @click.prevent>
       <div class="container text-center">
         <div class="row align-items-start">
           <div class="col">
@@ -74,48 +74,11 @@
             </div>
           </div>
           <div class="col">
-            <div class="mb-3">
-              <label for="inputGoals">Goals</label>
-            </div>
-            <div class="container goalContainer">
-              <div v-for="goal in profile.goals" :key="goal.id">
-                <div class="container border rounded-4 mb-4 goals">
-                  <img :src="getGoalImage(goal.image)" class="col-1 goalImage mt-2" alt="...">
-                  <h6 class="col-6 goalTitle">{{ goal.title }}</h6>
-                  <img @click="deleteGoal(goal.id)" src="@/assets/img/trashcan/trash-can.png"
-                       class="col-2 deleteGoalButton">
-                </div>
-              </div>
-            </div>
-            <div v-if="isGoalEmpty" class="invalid-message border mt-1 error">
-              Goal is required
-            </div>
-            <div class="row mt-1">
-              <div class="col-5">
-                <label for="selectList">Select a goal:</label>
-              </div>
-              <div class="col">
-                <select class="form-select selectGoal" v-model="selectedOption">
-                  <option v-for="goal in sdgGoals" :key="goal.id" :value="goal.sdgId">
-                    {{ goal.title }}
-                  </option>
-                </select>
-              </div>
-            </div>
             <button @click.prevent="showResults" type="button" class="btn btn-primary resultButton">See Quiz Results
             </button>
-            <button @click.prevent="createGoal" type="button" class="btn btn-primary addButton">Add Goals</button>
-            <div v-if="showGoalSDGEmpty" class="invalid-message border mt-1 error">
-              Please select a valid goal.
-            </div>
-            <div v-if="showGoalSDGLimit" class="invalid-message border mt-1 error">
-              You can't have more than three goals at the time.
-            </div>
-            <div v-if="showGoalSDGDup" class="invalid-message border mt-1 error">
-              You can't add the same goal.
-            </div>
-            <div v-if="showQuizResultVal" class="invalid-message border mt-1 error">
-              You don't have any quiz results.
+            <div>
+              <h5>Your Action Plans</h5>
+              <ProfileActionPlans />
             </div>
           </div>
         </div>
@@ -125,7 +88,8 @@
 </template>
 
 <script>
-import { Goal } from '@/models/goal'
+import ProfileActionPlans from '@/components/profile/ProfileActionPlans.vue'
+
 import { useToast } from 'vue-toast-notification'
 import UploadImageComponent from '@/components/UploadImageComponent'
 /**
@@ -136,8 +100,9 @@ import UploadImageComponent from '@/components/UploadImageComponent'
 
 export default {
   name: 'ProfilePage',
-  inject: ['usersServices', 'sessionService'],
+  inject: ['profileService', 'usersServices', 'sessionService'],
   components: {
+    ProfileActionPlans,
     UploadImageComponent
   },
   data () {
@@ -305,77 +270,11 @@ export default {
       this.item.profilePic = URL.createObjectURL(file)
       this.profile.photo = this.item.profilePic
     },
-    getGoalImage (goal) {
-      // Returns the image of the goal
-      return require(`@/assets/SDG-Icons/${goal}`)
-    },
-    /**
-     * Function to delete a goal
-     * @param id
-     */
-    deleteGoal (id) {
-      // Deletes a goal from the list
-      console.log(this.profile.goals)
-      this.profile.goals = this.profile.goals.filter((goal) => goal.id !== id)
-      console.log(this.profile.goals)
-      id = null
-    },
-    /**
-     * Function will add a new goal to the list
-     * It will check if a goal is selected and if it is it will create a new goal
-     * and add it to the list
-     */
-    createGoal () {
-      const goalLength = this.profile.goals.length
-      const maxGoalLength = 3
-      const increment = 1
-      let lastId = 0
-      if (goalLength === 0) {
-        lastId = 0
-      } else {
-        lastId = this.profile.goals.reduce((maxId, goal) => {
-          return goal.id > maxId ? goal.id : maxId
-        }, 0)
-      }
-      const newId = lastId + increment
-      const selectedSDG = this.sdgGoals.find(goal => goal.sdgId === this.selectedOption)
-      // Check if the user has more than three goals
-      if (goalLength >= maxGoalLength) {
-        this.showGoalSDGLimit = true
-      } else {
-        this.showGoalSDGLimit = false
-        // Check if the user has already added the same goal
-        if (this.profile.goals.find(goals => goals.sdgId === this.selectedOption)) {
-          this.showGoalSDGDup = true
-        } else {
-          this.showGoalSDGDup = false
-          // Validation check
-          if (selectedSDG) {
-            // Create a new goal with the selected SDG title and image
-            const newGoal = new Goal(newId, this.profile.user_id, selectedSDG.title, selectedSDG.sdgId)
-            // newGoal.title = selectedSDG
-            this.profile.goals.push(newGoal)
-
-            // Clear the selectedOption after adding the goal
-            this.selectedOption = ''
-            this.showGoalSDGEmpty = false
-            console.log(this.profile.goals)
-          } else {
-            this.showGoalSDGEmpty = true
-          }
-        }
-      }
-    },
     /**
      * Function will show the quiz results
      */
     showResults () {
-      if (this.profile.goals.length === 0) {
-        this.showQuizResultVal = true
-      } else {
-        this.showQuizResultVal = false
-        this.$router.push({ path: '/results' })
-      }
+      this.$router.push({ path: '/results' })
     },
     /**
      * Function will undo any changes that has been made
@@ -399,8 +298,6 @@ export default {
           this.profile.occupation === '' ||
           this.profile.bio === '') {
           return alert('Some of the fields are empty')
-        // } else if (this.profile.user_goal === null) {
-        //   return alert('Please add a goal')
         } else {
           // Check if the user wants to save the changes
           if (confirm('Are you sure you want to save changes?') === true) {
@@ -502,10 +399,6 @@ export default {
     // Check if the bio is an empty string
     isBioEmpty () {
       return this.profile.bio === ''
-    },
-    // Check if the goal is an empty array
-    isGoalEmpty () {
-      return this.profile.goals === 0
     }
   }
 }

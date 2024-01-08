@@ -1,8 +1,11 @@
 package app.rest;
 
+import app.models.ActionPlan;
 import app.models.User;
+import app.repositories.ActionPlanRepository;
 import app.repositories.UsersRepositoryJPA;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,49 +21,14 @@ public class UserController {
     @Autowired
     UsersRepositoryJPA usersRepository;
 
-//    @Autowired
-//    MvcConfig mvcConfig;
+    @Autowired
+    ActionPlanRepository actionPlanRepository;
 
     @GetMapping(path = "/all", produces = "application/json")
     public List<User> getAllUsers() {
         return usersRepository.findAll();
     }
 
-//    @JsonView({ViewClasses.Summary.class})
-//    @PostMapping(path = "/login", produces = "application/json")
-//    public ResponseEntity<?> login(@RequestBody ObjectNode userData) {
-//        try {
-//            String userName = userData.get("username").asText();
-//            String passWord = userData.get("password").asText();
-//
-//            User user = this.usersRepository.findByUsername(userName);
-//
-//            if (user == null) {
-//                throw new NullPointerException("This user does not exist!" + userName);
-//            } else if (userName.trim().isEmpty()) {
-//                throw new IllegalArgumentException("The username must not be empty!");
-//            } else if (!Objects.equals(userName, user.getUsername())) {
-//                throw new IllegalArgumentException("The username is incorrect!");
-//            } else if (Objects.equals(passWord, user.getPassword())) {
-//                JWToken jwToken = new JWToken(user.getUsername(), user.getUser_id(), user.getIsAdmin());
-//                String tokenString = jwToken.encode(this.mvcConfig.getIssuer(),
-//                        this.mvcConfig.getPassphrase(),
-//                        this.mvcConfig.getTokenDurationOfValidity());
-////                return ResponseEntity.ok("Login successful!");
-//                return ResponseEntity.accepted()
-//                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenString)
-//                        .body(user);
-//            } else if (passWord.trim().isEmpty()) {
-//                throw new IllegalArgumentException("The password must not be empty!");
-//            } else {
-//                throw new IllegalArgumentException("The password is incorrect");
-//            }
-//        } catch (IllegalArgumentException illegalArgumentException) {
-//            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(illegalArgumentException.getMessage());
-//        } catch (NullPointerException nullPointerException) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This user does not exist!");
-//        }
-//    }
     /**
      * this api is for getting the given ids for users
      *
@@ -73,6 +41,32 @@ public class UserController {
         if (user.isPresent()) {
             User foundUser = user.get();
             return ResponseEntity.ok(foundUser);
+        } else {
+            throw new ResourceNotFoundException("User not found with ID: " + id);
+        }
+    }
+
+    @GetMapping("/{id}/actionplans")
+    public ResponseEntity<List<ActionPlan>> getAllUsersWithActionPlans(@PathVariable long id) {
+        Optional<User> user = usersRepository.findById(id);
+        if (user != null) {
+            return ResponseEntity.ok(user.get().getActionplans());
+        } else {
+            throw new ResourceNotFoundException("User not found with ID: " + id);
+        }
+    }
+
+    @DeleteMapping("/{id}/actionplans/{actionPlanId}")
+    public ResponseEntity<Object> deleteActionPlanFromUser(@PathVariable long id, @PathVariable long actionPlanId) {
+        Optional<User> user = usersRepository.findById(id);
+        if (user != null) {
+            if (user.get().getActionplans().contains(this.actionPlanRepository.findById(actionPlanId).orElse(null))) {
+                user.get().getActionplans().remove(this.actionPlanRepository.findById(actionPlanId).orElse(null));
+                this.usersRepository.save(user.get());
+                return ResponseEntity.ok(user.get().getActionplans());
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Action plan with id: " + actionPlanId + " not found.");
+            }
         } else {
             throw new ResourceNotFoundException("User not found with ID: " + id);
         }
