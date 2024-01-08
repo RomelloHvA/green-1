@@ -1,7 +1,10 @@
 <template>
   <div>
     <h2 class="mx-0">These are your top sdgs!</h2>
-    <button v-if="isAuthenticated" @click="saveResults" class="btn btn-primary">Save Results</button>
+    <!-- The button is displayed if the user is logged in and if the results are not saved -->
+    <button v-if="isAuthenticated && !resultsSaved" @click="saveResults" class="btn btn-primary">Save Results</button>
+    <!-- The text "Saved" is displayed if the results are saved -->
+    <p class="saved-message" v-if="resultsSaved">Saved</p>
   </div>
   <section class="container">
     <div class="row">
@@ -38,10 +41,12 @@ export default {
   },
   data () {
     return {
+      resultsSaved: false,
       resultId: '',
       sdgArray: '',
       user: '',
       dateOfQuiz: null,
+      // This ensures that I can retrieve the userId via the sessionStorge
       account: sessionStorage.getItem('ACCOUNT'),
       data: {
         labels: [],
@@ -129,20 +134,31 @@ export default {
     }
   },
   methods: {
+    /**
+     * In this methode I retrieve the userId from the session storage and use it to save the result to the current user.
+     * Then I use the createJson method which contains all the data that is not stringifyed yet.
+     * After that I save it.
+     * @author santoshkakkar
+     */
     async saveResults () {
       try {
         const currentUser = JSON.parse(this.account).user_id
         const resultJson = this.createJson()
         console.log(resultJson)
         await this.quizResultService.saveResults(resultJson, currentUser)
+        this.resultsSaved = true
       } catch (err) {
         console.error('Something went wrong while fetching:', err)
       }
     },
+    /**
+     * In this method I make an object so it can later be transformed in to Json.
+     * @returns the result data
+     * @author santoshkakkar
+     */
     createJson () {
       const top3 = this.top7.slice(0, 3).map(item => item.SDG)
       const newResult = {
-        resultId: 0,
         sdgArray: top3,
         dateOfQuiz: new Date()
       }
@@ -153,5 +169,18 @@ export default {
 </script>
 
 <style scoped>
-
+.saved-message {
+  background-color: #ddd;
+  padding-block-end: 6px;
+  padding-block-start: 6px;
+  padding-bottom: 6px;
+  padding-inline-end: 12px;
+  padding-inline-start: 12px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 6px;
+  margin: 5px;
+  border-radius: 8px;
+  display: inline-block;
+}
 </style>

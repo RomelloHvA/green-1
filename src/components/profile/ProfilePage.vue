@@ -124,7 +124,7 @@ import { Goal } from '@/models/goal'
 
 export default {
   name: 'ProfilePage',
-  inject: ['usersServices'],
+  inject: ['profileService'],
   data () {
     return {
       profile: null,
@@ -235,7 +235,7 @@ export default {
       // Wait for the asynchronous operation to complete
       this.profile = new Profile()
       // const profileService = await this.profileService.asyncFindAll()
-      const profileService = await this.usersServices.asyncFindById(0)
+      const profileService = await this.profileService.asyncFindById(0)
 
       this.profile = profileService
       // Log the fetched profile data
@@ -326,6 +326,8 @@ export default {
     showResults () {
       if (this.profile.goals.length === 0) {
         this.showQuizResultVal = true
+        // dit moet zo weg----------------------------------------------------------
+        this.$router.push({ path: '/results' })
       } else {
         this.showQuizResultVal = false
         this.$router.push({ path: '/results' })
