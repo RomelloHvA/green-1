@@ -1,6 +1,6 @@
 <template>
   <div class="mt-5 mb-5 profileBody">
-    <form @click.prevent>
+    <form>
       <div class="container text-center">
         <div class="row align-items-start">
           <div class="col">

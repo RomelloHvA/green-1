@@ -36,10 +36,6 @@ public abstract class Question {
     @JsonBackReference
     private Quiz quiz;
 
-    public Question() {
-
-    }
-
     public int getIndex() {
         return questionIndex;
     }

@@ -44,7 +44,7 @@
             <ActionPlan v-if="actionPlans[0]" class="col-lg" :id="actionPlans[0].id" :title="actionPlans[0].title" :description="actionPlans[0].description" :sdgs="actionPlans[0].sdgArray" />
             <ActionPlan v-if="actionPlans[1]" class="col-lg" :id="actionPlans[1].id" :title="actionPlans[1].title" :description="actionPlans[1].description" :sdgs="actionPlans[1].sdgArray" />
           </div>
-          <div class="d-flex row m-auto gap-5 my-5">
+          <div class="d-flex row m-auto gap-5 my-5 justify-content-center">
             <ActionPlan v-if="actionPlans[2]" class="col-lg" :id="actionPlans[2].id" :title="actionPlans[2].title" :description="actionPlans[2].description" :sdgs="actionPlans[2].sdgArray" />
             <ActionPlan v-if="actionPlans[3]" class="col-lg" :id="actionPlans[3].id" :title="actionPlans[3].title" :description="actionPlans[3].description" :sdgs="actionPlans[3].sdgArray" />
           </div>
