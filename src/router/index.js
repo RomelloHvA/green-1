@@ -49,7 +49,7 @@ const routes = [
   {
     path: '/signup',
     name: 'signup',
-    component: () => import('../views/SignUpView')
+    component: () => import('../views/SignUpValidationView')
   },
   {
     path: '/login',
@@ -66,6 +66,7 @@ const routes = [
   {
     path: '/profile',
     name: 'profile',
+    props: true,
     // children: [
     //   { path: ':id', component: () => import('@/components/result/ResultPage') }
     // ],
@@ -124,6 +125,14 @@ const routes = [
             path: ':id',
             component: () => import('@/components/AdminDashboard/content/PageEditorComponent')
           }
+        ]
+      },
+      {
+        path: 'sectors',
+        name: 'sectors',
+        component: () => import('@/components/AdminDashboard/SectorEditor/SectorEditorMainComponent'),
+        children: [
+          { path: ':id', component: () => import('@/components/AdminDashboard/SectorEditor/SingleSectorEditorComponent') }
         ]
       },
       {

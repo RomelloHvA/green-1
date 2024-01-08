@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+import java.util.Map;
 import java.util.Objects;
 
 @RestController
@@ -26,6 +28,56 @@ public class AuthenticationController {
     UsersRepositoryJPA usersRepository;
     @Autowired
     MvcConfig mvcConfig;
+
+    @PostMapping(path = "/signup", produces = "application/json")
+    public ResponseEntity<?> signUp(@RequestBody Map<String, String> userData) {
+        // Start by getting all the required data from the body
+        int sectorId = Integer.parseInt(userData.get("sector_id"));
+        String firstName = userData.get("first_name");
+        String lastName = userData.get("last_name");
+        String email = userData.get("email");
+        int securityClearance = Integer.parseInt(userData.get("security_clearance"));
+        String userName = userData.get("username");
+        String passWord = userData.get("password");
+        String postalCode = userData.get("postal_code");
+        LocalDate dateOfBirth = null;
+        if (userData.containsKey("date_of_birth") && !(userData.get("date_of_birth") == null)) {
+            // Sometimes the user will not provide their date of birth because it is not mandatory
+            dateOfBirth = LocalDate.parse(userData.get("date_of_birth"));
+        }
+
+        // Creating a new User Object with the given data
+        User user = new User(
+                sectorId,
+                firstName,
+                lastName,
+                email,
+                securityClearance,
+                passWord,
+                userName,
+                null,
+                null,
+                dateOfBirth,
+                postalCode,
+                null,
+                false
+        );
+        // Attributes that are set to null will be instantiated by the user via their profile page
+        System.out.println(user);
+        try {
+            User existingUser = this.usersRepository.findByUsername(userName);
+            if (existingUser != null) {
+                throw new PreConditionFailedException("Sign up failed, there is already an existing user with this username!");
+            }
+            // Saving the user to the repository
+            this.usersRepository.save(user);
+            User loggedInUser = this.usersRepository.findByUsername(userName);
+            return ResponseEntity.status(HttpStatus.CREATED).body(loggedInUser);
+        } catch (PreConditionFailedException exception) {
+            exception.printStackTrace();
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        }
+    }
 
     @JsonView({ViewClasses.Summary.class})
     @PostMapping(path = "/login", produces = "application/json")

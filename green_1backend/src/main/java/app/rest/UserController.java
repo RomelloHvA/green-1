@@ -1,23 +1,17 @@
 package app.rest;
 
-import app.MvcConfig;
 import app.models.ActionPlan;
 import app.models.User;
-import app.models.ViewClasses;
 import app.repositories.ActionPlanRepository;
 import app.repositories.UsersRepositoryJPA;
-import app.security.JWToken;
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -30,49 +24,10 @@ public class UserController {
     @Autowired
     ActionPlanRepository actionPlanRepository;
 
-//    @Autowired
-//    MvcConfig mvcConfig;
-
     @GetMapping(path = "/all", produces = "application/json")
     public List<User> getAllUsers() {
         return usersRepository.findAll();
     }
-
-//    @JsonView({ViewClasses.Summary.class})
-//    @PostMapping(path = "/login", produces = "application/json")
-//    public ResponseEntity<?> login(@RequestBody ObjectNode userData) {
-//        try {
-//            String userName = userData.get("username").asText();
-//            String passWord = userData.get("password").asText();
-//
-//            User user = this.usersRepository.findByUsername(userName);
-//
-//            if (user == null) {
-//                throw new NullPointerException("This user does not exist!" + userName);
-//            } else if (userName.trim().isEmpty()) {
-//                throw new IllegalArgumentException("The username must not be empty!");
-//            } else if (!Objects.equals(userName, user.getUsername())) {
-//                throw new IllegalArgumentException("The username is incorrect!");
-//            } else if (Objects.equals(passWord, user.getPassword())) {
-//                JWToken jwToken = new JWToken(user.getUsername(), user.getUser_id(), user.getIsAdmin());
-//                String tokenString = jwToken.encode(this.mvcConfig.getIssuer(),
-//                        this.mvcConfig.getPassphrase(),
-//                        this.mvcConfig.getTokenDurationOfValidity());
-////                return ResponseEntity.ok("Login successful!");
-//                return ResponseEntity.accepted()
-//                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenString)
-//                        .body(user);
-//            } else if (passWord.trim().isEmpty()) {
-//                throw new IllegalArgumentException("The password must not be empty!");
-//            } else {
-//                throw new IllegalArgumentException("The password is incorrect");
-//            }
-//        } catch (IllegalArgumentException illegalArgumentException) {
-//            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(illegalArgumentException.getMessage());
-//        } catch (NullPointerException nullPointerException) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This user does not exist!");
-//        }
-//    }
 
     /**
      * this api is for getting the given ids for users
@@ -81,10 +36,11 @@ public class UserController {
      * @return
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<User>> getOfferById(@PathVariable long id) {
+    public ResponseEntity<User> getOfferById(@PathVariable long id) {
         Optional<User> user = usersRepository.findById(id);
-        if (user != null) {
-            return ResponseEntity.ok(user);
+        if (user.isPresent()) {
+            User foundUser = user.get();
+            return ResponseEntity.ok(foundUser);
         } else {
             throw new ResourceNotFoundException("User not found with ID: " + id);
         }
@@ -162,5 +118,61 @@ public class UserController {
         } else {
             throw new ResourceNotFoundException("Offer not found with ID: " + id);
         }
+    }
+
+    @PutMapping("/profile/{id}")
+    public ResponseEntity<?> updateProfile(@PathVariable long id, @RequestBody Map<String, String> user) {
+        try {
+            // Try to find a user with the given id
+            Optional<User> existingUser = this.usersRepository.findById(id);
+            if (existingUser.isPresent()) {
+                // Validating if certain attributes are present
+                User userToUpdate = existingUser.get();
+                if (user.containsKey("first_name")) {
+                    userToUpdate.setFirst_name(user.get("first_name"));
+                }
+                if (user.containsKey("last_name")) {
+                    userToUpdate.setLast_name(user.get("last_name"));
+                }
+                if (user.containsKey("occupation")) {
+                    userToUpdate.setOccupation(user.get("occupation"));
+                }
+                if (user.containsKey("username")) {
+                    userToUpdate.setUsername(user.get("username"));
+                }
+                if (user.containsKey("date_of_birth") && user.get("date_of_birth") != null) {
+                    userToUpdate.setDate_of_birth(LocalDate.parse(user.get("date_of_birth")));
+                }
+                if (user.containsKey("bio")) {
+                    userToUpdate.setBio(user.get("bio"));
+                }
+                if (user.containsKey("img_path")) {
+                    userToUpdate.setImg_path(user.get("img_path"));
+                }
+                // Saving the user
+                return ResponseEntity.ok(this.usersRepository.save(userToUpdate));
+            } else {
+                throw new ResourceNotFoundException("No user is found!");
+            }
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping(path = "/name", produces = "application/json")
+    public ResponseEntity<?> findByUsername(@RequestBody String username) {
+        if (username.trim().isEmpty()) throw new ResourceNotFoundException("Please provide an username!");
+        try {
+            User user = this.usersRepository.findByUsername(username);
+            if (user != null) {
+                return ResponseEntity.ok(user);
+            } else {
+                throw new ResourceNotFoundException("No user found with username: " + username);
+            }
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.notFound().build();
     }
 }

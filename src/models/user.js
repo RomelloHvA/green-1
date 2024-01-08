@@ -1,39 +1,45 @@
 export class User {
-  // eslint-disable-next-line camelcase
-  user_id
+  userId
+  sectorId
+  firstName
+  lastName
   email
+  securityClearance
   username
-  isAdmin
-  // eslint-disable-next-line camelcase
-  user_goal
   password
-  // eslint-disable-next-line camelcase
-  security_clearance
-  bio
-  occupation
-  // eslint-disable-next-line camelcase
-  date_of_birth
-  postalcode
+  dateOfBirth
 
-  // eslint-disable-next-line camelcase
-  constructor (user_id, email, username, isAdmin, user_goal, password) {
-    // eslint-disable-next-line camelcase
-    this.user_id = user_id
+  constructor (userId, sectorId, firstName, lastName, email, securityClearance, username,
+    password, dateOfBirth) {
+    this.userId = userId
+    this.sectorId = sectorId
+    this.firstName = firstName
+    this.lastName = lastName
     this.email = email
+    this.securityClearance = securityClearance
     this.username = username
-    this.isAdmin = isAdmin
-    // eslint-disable-next-line camelcase
-    this.user_goal = user_goal
     this.password = password
+    this.dateOfBirth = dateOfBirth
   }
 
   async clone () {
-    return new User(this.user_id, this.email, this.username, this.isAdmin, this.user_goal, this.password)
+    return new User(this.userId, this.sectorId, this.firstName, this.lastName,
+      this.email, this.securityClearance, this.username, this.password, this.dateOfBirth)
   }
 
   static copyConstructor (user) {
     if (!user) return null // Handle the case where 'user' is null or undefined
-    const clonedUser = new User(user.user_id, user.email, user.username, user.isAdmin, user.user_goal, user.password)
+    const clonedUser = new User(
+      user.user_id,
+      user.sector_id,
+      user.first_name,
+      user.last_name,
+      user.email,
+      user.security_clearance,
+      user.username,
+      user.password,
+      user.date_of_birth
+    )
     return clonedUser
   }
 
