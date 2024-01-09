@@ -1,34 +1,19 @@
-# project-ewa
+# Project Installation Manual
 
-## Project setup
-```
-npm install
-```
+## Introduction
+This document provides a step-by-step guide to setting up and running **[Project Name]**. The project consists of a frontend built with Vue.js and a backend powered by Spring Boot.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Prerequisites
+Before you begin, ensure you have the following installed:
+- Java JDK (specify version)
+- Node.js (specify version)
+- npm (usually comes with Node.js)
+- Maven (specify version)
+- Git (for cloning the repository)
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your unit tests
-```
-npm run test:unit
-```
-
-### Run your end-to-end tests
-```
-npm run test:e2e
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Getting the Source Code
+1. Clone the repository:
+2. run npm install
+3. run npm run serve for frontend 
+4. backend add green1_backend as maven project
+5. run green1backendapplication
