@@ -1,7 +1,7 @@
 # Project Installation Manual
 
 ## Introduction
-This document provides a step-by-step guide to setting up and running **[Project Name]**. The project consists of a frontend built with Vue.js and a backend powered by Spring Boot.
+This document provides a step-by-step guide to setting up and running Green 1. The project consists of a frontend built with Vue.js and a backend powered by Spring Boot.
 
 ## Prerequisites
 Before you begin, ensure you have the following installed:
