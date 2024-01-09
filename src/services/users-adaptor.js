@@ -4,7 +4,6 @@ export class UsersAdaptor {
 
   constructor (resourcesUrl) {
     this.resourcesUrl = resourcesUrl
-    console.log('Create Offers Adaptor for ' + resourcesUrl)
   }
 
   async fetchJson (url, options = null) {
@@ -14,7 +13,7 @@ export class UsersAdaptor {
         return await response.json()
       } else {
         const responseText = await response.text()
-        console.log(response, !response.bodyUsed ? responseText : '')
+        console.error(response, !response.bodyUsed ? responseText : '')
         return {
           response: response,
           responseText: responseText

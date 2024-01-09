@@ -13,7 +13,7 @@ export class ProfilesAdaptor {
       if (response.ok) {
         return await response.json()
       } else {
-        console.log(response, !response.bodyUsed ? await response.text() : '')
+        console.error(response, !response.bodyUsed ? await response.text() : '')
         return null
       }
     } catch (error) {
@@ -54,10 +54,9 @@ export class ProfilesAdaptor {
         method: 'DELETE'
       })
     if (response && response.status === 204) {
-      console.log('Profile deleted succesfully.')
       return true
     } else {
-      console.log('Error deleting profile: ', response)
+      console.error('Error deleting profile: ', response)
       return false
     }
   }

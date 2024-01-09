@@ -69,7 +69,6 @@ export default {
     })
 
     const handleDeleteplan = async (planId) => {
-      console.log('delete clicked')
       const deleteResults = await actionPlanService.deleteActionPlanById(planId, route.params.sector)
       if (deleteResults.success) {
         editableActionPlans.value = editableActionPlans.value.filter(plan => plan.id !== parseInt(planId))
@@ -114,7 +113,6 @@ export default {
       () => route.params.id,
       newOption => {
         currentRouteParam.value = newOption
-        // console.log(props.sectors.value)
         // Empty paramater
         if (!newOption) {
           selectedPlan.value = null

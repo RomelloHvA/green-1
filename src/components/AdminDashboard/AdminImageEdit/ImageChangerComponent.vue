@@ -149,7 +149,6 @@ export default {
       }
       try {
         const response = await this.sendData(this.pageId, body)
-        console.log(response.succes.value)
         if (response.succes.value) {
           this.$toast.success('Saved successfully')
         } else {

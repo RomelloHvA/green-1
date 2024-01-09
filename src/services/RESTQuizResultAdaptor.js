@@ -17,7 +17,7 @@ export class RESTQuizResultAdaptor {
       if (response.ok) {
         return await response.json()
       } else {
-        console.log(response, !response.bodyUsed ? await response.text() : '')
+        console.error(response, !response.bodyUsed ? await response.text() : '')
         return null
       }
     } catch (error) {

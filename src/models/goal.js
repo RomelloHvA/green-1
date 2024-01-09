@@ -72,7 +72,6 @@ export class Goal {
 
   static copyConstructor (goal) {
     if (goal === null || goal === undefined) return null
-    console.log(goal.sdgId)
     return Object.assign(new Goal(0), goal)
   }
 }

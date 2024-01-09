@@ -36,7 +36,6 @@ export default {
   async created () {
     try {
       this.listOfUsers = await this.usersServices.asyncFindAll()
-      console.log(this.listOfUsers)
     } catch (error) {
       console.log(error)
     }

@@ -12,13 +12,12 @@ export class GoalsAdaptor {
     if (response.ok) {
       return await response.json()
     } else {
-      console.log(response, !response.bodyUsed ? await response.text() : '')
+      console.error(response, !response.bodyUsed ? await response.text() : '')
       return null
     }
   }
 
   async asyncFindAll () {
-    console.log('GoalsAdaptor.asyncFindAll()...')
     const response = await this.fetchJson(this.resourcesUrl)
     return response
   }
@@ -56,10 +55,9 @@ export class GoalsAdaptor {
         method: 'DELETE'
       })
     if (response && response.status === 204) {
-      console.log('Goal deleted succesfully.')
       return true
     } else {
-      console.log('Error deleting goal: ', response)
+      console.error('Error deleting goal: ', response)
       return false
     }
   }

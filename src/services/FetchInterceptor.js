@@ -12,8 +12,6 @@ export class FetchInterceptor {
     this.router = router
     FetchInterceptor.theInstance = this
     this.unregister = FetchIntercept.register(this)
-
-    // console.log("FetchInterceptor has been registered; current token = ", FetchInterceptor.theInstance.sessionService.currentToken);
   }
 
   request (url, options) {
@@ -38,11 +36,10 @@ export class FetchInterceptor {
 
   responseError (error) {
     // return Promise.reject(error);
-    return console.log('FetchInterceptor responseError: ', error)
+    return console.error('FetchInterceptor responseError: ', error)
   }
 
   response (response) {
-    // console.log('FetchInterceptor response: ', response)
     try {
       if (response.status >= 400 && response.status < 600) {
         FetchInterceptor.theInstance.handleErrorInResponse(response)
@@ -56,10 +53,7 @@ export class FetchInterceptor {
   handleErrorInResponse (response) {
     try {
       if (response.status === 401) {
-        console.log('Unauthorized. Token may have expired or invalid.')
         this.router.push({ path: '/sign-out' })
-      } else {
-        console.log('Unexpected error during login.')
       }
       this.responseError(response)
     } catch (e) {

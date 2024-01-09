@@ -62,9 +62,7 @@ export default {
      */
     async handleLogin () {
       try {
-        console.log('Login data:', this.inputUserName, this.inputPassWord)
         const response = await this.sessionService.asyncLogin(this.inputUserName, this.inputPassWord)
-        console.log('LoginView response:', response)
         if (response) {
           // // Emitting the username to NavBar so the NavBar knows the user is logged in
           // await eventBus.emit('change-data', this.inputUserName)

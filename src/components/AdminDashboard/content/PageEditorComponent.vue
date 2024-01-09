@@ -91,7 +91,6 @@ export default {
         try {
           // Makes the call to the API to also save it in the backend.
           const APIResult = await this.sendData(this.editableContent[indexOfContent], urlParameter)
-          console.log(APIResult.succes.value)
 
           if (APIResult.succes.value) {
             this.$toast.success('Saved successfully')

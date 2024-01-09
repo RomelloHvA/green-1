@@ -72,24 +72,17 @@ export default {
       try {
         const profile = await profileService.asyncFindById(0)
         const goals = profile.goals
-        console.log(goals)
-        console.log(routeGoalId.value)
 
         const selectedGoal = goals.find((goal) => goal.sdgId === parseInt(routeGoalId.value))
-        console.log(selectedGoal)
 
         if (selectedGoal) {
           const APIResult = selectedGoal
-          console.log(APIResult)
           const APIResult2 = await actionPlanService.asyncFindBySdgId(routeGoalId.value)
 
-          console.log(imgPath.value)
           imgPath.value = APIResult.image
           title.value = APIResult.title
 
-          console.log(actionPlan.value)
           actionPlan.value = APIResult2
-          console.log(actionPlan.value)
         } else {
           console.error('Selected goal not found.')
           // Handle the case when the selected goal is not found
@@ -112,7 +105,6 @@ export default {
      * Watches the route for changes and fetches the data
      */
     watch(() => route.params.goalId, (newGoalId) => {
-      console.log('Route Changed:', route.params.goalId)
       routeGoalId.value = newGoalId
       fetchData()
     })

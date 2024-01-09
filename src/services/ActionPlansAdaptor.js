@@ -116,7 +116,6 @@ export class ActionPlansAdaptor {
   }
 
   async asyncFindAll () {
-    console.log('ActionPlansAdaptor.asyncFindAll()...')
     const response = await this.fetchJson(this.resourcesUrl)
     return response
   }

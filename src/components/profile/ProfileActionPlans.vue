@@ -24,7 +24,6 @@ onBeforeMount(() => {
   const result = useFetch(`${CONFIG.BACKEND_URL}/users/${user.user_id}/actionplans`, 'GET')
 
   result.load().then(data => {
-    console.log()
     actionPlans.value = result.data.value
   })
 })

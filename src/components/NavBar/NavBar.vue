@@ -54,7 +54,6 @@ export default {
   //     this.account = sessionStorage.getItem('ACCOUNT')
   //     const currentUser = users.find(user => user.username === JSON.parse(this.account).username)
   //     // const currentUser = await this.usersServices.asyncFindById(parseInt(JSON.parse(this.account).user_id))
-  //     console.log('currentUser', currentUser)
   //     this.isAdmin = currentUser.isAdmin
   //   })
   // },
@@ -88,7 +87,6 @@ export default {
     },
     isAdmin () {
       const currentAccount = this.sessionService.currentAccount
-      console.log('currentAccount', currentAccount)
       if (currentAccount) {
         return currentAccount.isAdmin
       } else {
