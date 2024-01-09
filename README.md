@@ -5,15 +5,23 @@ This document provides a step-by-step guide to setting up and running **[Project
 
 ## Prerequisites
 Before you begin, ensure you have the following installed:
-- Java JDK (specify version)
-- Node.js (specify version)
-- npm (usually comes with Node.js)
-- Maven (specify version)
-- Git (for cloning the repository)
+- Java JDK 
+- Node.js
+- npm
+- Maven
+- Git 
 
-## Getting the Source Code
-1. Clone the repository:
+## Start
+
+1. Clone the repository
+
+# Start frontend
+1. open terminal
 2. run npm install
-3. run npm run serve for frontend 
-4. backend add green1_backend as maven project
-5. run green1backendapplication
+3. run npm run serve
+
+
+# Start the backend
+1. navigate to green-1 backend folder
+2. add the project as maven project from pom.xml
+3. run green1backendapplication
