@@ -17,9 +17,10 @@ public class Green1backendApplication {
     @Bean
     public WebMvcConfigurer corsConfigurer(){
         return new WebMvcConfigurer() {
+            //plz work now
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("http://localhost:8080")
+                registry.addMapping("/**").allowedOrigins("/**")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders(HttpHeaders.AUTHORIZATION,
                                 HttpHeaders.CONTENT_TYPE)
