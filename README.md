@@ -25,3 +25,7 @@ Before you begin, ensure you have the following installed:
 1. navigate to green-1 backend folder
 2. add the project as maven project from pom.xml
 3. run green1backendapplication
+
+## Links
+1. [Technical Documentation and UML](https://docs.google.com/document/d/1trPAp2xSGbldPRZPOVX01at3cuijUeeVk1oQExyfhfU/edit?usp=sharing)
+2. Deployed application:
