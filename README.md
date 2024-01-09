@@ -5,10 +5,10 @@ This document provides a step-by-step guide to setting up and running Green 1. T
 
 ## Prerequisites
 Before you begin, ensure you have the following installed:
-- Java JDK 
-- Node.js
-- npm
-- Maven
+- Java JDK (18.xx)
+- Node.js (18.17.1)
+- npm (9.6.7)
+- Maven (3.8.1)
 - Git 
 
 ## Start
