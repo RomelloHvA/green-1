@@ -82,3 +82,38 @@ org.h2.jdbc.JdbcSQLNonTransientException: The object is already closed [90007-21
 org.h2.jdbc.JdbcSQLNonTransientException: The object is already closed [90007-214]
 2023-11-13 21:43:23 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLNonTransientException: The object is already closed [90007-214]
+2024-01-09 15:07:14 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "\000d\000a    create table [*]user (\000d\000a        user_id bigint not null,\000d\000a        bio varchar(255),\000d\000a        date_of_birth date,\000d\000a        email varchar(255),\000d\000a        first_name varchar(255),\000d\000a        img_path varchar(255),\000d\000a        is_admin boolean not null,\000d\000a        last_name varchar(255),\000d\000a        occupation varchar(255),\000d\000a        password varchar(255),\000d\000a        postalcode varchar(255),\000d\000a        sector_id integer not null,\000d\000a        security_clearance integer not null,\000d\000a        user_goal varchar(255),\000d\000a        username varchar(255),\000d\000a        primary key (user_id)\000d\000a    )"; expected "identifier"; SQL statement:
+
+    create table user (
+        user_id bigint not null,
+        bio varchar(255),
+        date_of_birth date,
+        email varchar(255),
+        first_name varchar(255),
+        img_path varchar(255),
+        is_admin boolean not null,
+        last_name varchar(255),
+        occupation varchar(255),
+        password varchar(255),
+        postalcode varchar(255),
+        sector_id integer not null,
+        security_clearance integer not null,
+        user_goal varchar(255),
+        username varchar(255),
+        primary key (user_id)
+    ) [42001-214]
+2024-01-09 15:07:14 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "\000d\000a    alter table if exists quiz_result \000d\000a       add constraint FK724trb6ambqx6fd1sqpp9rfxg \000d\000a       foreign key (user_id) \000d\000a       references [*]user"; expected "identifier"; SQL statement:
+
+    alter table if exists quiz_result 
+       add constraint FK724trb6ambqx6fd1sqpp9rfxg 
+       foreign key (user_id) 
+       references user [42001-214]
+2024-01-09 15:07:14 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "\000d\000a    alter table if exists user_actionplans \000d\000a       add constraint FKlwyufep1y1ybmankj57e74s7h \000d\000a       foreign key (user_user_id) \000d\000a       references [*]user"; expected "identifier"; SQL statement:
+
+    alter table if exists user_actionplans 
+       add constraint FKlwyufep1y1ybmankj57e74s7h 
+       foreign key (user_user_id) 
+       references user [42001-214]
