@@ -13,11 +13,6 @@ public class UsersRepositoryMock implements UsersRepository {
 
     public UsersRepositoryMock() {
         users = new ArrayList<>();
-        int numberOfUsers = 10;
-
-        for (int i = 0; i < numberOfUsers ; i++) {
-            users.add(User.createSampleUser());
-        }
         users.add(new User("User27", "3927", true));
 
     }

@@ -3,7 +3,7 @@
  * @class Sector
  * @property {Number} id
  * @property {String} name
- * @property {String} discription
+ * @property {String} description
  * @author Marco de Boer
  */
 
@@ -35,11 +35,14 @@ export default class Sector {
   }
 
   equals (other) {
-    if (other === null) return false
-    if (other.id !== this.id) return false
-    if (other.name !== this.name) return false
-    if (other.description !== this.description) return false
-    return true
+    if (!(other instanceof this.constructor)) {
+      return false
+    }
+    return (
+      other.id === this.id &&
+      other.name === this.name &&
+      other.description === this.description
+    )
   }
 
   setQuizzes (quizzes) {

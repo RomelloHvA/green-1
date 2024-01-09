@@ -12,7 +12,7 @@
         <input class="input" placeholder="Type your text" required="" type="text" v-model="searchUser">
       </form>
     </div>
-    <table class="table table-sm table-dark">
+    <table class="table table-sm" >
       <thead>
       <tr>
         <th>UserName</th>
@@ -126,6 +126,13 @@ export default {
   border-radius: 6px;
   font-weight: 500;
   color: var(--color);
+}
+.table > :not(caption) > * > * {
+  padding: 0.5rem 0.5rem;
+  color: var(--bs-table-color-state, var(--bs-table-color-type, white));
+  background-color: #7251c7;
+  border-bottom-width: var(--bs-border-width);
+  box-shadow: inset 0 0 0 9999px var(--bs-table-bg-state, var(--bs-table-bg-type, var(--bs-table-accent-bg)));
 }
 
 #editButton:before {
@@ -250,9 +257,9 @@ input:not(:placeholder-shown) ~ .reset {
 }
 
 #searchbar {
-  background-color: gray;
+  background-color: #7251c7;
   height: 50px;
   padding: 1px;
-
+  border-radius: 15px 15px 0px 0px;
 }
 </style>

@@ -15,6 +15,11 @@ public class Page {
 
     @OneToMany(mappedBy = "fkPage")
     private List<PageContent> pageContents;
+
+    @OneToOne(mappedBy = "fkPageImage")
+    private Image pageImage;
+
+
     public Page(Long pageId, String pageTitle) {
         this.pageId = pageId;
         this.pageTitle = pageTitle;

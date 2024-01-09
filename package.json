@@ -19,6 +19,7 @@
     "chartjs": "^0.3.24",
     "core-js": "^3.8.3",
     "http-server": "^14.1.1",
+    "fetch-intercept": "^2.4.0",
     "mitt": "^3.0.1",
     "vue": "^3.2.13",
     "vue-chartjs": "^5.2.0",

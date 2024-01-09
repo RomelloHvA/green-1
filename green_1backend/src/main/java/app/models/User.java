@@ -1,17 +1,18 @@
 package app.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonView;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Random;
 
 @Entity
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonView({ViewClasses.Summary.class})
     private long user_id = 0L;
     private int sector_id;
     private String first_name;
@@ -19,13 +20,22 @@ public class User {
     private String email;
     private int security_clearance;
     private String password;
+    @JsonView({ViewClasses.Summary.class})
     private String username;
     private String bio;
     private String occupation;
+    @Column(nullable = true)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date_of_birth;
     private String postalcode;
     private String user_goal;
 
+    @OneToMany
+    private List<ActionPlan> actionplans;
+
+    private String img_path;
+
+    @JsonView({ViewClasses.Summary.class})
     private boolean isAdmin = false;
 
     private static final String[] FIRST_NAMES = {"John", "Mary", "David", "Lisa", "Michael", "Sarah"};
@@ -46,8 +56,7 @@ public class User {
             "Peace, Justice, and Strong Institutions",
             "Partnerships for the Goals"};
 
-    public User(long user_id, String first_name, String last_name, String email, String username, String user_goal, String password, boolean isAdmin) {
-        this.user_id = user_id;
+    public User(String first_name, String last_name, String email, String username, String user_goal, String password, boolean isAdmin) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.email = email;
@@ -60,21 +69,7 @@ public class User {
     public User() {
     }
 
-    public static User createSampleUser() {
-        Random random = new Random();
-        return new User(random.nextLong(1000),
-                FIRST_NAMES[random.nextInt(FIRST_NAMES.length)],
-                LAST_NAMES[random.nextInt(LAST_NAMES.length)],
-                EMAIL_USER[random.nextInt(EMAIL_USER.length)],
-                USER_NAMES[random.nextInt(USER_NAMES.length)],
-                USER_GOALS[random.nextInt(USER_GOALS.length)],
-                USER_PASSWORD[random.nextInt(USER_PASSWORD.length)],
-                false
-        );
-    }
-
-    public User(long user_id, int sector_id, String first_name, String last_name, String email, int security_clearance, String password, String username, String bio, String occupation, LocalDate date_of_birth, String postalcode, String user_goal, boolean isAdmin) {
-        this.user_id = user_id;
+    public User(int sector_id, String first_name, String last_name, String email, int security_clearance, String password, String username, String bio, String occupation, LocalDate date_of_birth, String postalcode, String user_goal, boolean isAdmin) {
         this.sector_id = sector_id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -88,12 +83,21 @@ public class User {
         this.postalcode = postalcode;
         this.user_goal = user_goal;
         this.isAdmin = isAdmin;
+        this.img_path = img_path;
     }
 
     public User(String username, String password, boolean isAdmin) {
         this.username = username;
         this.password = password;
         this.isAdmin = isAdmin;
+    }
+
+    public void setActionplans(List<ActionPlan> actionplans) {
+        this.actionplans = actionplans;
+    }
+
+    public List<ActionPlan> getActionplans() {
+        return actionplans;
     }
 
     public void setUser_id(long user_id) {
@@ -165,6 +169,10 @@ public class User {
         this.bio = bio;
     }
 
+    public String getImg_path() {
+        return img_path;
+    }
+
     public void setOccupation(String occupation) {
         this.occupation = occupation;
     }
@@ -207,5 +215,8 @@ public class User {
 
     public void setIsAdmin(boolean admin) {
         isAdmin = admin;
+    }
+    public void setImg_path(String img_path) {
+        this.img_path = img_path;
     }
 }

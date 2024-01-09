@@ -75,7 +75,7 @@ export default {
   },
   methods: {
     /**
-     * Method for pushin the selected pageId to a route.
+     * Method for pushing the selected pageId to a route.
      * @param pageId to be pushed in the route
      * @author Romello ten Broeke
      */
