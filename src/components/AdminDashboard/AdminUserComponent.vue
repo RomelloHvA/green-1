@@ -88,6 +88,7 @@ export default {
   },
   async created () {
     this.users = await this.usersServices.asyncFindAll()
+    console.log(this.users)
   },
   methods: {
     saveEdit () {
@@ -95,6 +96,7 @@ export default {
     },
     async updateUser (updatedUser) {
       try {
+        console.log(updatedUser)
         const index = this.users.findIndex(o => o.user_id === updatedUser.user_id)
         if (index !== -1) {
           this.users.splice(index, 1, updatedUser)

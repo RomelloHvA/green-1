@@ -62,6 +62,7 @@ export default {
   async created () {
     if (this.user) {
       this.clonedUser = await this.user.clone()
+      console.log(this.clonedUser)
     }
   },
   methods: {

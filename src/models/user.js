@@ -1,8 +1,12 @@
 export class User {
-  userId
-  sectorId
-  firstName
-  lastName
+  // eslint-disable-next-line camelcase
+  user_id
+  // eslint-disable-next-line camelcase
+  sector_id
+  // eslint-disable-next-line camelcase
+  first_name
+  // eslint-disable-next-line camelcase
+  last_name
   email
   securityClearance
   username
@@ -12,10 +16,10 @@ export class User {
 
   constructor (userId, sectorId, firstName, lastName, email, securityClearance, username,
     password, dateOfBirth, isAdmin) {
-    this.userId = userId
-    this.sectorId = sectorId
-    this.firstName = firstName
-    this.lastName = lastName
+    this.user_id = userId
+    this.sector_id = sectorId
+    this.first_name = firstName
+    this.last_name = lastName
     this.email = email
     this.securityClearance = securityClearance
     this.username = username
@@ -25,7 +29,7 @@ export class User {
   }
 
   async clone () {
-    return new User(this.userId, this.sectorId, this.firstName, this.lastName,
+    return new User(this.user_id, this.sector_id, this.first_name, this.last_name,
       this.email, this.securityClearance, this.username, this.password, this.dateOfBirth, this.isAdmin)
   }
 
