@@ -54,7 +54,7 @@ export default class MultipleChoiceQuestion extends Question {
    * The total amount of givenAnswers is equal to the total amount of options so if an option is not selected it is false
    * @author Marco de Boer
    */
-  async setGivenAnswers () {
+  setGivenAnswers () {
     for (let i = 0; i < this.options.length; i++) {
       if (this.options[i].isSelected) {
         this.givenAnswers[i] = true

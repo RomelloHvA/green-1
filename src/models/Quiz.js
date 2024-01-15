@@ -68,7 +68,11 @@ export default class Quiz {
     this.isConcept = questionJSON.isConcept
     this.isPublished = questionJSON.isPublished
     this.isLive = questionJSON.isLive
-    this.sector = questionJSON.sector ? new Sector(questionJSON.sector) : null
+    if (questionJSON.sector !== null && questionJSON.sector !== undefined) {
+      this.sector = new Sector(questionJSON.sector)
+    } else {
+      this.sector = null
+    }
 
     if (!isInQuizBuilder) {
       if (questionJSON.quizQuestions !== null && questionJSON.quizQuestions.length !== 0) {
@@ -86,17 +90,13 @@ export default class Quiz {
    * @author Marco de Boer
    */
   async #instatiateQuiz (questionJSON) {
-    try {
-      if (questionJSON === undefined || questionJSON.length === 0) throw new Error('JSON is undefined or length is 0')
-      for (const question of questionJSON) {
-        if (question.type === 'multiplechoice') {
-          this.quizQuestions.push(new MultipleChoiceQuestion(question.id, question.index, question.question, question.imgPath, question.options, question.answerLimit))
-        } else if (question.type === 'yesno') {
-          this.quizQuestions.push(new QuizQuestionTrueFalse(question.id, question.index, question.question, question.imgPath, question.sdg))
-        } else throw new Error('Question type is not valid')
-      }
-    } catch (error) {
-      console.log(error)
+    if (questionJSON === undefined || questionJSON.length === 0) throw new Error('JSON is undefined or length is 0')
+    for (const question of questionJSON) {
+      if (question.type === 'multiplechoice') {
+        this.quizQuestions.push(new MultipleChoiceQuestion(question.id, question.index, question.question, question.imgPath, question.options, question.answerLimit))
+      } else if (question.type === 'yesno') {
+        this.quizQuestions.push(new QuizQuestionTrueFalse(question.id, question.index, question.question, question.imgPath, question.sdg))
+      } else throw new Error('Question type is not valid')
     }
   }
 
@@ -106,26 +106,26 @@ export default class Quiz {
    * @private
    * @author Marco de Boer
    */
-  async #instantieQuizResults () {
+  #instantieQuizResults () {
     this.quizResultObjectArray = []
     for (let i = 1; i < 18; i++) {
       this.quizResultObjectArray.push(new QuizResult(i, 0))
     }
   }
 
-  async getCurrentQuestion () {
+  getCurrentQuestion () {
     return this.quizQuestions[this.currentQuestionIndex]
   }
 
-  async getNextQuestion () {
-    if (this.currentQuestionIndex >= this.quizQuestions.length) throw new Error('Cant get Next Question, there are no more questions')
+  getNextQuestion () {
+    if (this.currentQuestionIndex >= this.quizQuestions.length - 1) return null
 
     this.currentQuestionIndex++
     return this.quizQuestions[this.currentQuestionIndex]
   }
 
-  async getPreviousQuestion () {
-    if (this.currentQuestionIndex <= 0) throw new Error('Cant get Previous Question, there are no more questions')
+  getPreviousQuestion () {
+    if (this.currentQuestionIndex <= 0) return null
 
     this.currentQuestionIndex--
     return this.quizQuestions[this.currentQuestionIndex]
@@ -136,7 +136,7 @@ export default class Quiz {
    * @returns {Number} totalAnsweredQuestions
    * @author Marco de Boer
    */
-  async getTotalAnsweredQuestions () {
+  getTotalAnsweredQuestions () {
     this.totalAnsweredQuestions = 0
     for (const question of this.quizQuestions) {
       if (question instanceof QuizQuestionTrueFalse && question.givenAnswer !== null) {
@@ -173,20 +173,20 @@ export default class Quiz {
   }
 
   static copyConstructor (quizFromJson) {
-    if (quizFromJson !== null && quizFromJson.length !== 0 && quizFromJson !== undefined) {
+    if (quizFromJson !== null && quizFromJson !== undefined && quizFromJson.length !== 0) {
       return new Quiz(quizFromJson)
     }
     return null
   }
 
   static copyBuilderConstructor (quizFromJson) {
-    if (quizFromJson !== null && quizFromJson.length !== 0 && quizFromJson !== undefined) {
+    if (quizFromJson !== null && quizFromJson !== undefined && quizFromJson.length !== 0) {
       return new Quiz(quizFromJson, true)
     }
     return null
   }
 
-  async clone () {
+  clone () {
     const clone = new Quiz(this)
     return clone
   }

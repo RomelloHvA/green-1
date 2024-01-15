@@ -48,7 +48,7 @@ export default class Sector {
   setQuizzes (quizzes) {
     this.quizzes = []
     for (const quiz of quizzes) {
-      if (quiz.sector.equals(this)) {
+      if (quiz.sector !== null && quiz.sector.equals(this)) {
         this.quizzes.push(quiz)
       }
     }

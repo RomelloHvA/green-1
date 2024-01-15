@@ -22,6 +22,11 @@ public class MultipleChoiceQuestion extends Question {
 
 
     public MultipleChoiceQuestion() {}
+
+    public MultipleChoiceQuestion(Long id, String question, String imgPath, Quiz quiz, int questionIndex, Integer answerLimit) {
+        super(id, question, imgPath, questionIndex, quiz);
+        this.answerLimit = answerLimit;
+    }
     @JsonProperty("type")
     public String getType() {
         return TYPE;

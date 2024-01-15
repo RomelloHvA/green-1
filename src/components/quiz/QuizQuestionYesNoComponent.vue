@@ -41,7 +41,10 @@ export default {
     return {}
   },
   mounted () {
-    document.querySelector('nav').scrollIntoView({ behavior: 'smooth' })
+    const navElement = document.querySelector('nav')
+    if (navElement) {
+      navElement.scrollIntoView({ behavior: 'smooth' })
+    }
   },
   methods: {
     clickedYesButton () {

@@ -14,6 +14,11 @@ public class YesNoQuestion extends Question {
 
     private int sdg;
     public YesNoQuestion() {}
+
+    public YesNoQuestion(Long id, String question, String imgPath, Quiz quiz, int questionIndex, int sdg) {
+        super(id, question, imgPath, questionIndex, quiz);
+        this.sdg = sdg;
+    }
     @JsonProperty("type")
 
     public String getType() {
