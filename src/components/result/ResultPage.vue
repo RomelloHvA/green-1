@@ -4,24 +4,24 @@
       <h2 class="ml-custom" id="title">These are your top sdgs!</h2>
 
       <div class="paste-button">
-        <button class="button">Sort by &nbsp; ▼</button>
+        <button id="sortButton" class="button">Sort by &nbsp; ▼</button>
         <div class="dropdown-content">
           <a class="dropdown-item" @click="sortResults('asc')" id="top">Date ascending</a>
           <a class="dropdown-item" @click="sortResults('desc')" id="bottom">Date descending</a>
         </div>
       </div>
-      <button @click="onBack" class="btn-secondary goBackButton">Back to profile</button>
+      <button id="backToProfile" @click="onBack" class="btn-secondary goBackButton">Back to profile</button>
     </div>
     <div class="mt-2 mb-5 resultBody">
       <div class="row">
         <table>
           <tbody id="scroll-screen">
           <!-- This loop is used to get the users Quiz Results -->
-          <tr class="container sdgGoals" style="margin-bottom: 40px" v-for="quizResult in sortedQuizResults" :key="quizResult.result_id">
+          <tr class="container sdgGoals" style="margin-bottom: 40px" v-for="quizResultSpec in sortedQuizResults" :key="quizResultSpec.result_id">
             <div class="row">
-              <td class="containeResult justify-content-center" style="font-weight: bold; color: #6D3FD9;">These are your top 3 SDGs from the Quiz you made on: {{ formatDate(quizResult.dateOfQuiz) }}</td>
+              <td class="containeResult justify-content-center" style="font-weight: bold; color: #6D3FD9;">These are your top 3 SDGs from the Quiz you made on: {{ formatDate(quizResultSpec.dateOfQuiz) }}</td>
               <!-- This loop gets all the data for the sdg cards -->
-              <div v-for="sdgId in quizResult.sdgArray" :key="sdgId" class="col" style="width: 20vh">
+              <div v-for="sdgId in quizResultSpec.sdgArray" :key="sdgId" class="col" style="width: 20vh">
                 <sdg-card-component :sdg-data="getSdgDataById(sdgId)" />
               </div>
             </div>

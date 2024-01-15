@@ -78,7 +78,6 @@ export default {
   computed: {
     filteredSearch () {
       return this.users.filter(user => {
-        // console.log(this.user)
         return (
           (user.username && user.username.toLowerCase().indexOf(this.searchUser.toLowerCase()) > -1) ||
           (user.email && user.email.toLowerCase().indexOf(this.searchUser.toLowerCase()) > -1) ||
