@@ -42,7 +42,10 @@ export class UsersAdaptor {
     let response = []
     const url = `${this.resourcesUrl}/users/all`
     response = await this.fetchJson(url)
-    return response.map(user => User.copyConstructor(user))
+    if (response === null) return []
+    else {
+      return response.map(user => User.copyConstructor(user))
+    }
   }
 
   async asyncFindById (id) {
