@@ -45,6 +45,7 @@
 <script>
 import { ref } from 'vue'
 import EditPopUp from '@/components/AdminDashboard/EditPopUp'
+import { User } from '@/models/user'
 
 export default {
   name: 'AdminUserComponent',
@@ -65,7 +66,7 @@ export default {
 
     const ToggelPopUp = (trigger, user) => {
       popUpTrigger.value[trigger] = !popUpTrigger.value[trigger]
-      selectedUser.value = user
+      selectedUser.value = User.copyConstructor(user)
     }
     return {
       EditPopUp,
