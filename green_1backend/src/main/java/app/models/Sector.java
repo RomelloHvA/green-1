@@ -20,6 +20,12 @@ public class Sector {
 
     public Sector(){}
 
+    public Sector(Long id, String name, String description){
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }

@@ -97,7 +97,7 @@ export class SessionSbService {
         return false
       }
     } catch (error) {
-      console.error()
+      console.error(error)
       this.errorMessage = error.message
     }
   }

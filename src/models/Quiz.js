@@ -68,7 +68,11 @@ export default class Quiz {
     this.isConcept = questionJSON.isConcept
     this.isPublished = questionJSON.isPublished
     this.isLive = questionJSON.isLive
-    this.sector = questionJSON.sector ? new Sector(questionJSON.sector) : null
+    if (questionJSON.sector !== null && questionJSON.sector !== undefined) {
+      this.sector = new Sector(questionJSON.sector)
+    } else {
+      this.sector = null
+    }
 
     if (!isInQuizBuilder) {
       if (questionJSON.quizQuestions !== null && questionJSON.quizQuestions.length !== 0) {

@@ -36,6 +36,16 @@ public abstract class Question {
     @JsonBackReference
     private Quiz quiz;
 
+    public Question() {}
+
+    public Question(Long id, String question, String imgPath, int questionIndex, Quiz quiz) {
+        this.id = id;
+        this.question = question;
+        this.imgPath = imgPath;
+        this.questionIndex = questionIndex;
+        this.quiz = quiz;
+    }
+
     public int getIndex() {
         return questionIndex;
     }

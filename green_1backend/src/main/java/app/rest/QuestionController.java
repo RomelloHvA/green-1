@@ -52,7 +52,7 @@ public class QuestionController {
         if (!success) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
 

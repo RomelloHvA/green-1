@@ -63,6 +63,9 @@ public class QuizController {
     // Delete a quiz
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteQuiz(@PathVariable Long id) {
+        if(!quizRepository.existsById(id)) return ResponseEntity.notFound().build();
+
+
         quizService.deleteQuiz(id);
         return ResponseEntity.noContent().build();
     }

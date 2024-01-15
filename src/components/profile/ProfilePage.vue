@@ -34,7 +34,7 @@
                 </div>
                 <div class="mb-3">
                   <label for="inputName" class="form-label">Username: </label>
-                  <input type="text" autocomplete="off" class="form-control" id="inputLastName"
+                  <input type="text" autocomplete="off" class="form-control" id="inputUserName"
                          v-model="profile.username"
                          required>
                   <div v-if="isUserNameEmpty" class="invalid-message border mt-1 error">
@@ -58,8 +58,8 @@
                 <div v-if="isOccupationEmpty" class="invalid-message border mt-1 error">
                   Occupation is required
                 </div>
-                <button @click="saveEdit" :disabled="!isProfileChanged(this.profile, this.oldProfileData)" type="submit" class="btn btn-primary editButton">Save</button>
-                <button @click="cancelEdit" :disabled="!isProfileChanged(this.profile, this.oldProfileData)" type="button" class="btn btn-primary editButton">Cancel</button>
+                <button @click="saveEdit" id="save-btn" :disabled="!isProfileChanged(this.profile, this.oldProfileData)" type="submit" class="btn btn-primary editButton">Save</button>
+                <button @click="cancelEdit" id="cancel-btn" :disabled="!isProfileChanged(this.profile, this.oldProfileData)" type="button" class="btn btn-primary editButton">Cancel</button>
               </div>
             </div>
           </div>
@@ -100,7 +100,7 @@ import UploadImageComponent from '@/components/UploadImageComponent'
 
 export default {
   name: 'ProfilePage',
-  inject: ['profileService', 'usersServices', 'sessionService'],
+  inject: ['usersServices', 'sessionService'],
   components: {
     ProfileActionPlans,
     UploadImageComponent
