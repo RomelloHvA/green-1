@@ -41,7 +41,13 @@ export class UsersAdaptor {
   async asyncFindAll () {
     let response = []
     const url = `${this.resourcesUrl}/users/all`
-    response = await this.fetchJson(url)
+    const options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    response = await this.fetchJson(url, options)
     if (response === null) return []
     else {
       return response.map(user => User.copyConstructor(user))
