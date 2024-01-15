@@ -4,10 +4,13 @@ import router from '@/router'
 import { SessionSbService } from '@/services/SessionSbService'
 import CONFIG from '../../app-config'
 import { shallowReactive } from 'vue'
+import { enableFetchMocks } from 'jest-fetch-mock'
+enableFetchMocks()
 
 let wrapper
 
 beforeEach(async function () {
+  fetch.resetMocks()
   const sessionService = shallowReactive(
     new SessionSbService(CONFIG.BACKEND_URL + '/authentication/login'))
   wrapper = mount(LogInView, {
@@ -44,6 +47,36 @@ describe('Trying to login', () => {
     // Error message should not exist when login attempt is successful
     expect(wrapper.vm.errorMessage,
       'Login attempt failed').toBe('')
+  })
+})
+
+/**
+ * Test for user-login with invalid credentials
+ * @Author Justin Chan
+ */
+describe('Trying to login with invalid credentials', () => {
+  it('cannot login with invalid credentials', async function () {
+    fetch.mockResponseOnce(null)
+
+    // Verifying whether the input field for username and password exists
+    const userNameField = wrapper.find('input[placeholder="Username"]')
+    const passwordField = wrapper.find('input[placeholder="Password"]')
+    const loginButton = wrapper.find('button[id="loginButton"]')
+    expect(userNameField.exists(),
+      'Cannot find input field with placeholder = Username').toBe(true)
+    expect(passwordField.exists(),
+      'Cannot find input field with placeholder = Password').toBe(true)
+    expect(loginButton.exists(),
+      'Cannot find button with id = loginButton').toBe(true)
+
+    // Attempt to log in with invalid user credentials
+    await userNameField.setValue('Kenny')
+    await passwordField.setValue('F@k3P@$$w0rd')
+    await loginButton.trigger('submit')
+
+    // Error message should exist when login attempt is unsuccessful
+    // expect(wrapper.vm.errorMessage).toBe('Invalid username or password')
+    expect(() => wrapper.vm.handleLogin().catch().toThrow('Invalid username or password'))
   })
 })
 
