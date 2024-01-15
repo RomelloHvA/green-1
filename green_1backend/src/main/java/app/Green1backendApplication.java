@@ -20,7 +20,8 @@ public class Green1backendApplication {
             //plz work now
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("https://ewafrontend.onrender.com")
+                System.out.println(System.getenv("FRONTEND_URL"));
+                registry.addMapping("/**").allowedOrigins(System.getenv("FRONTEND_URL"))
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders(HttpHeaders.AUTHORIZATION,
                                 HttpHeaders.CONTENT_TYPE)
