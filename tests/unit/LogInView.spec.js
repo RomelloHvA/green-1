@@ -6,6 +6,9 @@ import CONFIG from '../../app-config'
 import { reactive } from 'vue'
 
 let wrapper
+const TITLE = 'Log In'
+const USERNAME = 'Test User'
+const PASSWORD = 'TestPassword123'
 
 beforeEach(async function () {
   const sessionService = reactive(
@@ -23,41 +26,39 @@ beforeEach(async function () {
  * Test for user-login
  * @author Jiaming Yan
  */
-describe('Trying to login', () => {
-  it('logs in with valid user credentials', async function () {
-    // Verifying whether the input field for username and password exists
-    const userNameField = wrapper.find('input#userName')
-    const passwordField = wrapper.find('input#password')
-    const loginButton = wrapper.find('button#loginButton')
-    expect(userNameField.exists(),
-      'Cannot find input field with placeholder = Username').toBe(true)
-    expect(passwordField.exists(),
-      'Cannot find input field with placeholder = Password').toBe(true)
-    expect(loginButton.exists(),
-      'Cannot find button with id = loginButton').toBe(true)
-
-    // Attempt to log in with valid user credentials
-    await userNameField.setValue('User')
-    await passwordField.setValue('1234')
-    await loginButton.trigger('click')
-
-    // Error message should not exist when login attempt is successful
-    const errorMessageText = wrapper.find('p.text-danger')
-    console.log(errorMessageText)
-    // expect(wrapper.vm.errorMessage,
-    //   'Login attempt failed').toBe('')
+describe('Mounting the component now...', () => {
+  it('should have no props', () => {
+    expect(wrapper.props(), 'This component should have no props').toStrictEqual({})
   })
-  it('logs in with an invalid username', async function () {
-    const userNameField = wrapper.find('input#userName')
-    const passwordField = wrapper.find('input#password')
-    const loginButton = wrapper.find('button#loginButton')
-    // Attempt to log in with valid user credentials
-    await userNameField.setValue('sTaylor38')
-    await passwordField.setValue('Staylor123!')
-    await loginButton.trigger('click')
-    await wrapper.vm.$nextTick()
-    const errorMessageText = wrapper.find('p.text-danger')
-    console.log(errorMessageText)
+  it('should have variables in the data hook', () => {
+    expect(wrapper.vm.inputUserName, 'there is no variable for username').toBeDefined()
+    expect(wrapper.vm.inputPassWord, 'there is no variable for password').toBeDefined()
+    expect(wrapper.vm.errorMessage, 'there is no variable for errormessage').toBeDefined()
+  })
+  it('should have Log In as title', () => {
+    expect(wrapper.find('h2').text(), 'the title is incorrect').toStrictEqual(TITLE)
+  })
+  it('should have an input field for username', () => {
+    expect(wrapper.find('input#userName'), 'there is no input field for username').toBeTruthy()
+  })
+  it('should have an input field for password', () => {
+    expect(wrapper.find('input#password'), 'there is no input field for password').toBeTruthy()
+  })
+})
+describe('Login button', () => {
+  it('should have a button for login', () => {
+    expect(wrapper.find('button#loginButton'), 'there is no button for login').toBeTruthy()
+  })
+  it('should not disable button for login', () => {
+    expect(wrapper.find('button#loginButton').isDisabled(), 'the button is disabled').toBeFalsy()
+  })
+})
+describe('The input fields', () => {
+  it('should update the variables in the data hook immediately', async function () {
+    await wrapper.find('input#userName').setValue(USERNAME)
+    await wrapper.find('input#password').setValue(PASSWORD)
+    expect(wrapper.vm.inputUserName, 'the value does not match with the input field for username').toStrictEqual(USERNAME)
+    expect(wrapper.vm.inputPassWord, 'the value does not match with the input field for username').toStrictEqual(PASSWORD)
   })
 })
 
