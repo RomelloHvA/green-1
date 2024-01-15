@@ -9,11 +9,9 @@ export class SessionSbService {
     this._currentToken = null
     this._currentAccount = null
     this.getTokenFromBrowserStorage()
-    console.log('SessionService has recovered token: ', this._currentToken)
   }
 
   getTokenFromBrowserStorage () {
-    console.log('Attempting to recover token from browser storage...')
     if (this._currentToken != null) return this._currentToken
     this._currentToken = window.sessionStorage.getItem('TOKEN')
     let userAccount = window.sessionStorage.getItem('ACCOUNT')
@@ -27,7 +25,7 @@ export class SessionSbService {
           window.sessionStorage.setItem('ACCOUNT', userAccount)
         }
       } catch (e) {
-        console.log('SessionStorage is not available, using LocalStorage instead.')
+        console.error('SessionStorage is not available, using LocalStorage instead.')
       }
     }
     if (userAccount != null) {
@@ -50,7 +48,6 @@ export class SessionSbService {
           window.localStorage.removeItem('ACCOUNT')
         }
       } else {
-        console.log('New token for ' + user.username + ': ' + token)
         // insert into sessionStorage
         window.sessionStorage.setItem('TOKEN', token)
         window.sessionStorage.setItem('ACCOUNT', JSON.stringify(user))
@@ -60,7 +57,7 @@ export class SessionSbService {
         window.localStorage.setItem('ACCOUNT', JSON.stringify(user))
       }
     } catch (e) {
-      console.log('SessionStorage is not available, using LocalStorage instead.')
+      console.error('SessionStorage is not available, using LocalStorage instead.')
     }
   }
 
@@ -81,25 +78,17 @@ export class SessionSbService {
         username: userName,
         password: passWord
       })
-      console.log(body)
       const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: body
       })
-      console.log('Login response:', response)
-      console.log(body)
       if (response.ok) {
-        console.log('Login successful:', response.status)
         const token = response.headers.get('Authorization')
         const user = await response.json()
-        console.log('Token:', token)
-        console.log('User:', user)
         this.saveTokenIntoBrowserStorage(token, user)
         return true
       } else {
-        // throw new Error('Something went wrong: ' + await response.text())
-        console.log(response, !response.bodyUsed ? await response.text() : '')
         if (response.status === 401) {
           console.error('Unauthorized. Token may have expired or invalid.')
         } else {
