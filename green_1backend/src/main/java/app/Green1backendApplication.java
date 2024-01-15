@@ -1,5 +1,6 @@
 package app;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -14,14 +15,16 @@ public class Green1backendApplication {
         SpringApplication.run(Green1backendApplication.class, args);
     }
 
+    @Value("${frontend.url}")
+    private String frontendUrl;
     @Bean
     public WebMvcConfigurer corsConfigurer(){
         return new WebMvcConfigurer() {
             //plz work now
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                System.out.println(System.getenv("FRONTEND_URL"));
-                registry.addMapping("/**").allowedOrigins(System.getenv("FRONTEND_URL"))
+                System.out.println(frontendUrl);
+                registry.addMapping("/**").allowedOrigins(frontendUrl)
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders(HttpHeaders.AUTHORIZATION,
                                 HttpHeaders.CONTENT_TYPE)
