@@ -1,4 +1,3 @@
-import { User } from '@/models/user'
 export class UsersAdaptor {
   resourcesUrl
 
@@ -48,15 +47,18 @@ export class UsersAdaptor {
       }
     }
     response = await this.fetchJson(url, options)
-    if (response === null) return []
-    else {
-      return response.map(user => User.copyConstructor(user))
-    }
+    return response
   }
 
   async asyncFindById (id) {
     const url = `${this.resourcesUrl}/users/${id}`
-    return this.fetchJson(url)
+    const options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    return this.fetchJson(url, options)
   }
 
   async asyncSave (user) {
