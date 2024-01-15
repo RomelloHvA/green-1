@@ -62,6 +62,23 @@ describe('The input fields', () => {
   })
 })
 
+/**
+ * Test for user-login with incorrect credentials
+ * @Author Justin Chan
+ */
+describe('Login with incorrect credentials', () => {
+  it('should display an error message', async function () {
+    const fakeUsername = 'Kenny'
+    const fakePassword = 'f@k3P@ssw0rd'
+    const errorMessage = wrapper.find('p#errorMsg')
+    await wrapper.find('input#userName').setValue(fakeUsername)
+    await wrapper.find('input#password').setValue(fakePassword)
+    await wrapper.find('button#loginButton').trigger('click')
+    await wrapper.vm.$nextTick()
+    expect(errorMessage, 'the error message is not displayed').toBeTruthy()
+  })
+})
+
 afterEach(function () {
   wrapper.unmount() // Clean up the wrapper after each test
   wrapper = null

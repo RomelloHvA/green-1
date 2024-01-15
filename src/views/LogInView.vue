@@ -15,7 +15,7 @@
                   <div class="form-outline mb-4">
                     <input type="password" id="password" class="form-control" placeholder="Password"
                            v-model="inputPassWord"/>
-                    <p class="text-danger">{{ errorMessage }}</p>
+                    <p v-if="showError" id="errorMsg" class="text-danger">{{ errorMessage }}</p>
                   </div>
                   <div class="d-flex justify-content-center">
                     <button type="submit" id="loginButton"
@@ -44,6 +44,7 @@ export default {
   inject: ['sessionService'],
   data () {
     return {
+      showError: false,
       errorMessage: '',
       inputUserName: '',
       inputPassWord: ''
@@ -62,15 +63,15 @@ export default {
      */
     async handleLogin () {
       try {
-        console.log('Login data:', this.inputUserName, this.inputPassWord)
+        this.showError = false
         const response = await this.sessionService.asyncLogin(this.inputUserName, this.inputPassWord)
-        console.log('LoginView response:', response)
         if (response) {
           // // Emitting the username to NavBar so the NavBar knows the user is logged in
           // await eventBus.emit('change-data', this.inputUserName)
           // Redirects the user back to home after successful login
           await router.push({ name: 'home' })
         } else {
+          this.showError = true
           throw new Error('Something went wrong: ' + 'Invalid username or password')
         }
       } catch (error) {
