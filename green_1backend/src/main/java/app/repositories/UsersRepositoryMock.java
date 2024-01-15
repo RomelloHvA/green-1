@@ -13,18 +13,20 @@ public class UsersRepositoryMock implements UsersRepository {
 
     public UsersRepositoryMock() {
         users = new ArrayList<>();
-        users.add(new User("User27", "3927", true));
+        users.add(new User(generateUniqueID(), "JaniceG21", "Janice2004", false));
+        users.add(new User(generateUniqueID(), "Jason_Welles1999", "Jwelles1999", false));
+        users.add(new User(generateUniqueID(), "Admin01", "Johndoe2000", true));
 
     }
     @Override
-    public List findAll() {
+    public List<User> findAll() {
         return users;
     }
 
     @Override
     public User findById(long id) {
         for (User user : users) {
-            if (id == user.getUser_id()) {
+            if (Objects.equals(id, user.getId())) {
                 return user;
             }
         }

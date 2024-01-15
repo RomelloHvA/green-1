@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 @Entity
+@Table(name = "user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -87,6 +88,13 @@ public class User {
     }
 
     public User(String username, String password, boolean isAdmin) {
+        this.username = username;
+        this.password = password;
+        this.isAdmin = isAdmin;
+    }
+
+    public User(long user_id, String username, String password, boolean isAdmin) {
+        this.user_id = user_id;
         this.username = username;
         this.password = password;
         this.isAdmin = isAdmin;
@@ -218,5 +226,9 @@ public class User {
     }
     public void setImg_path(String img_path) {
         this.img_path = img_path;
+    }
+
+    public long getId() {
+        return user_id;
     }
 }
