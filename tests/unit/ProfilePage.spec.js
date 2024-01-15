@@ -1,6 +1,10 @@
 import ProfilePage from '@/components/profile/ProfilePage'
 import { mount } from '@vue/test-utils'
 
+/**
+ * Test for ProfilePage
+ * @author Jiaming Yan
+ */
 const user = {
   user_id: 2,
   sector_id: 1,
