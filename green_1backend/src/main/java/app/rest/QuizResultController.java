@@ -14,7 +14,6 @@ import java.util.*;
 @RequestMapping("/quizresult")
 public class QuizResultController {
 
-//    private final QuizResultRepositoryJPA quizResultRepositoryJPA;
     private final UsersRepositoryJPA usersRepositoryJPA;
     private final QuizResultRepositoryJPA quizResultRepositoryJPA;
 

@@ -1,6 +1,7 @@
 package app.models;
 
 import app.repositories.Identifiable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
 
@@ -30,6 +31,7 @@ public class QuizResult {
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     private LocalDate dateOfQuiz;
@@ -48,7 +50,6 @@ public class QuizResult {
     }
 
     public QuizResult() {
-
     }
 
     /**
