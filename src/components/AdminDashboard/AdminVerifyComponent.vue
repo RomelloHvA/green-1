@@ -4,16 +4,15 @@
 
       <form>
         <div class="user-box">
-          <input v-model="usernameInput" type="text" name="" required="">
+          <input v-model="usernameInput" id="verifyUsernameInput" type="text" name="" required="">
           <label>Username</label>
         </div>
         <div class="user-box">
-          <input v-model="passwordInput" type="password" name="" required="">
+          <input v-model="passwordInput" id="verifyPasswordInput" type="password" name="" required="">
           <label>Password</label>
-        </div><center>
-        <button @click="closePopup" class="popupButton">Close</button>
-        <button @click="checkAdmin" class="popupButton">Verify</button>
-        </center>
+        </div>
+        <button @click="closePopup" id="closePopupAdminVerify" class="popupButton">Close</button>
+        <button @click="checkAdmin" id="checkPopupAdminVerify" class="popupButton">Verify</button>
       </form>
     </div>
   </div>
@@ -36,7 +35,6 @@ export default {
   async created () {
     try {
       this.listOfUsers = await this.usersServices.asyncFindAll()
-      console.log(this.listOfUsers)
     } catch (error) {
       console.log(error)
     }
@@ -59,7 +57,7 @@ export default {
           alert('You are not an admin')
         }
       } catch (error) {
-        console.log(error)
+        console.error(error)
         this.isAdmin = false
         alert('You are not an admin')
       }
