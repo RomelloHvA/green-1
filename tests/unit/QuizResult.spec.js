@@ -1,5 +1,8 @@
 import QuizResult from '@/models/QuizResult'
-
+/**
+ * Test for QuizResult model
+ * @author Santosh Kakkar
+ */
 describe('QuizResult Model', () => {
   it('should create a valid QuizResult instance with default score', () => {
     const quizResult = new QuizResult(3)

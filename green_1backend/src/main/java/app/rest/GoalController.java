@@ -33,6 +33,17 @@ public class GoalController {
     public ResponseEntity<Goal> getGoalById(@PathVariable int id) {
         return ResponseEntity.ok().body(goalsRepo.findById(id));
     }
+    @PostMapping(path = "", produces = "application/json")
+    public ResponseEntity<Goal> saveGoal(@RequestBody Goal goal) {
+        if (goal == null) return null;
+        try {
+            this.goalsRepo.save(goal);
+            return ResponseEntity.ok(goal);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     @DeleteMapping(path = "{id}", produces = "application/json")
     public ResponseEntity<Goal> deleteOneProfile(@PathVariable int id) {

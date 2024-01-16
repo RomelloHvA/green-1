@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 @Entity
-@Table(name = "user")
+@Table(name = "\"user\"")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -91,6 +91,10 @@ public class User {
         this.username = username;
         this.password = password;
         this.isAdmin = isAdmin;
+    }
+
+    public User(long user_id){
+        this.user_id = user_id;
     }
 
     public User(long user_id, String username, String password, boolean isAdmin) {
