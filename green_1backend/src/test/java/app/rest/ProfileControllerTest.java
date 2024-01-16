@@ -33,6 +33,7 @@ public class ProfileControllerTest {
 
     @Test
     public void profileCanBeRetrieved() {
+        // Act
         ResponseEntity<Profile> response =
                 this.restTemplate.getForEntity(
                 "/profiles/1",
@@ -40,10 +41,14 @@ public class ProfileControllerTest {
         );
 
         // check status code, location header and response body of get request
+        // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode(), "Status code should be 200 OK");
 
+        // Arrange
         Profile profile = response.getBody();
+        // Assert
         assert profile != null;
+        // Assert
         assertEquals(1, profile.getUser_id());
     }
 
