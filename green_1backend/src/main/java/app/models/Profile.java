@@ -49,17 +49,17 @@ public class Profile {
         this.photo = photo;
     }
 
-    public static Profile createSampleProfile(int id, List<Goal> goal) {
-        List<Goal> goals = goal != null ? goal : new ArrayList<>();
-        Random random = new Random();
-        Profile newProfile = new Profile(id, FIRST_NAMES[random.nextInt(FIRST_NAMES.length)],
-                LAST_NAMES[random.nextInt(LAST_NAMES.length)], "Hi I'm a Software Engineer at the HvA!",
-                "Software Engineer",
-                LocalDate.of(1999, 12, 12),
-                "/assets/photo/profielfoto-silhouet.jpg");
-        newProfile.setGoals(goals);
-        return newProfile;
-    }
+//    public static Profile createSampleProfile(int id, List<Goal> goal) {
+//        List<Goal> goals = goal != null ? goal : new ArrayList<>();
+//        Random random = new Random();
+//        Profile newProfile = new Profile(id, FIRST_NAMES[random.nextInt(FIRST_NAMES.length)],
+//                LAST_NAMES[random.nextInt(LAST_NAMES.length)], "Hi I'm a Software Engineer at the HvA!",
+//                "Software Engineer",
+//                LocalDate.of(1999, 12, 12),
+//                "/assets/photo/profielfoto-silhouet.jpg");
+//        newProfile.setGoals(goals);
+//        return newProfile;
+//    }
 
     public int getUser_id() {
         return user_id;
