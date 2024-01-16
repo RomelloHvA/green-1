@@ -33,7 +33,7 @@ public class ProfileControllerTest {
 
     @Test
     public void profileCanBeRetrieved() {
-        // Act
+        // Arrange
         ResponseEntity<Profile> response =
                 this.restTemplate.getForEntity(
                 "/profiles/1",
@@ -54,6 +54,7 @@ public class ProfileControllerTest {
 
     @Test
     public void aProfileCanBeSaved() {
+        // Arrange
         ResponseEntity<Profile> response1 =
                 this.restTemplate.getForEntity(
                         "/profiles/1",
@@ -61,12 +62,16 @@ public class ProfileControllerTest {
                 );
 
         // check status code, location header and response body of post request
+        // Assert
         assertEquals(HttpStatus.OK, response1.getStatusCode(), "Status code should be 200 OK");
 
+        // Arrange
         Profile profile = response1.getBody();
         assert profile != null;
+        // Assert
         assertEquals(1, profile.getUser_id());
 
+        // Act
         profile.setFirst_name("Bastiaan");
         // post the updated profile instance
 
@@ -78,10 +83,13 @@ public class ProfileControllerTest {
                         Profile.class
                 );
 
+        // Assert
         assertEquals(HttpStatus.OK, response2.getStatusCode(), "Status code should be 200 OK");
 
+        // retrieve the updated profile
         Profile updatedProfile = response2.getBody();
         assert updatedProfile != null;
+        // Assert
         assertEquals(1, updatedProfile.getUser_id());
         assertEquals("Bastiaan", updatedProfile.getFirst_name());
     }
