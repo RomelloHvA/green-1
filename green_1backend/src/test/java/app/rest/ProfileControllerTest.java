@@ -15,6 +15,10 @@ import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Test class for ProfileController
+ * @Author Justin Chan
+ */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ProfileControllerTest {
     @Autowired

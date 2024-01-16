@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils'
 
 let wrapper
 beforeEach(() => {
+  // provide a mock implementation for the usersServices
   wrapper = mount(AdminVerifyComponent,
     {
       global: {
@@ -33,6 +34,7 @@ describe('Buttons', () => {
     let isPopupActive = AdminVerifyComponent.data().isAdmin = true
     const closeButton = wrapper.find('button#closePopupAdminVerify')
     await closeButton.trigger('click')
+    // Wait for the asynchronous created hook to complete
     await wrapper.vm.$nextTick()
     isPopupActive = false
     expect(isPopupActive).toBe(false)
@@ -43,6 +45,7 @@ describe('Buttons', () => {
     await wrapper.find('input#verifyPasswordInput').setValue(mockUserData1.password)
     const verifyButton = wrapper.find('button#checkPopupAdminVerify')
     await verifyButton.trigger('click')
+    // Wait for the asynchronous created hook to complete
     await wrapper.vm.$nextTick()
     isAdmin = mockUserData1.isAdmin
     expect(wrapper.vm.usernameInput, 'the value does not match with the input field for username')
