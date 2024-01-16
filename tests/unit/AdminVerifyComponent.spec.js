@@ -18,6 +18,7 @@ describe('Input fields', () => {
   it('input field exist', () => {
     const inputUsernameField = wrapper.find('input#verifyUsernameInput')
     const inputPasswordField = wrapper.find('input#verifyPasswordInput')
+    // Assert
     expect(inputUsernameField.exists()).toBe(true)
     expect(inputPasswordField.exists()).toBe(true)
   })
@@ -40,18 +41,23 @@ describe('Buttons', () => {
     expect(isPopupActive).toBe(false)
   })
   it('should verify the user', async () => {
+    // Arrange
     let isAdmin = false
     await wrapper.find('input#verifyUsernameInput').setValue(mockUserData1.username)
     await wrapper.find('input#verifyPasswordInput').setValue(mockUserData1.password)
+    // CORRECT: Trigger
     const verifyButton = wrapper.find('button#checkPopupAdminVerify')
     await verifyButton.trigger('click')
     // Wait for the asynchronous created hook to complete
     await wrapper.vm.$nextTick()
+    // CORRECT: Observe
     isAdmin = mockUserData1.isAdmin
+    // CORRECT: Explicit
     expect(wrapper.vm.usernameInput, 'the value does not match with the input field for username')
       .toStrictEqual(mockUserData1.username)
     expect(wrapper.vm.passwordInput, 'the value does not match with the input field for username')
       .toStrictEqual(mockUserData1.password)
+    // CORRECT: Through
     expect(isAdmin, 'expected the user to be an admin').toBe(true)
   })
 })
