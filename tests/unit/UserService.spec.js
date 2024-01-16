@@ -9,7 +9,7 @@ const usersServices = reactive(
   new UsersAdaptor(CONFIG.BACKEND_URL + '/users'))
 
 beforeEach(() => {
-  fetch.resetMocks() // Arrange
+  fetch.resetMocks()
 })
 
 /**
@@ -25,8 +25,10 @@ describe('Method findAll', () => {
         method: 'GET'
       })
     // makes a call to the backend to retrieve all users
-    const response = await usersServices.asyncFindAll() // Act
-    expect(response).toEqual(mockUsers) // Assert
+    // Act
+    const response = await usersServices.asyncFindAll()
+    // Assert
+    expect(response).toEqual(mockUsers)
   })
 })
 
@@ -40,7 +42,8 @@ describe('Method findById', () => {
         method: 'GET'
       })
     // makes a call to the backend to retrieve a user with given id
-    const response = await usersServices.asyncFindById(1) // Act
+    // Act
+    const response = await usersServices.asyncFindById(1)
     // Assert
     expect(response).not.toBeNull()
     expect(response.length, 'a single user should not be returned in a Array').toBeUndefined()
@@ -70,7 +73,8 @@ describe('Method save', () => {
       method: 'POST'
     })
     // makes a call to the backend to save a user
-    const response = await usersServices.asyncSave(user) // Act
+    // Act
+    const response = await usersServices.asyncSave(user)
     // Assert
     expect(response).not.toBeNull()
     expect(response.username).toStrictEqual('carlsimons')
@@ -98,7 +102,8 @@ describe('Method updateProfile', () => {
       method: 'PUT'
     })
     // makes a call to the backend to update a users profile
-    const response = await usersServices.asyncUpdateProfile(user, user.user_id) // Act
+    // Act
+    const response = await usersServices.asyncUpdateProfile(user, user.user_id)
 
     // Assert
     expect(response, 'updating a users profile should not return nothing').not.toBeNull()
