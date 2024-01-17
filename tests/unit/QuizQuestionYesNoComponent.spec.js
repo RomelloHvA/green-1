@@ -5,6 +5,7 @@ import YesNoQuestion from '@/models/YesNoQuestion'
 let wrapper
 
 beforeEach(async function () {
+  // arrange
   wrapper = mount(QuizQuestionYesNoComponent, {
     propsData: {
       questionObject: question
@@ -17,39 +18,59 @@ beforeEach(async function () {
  * @author Marco de Boer
  */
 describe('On mounting the component', () => {
+  // Fast, Isolated, Repeatable, Self-Validating, Timely
   it('should have a questionObject as a prop', () => {
+    // act & assert
     expect(wrapper.props().questionObject, 'there is no questionObject prop').toBeTruthy()
   })
+  // Fast, Isolated, Repeatable, Self-Validating, Timely
   it('should have the question displayed as a title', () => {
+    // act & assert
     expect(wrapper.find('h1').text(), 'the question as title is not the same giving in the prop')
       .toBe(question.question)
   })
+  // Fast, Isolated, Repeatable, Self-Validating, Timely
   it('should have the imgPath displayed as an image', () => {
+    // act & assert
     expect(wrapper.find('img').attributes('src'), 'the image is not the same giving in the prop')
       .toBe(question.imgPath)
   })
+  // Fast, Isolated, Repeatable, Self-Validating, Timely
   it('should have no img if imgPath is null', async () => {
+    // act
     await wrapper.setProps({ questionObject: new YesNoQuestion(1, 1, 'question', null, 1) })
+    // assert
     expect(wrapper.find('img').exists(), 'there is an image while imgPath is null').toBeFalsy()
   })
   describe('the 2 buttons', () => {
+    // Fast, Isolated, Repeatable, Self-Validating, Timely
     it('should exist', () => {
+      // act
       const buttons = wrapper.findAll('button')
+      // assert
       expect(buttons.at(0).text(), 'the first button is not yes').toBe('Yes')
       expect(buttons.at(1).text(), 'the second button is not no').toBe('No')
       expect(buttons.at(3), 'there are more than 2 buttons').toBeUndefined()
     })
+    // Fast, Isolated, Repeatable, Self-Validating, Timely
     it('should not be selected', () => {
+      // act
       const buttons = wrapper.findAll('button')
+      // assert
       expect(buttons.at(0).classes('selectedButton'), 'the first button is selected').toBeFalsy()
       expect(buttons.at(1).classes('selectedButton'), 'the second button is selected').toBeFalsy()
     })
+    // Fast, Isolated, Repeatable, Self-Validating, Timely
     it('if given answer is true the first button should be selected', async () => {
-      await wrapper.props().questionObject.setGivenAnswer(true)
+      // arrange
       const buttons = wrapper.findAll('button')
+      // act
+      await wrapper.props().questionObject.setGivenAnswer(true)
+      // assert
       expect(buttons.at(0).classes('selectedButton'), 'the first button is not selected').toBeTruthy()
       expect(buttons.at(1).classes('selectedButton'), 'the second button is selected').toBeFalsy()
     })
+    // Fast, Isolated, Repeatable, Self-Validating, Timely
     it('if given answer is false the second button should be selected', async () => {
       await wrapper.props().questionObject.setGivenAnswer(false)
       const buttons = wrapper.findAll('button')

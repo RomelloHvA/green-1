@@ -44,31 +44,37 @@ public class QuizControllerTest {
         if (servletContextPath == null) {
             servletContextPath = "/";
         }
+        //arrange
         quiz = new Quiz((long) 1, "The new quiz", false, true, false, null);
     }
-
+    // Fast, Inexpensive, Repeatable, Self-Validating, Timely
     @Test
     public void allQuizzesCanBeRetrieved() {
-
+        // act
         ResponseEntity<Quiz[]> response =
                 this.restTemplate.getForEntity("/quiz/all", Quiz[].class);
 
+        // assert
         // check status code, location header and response body of post request
         assertEquals(HttpStatus.OK, response.getStatusCode(), "Status code should be 200 OK");
 
         Quiz[] quizzes = response.getBody();
         assertThat(quizzes.length, is(greaterThan(0)));
     }
-
+    // Fast, Inexpensive, Repeatable, Self-Validating, Timely
     @Test
     public void aNewQuizCanBePosted() {
         // post a new quiz instance at REST end-point
+        // arrange
         quiz.setId((long) 0);
 
+        // act
         ResponseEntity<Quiz> response =
                 this.restTemplate.postForEntity("/quiz/" + 0, quiz, Quiz.class);
 
         // check status code
+
+        //assert
         assertEquals(HttpStatus.CREATED, response.getStatusCode(),
                 "Status code should be 201 CREATED");
 
@@ -89,6 +95,7 @@ public class QuizControllerTest {
         compareQuizzes(retrievedQuiz, savedQuiz);
     }
 
+    // Fast, Inexpensive, Repeatable, Self-Validating, Timely
     @Test
     public void getQuizByValidId() {
         String url = "/quiz/" + quiz.getId();
@@ -111,19 +118,24 @@ public class QuizControllerTest {
                 "isLive of retrieved quiz should be equal to isLive of posted quiz");
     }
 
+    // Fast, Inexpensive, Repeatable, Self-Validating, Timely
     @Test
     public void getQuizByInvalidId() {
+        //arrange
         String url = "/quiz/" + 9999;
+        //act
         ResponseEntity<Quiz> response =
                 this.restTemplate.getForEntity(url, Quiz.class);
 
         // check status code and response body of get-by-id request
+        // assert
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode(),
                 "Status code should be 404 NOT FOUND");
     }
-
+    // Right-BICEP: Boundary conditions, Inverse relationships, Cross-check results, Error conditions, Performance characteristics
     @Test
     public void updateQuizByValidId() {
+        // arrange
         quiz.setId((long) 0);
         ResponseEntity<Quiz> response1 =
                 this.restTemplate.postForEntity("/quiz/" + 0, quiz, Quiz.class);
@@ -134,10 +146,12 @@ public class QuizControllerTest {
         String url = "/quiz/" + postedQuiz.getId();
         HttpEntity<Quiz> requestEntity = new HttpEntity<>(postedQuiz);
 
+        // act
         ResponseEntity<Quiz> response = this.restTemplate.exchange(
                 url, HttpMethod.PUT, requestEntity, Quiz.class);
 
         // check status code
+        //assert
         assertEquals(HttpStatus.OK, response.getStatusCode(),
                 "Status code should be 200 OK");
 
@@ -146,10 +160,11 @@ public class QuizControllerTest {
         assertThat(savedQuiz.getId(), is(greaterThan(0L)));
         compareQuizzes(savedQuiz, postedQuiz);
     }
-
+    // Right-BICEP: Boundary conditions, Inverse relationships, Cross-check results, Error conditions, Performance characteristics
     @Test
     public void updateQuizByInvalidId() {
         // post a new quiz instance at REST end-point
+        // arrange
         quiz.setId((long) 99999);
         String url = "/quiz/" + quiz.getId();
         HttpEntity<Quiz> requestEntity = new HttpEntity<>(quiz);
@@ -162,8 +177,10 @@ public class QuizControllerTest {
                 "Status code should be 404 NOT FOUND");
     }
 
+    // Right-BICEP: Boundary conditions, Inverse relationships, Cross-check results, Error conditions, Performance characteristics
     @Test
     public void deleteQuizByValidId() {
+        //arrange
         quiz.setId((long) 0);
         ResponseEntity<Quiz> response1 =
                 this.restTemplate.postForEntity("/quiz/" + 0, quiz, Quiz.class);
@@ -173,23 +190,28 @@ public class QuizControllerTest {
                 "Status code should be 201 CREATED");
         // post a new quiz instance at REST end-point
         String url = "/quiz/" + response1.getBody().getId();
+        //act
         ResponseEntity<Void> response = this.restTemplate.exchange(
                 url, HttpMethod.DELETE, null, Void.class);
 
         // check status code
+        // assert
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode(),
                 "Status code should be 204 NO CONTENT");
     }
-
+    // Right-BICEP: Boundary conditions, Inverse relationships, Cross-check results, Error conditions, Performance characteristics
     @Test
     public void deleteQuizByInvalidId() {
+        // arrange
         // post a new quiz instance at REST end-point
         quiz.setId((long) 99999);
         String url = "/quiz/" + quiz.getId();
+        //act
         ResponseEntity<Void> response = this.restTemplate.exchange(
                 url, HttpMethod.DELETE, null, Void.class);
 
         // check status code
+        //assert
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode(),
                 "Status code should be 404 NOT FOUND");
     }

@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class QuizRepositoryTest {
     @Qualifier("QUIZ.JPA")
     @Autowired
+    // arrange
     private QuizRepository quizRepository;
 
     @BeforeAll
@@ -40,13 +41,15 @@ public class QuizRepositoryTest {
     }
 
     @Autowired
+            // arrange
     CommandLineRunner dataLoader;
-
+    // arrange
     private List<Quiz> someQuizzes;
 
     @BeforeEach
     public void setup() throws Exception {
         // use the available data loader to initialize the repository
+        // arrange
         this.dataLoader.run(null);
         this.someQuizzes = this.quizRepository.findAll();
     }
@@ -58,8 +61,10 @@ public class QuizRepositoryTest {
 
     @Test
     public void repoFindByIDReturnsProperQuiz(){
+        // act
         for(int i = 0; i < this.someQuizzes.size(); i++){
             Quiz quiz = quizRepository.findById(this.someQuizzes.get(i).getId()).orElse(null);
+            // assert
             assertEquals(this.someQuizzes.get(i).getName(), quiz.getName(),
                     "The name of the quiz is not the same as the name of the quiz in the repository");
             assertEquals(this.someQuizzes.get(i).getSector(), quiz.getSector(),

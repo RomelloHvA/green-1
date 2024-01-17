@@ -1,4 +1,4 @@
-import CONFIG from '../../app-config'
+import CONFIG from '@/app-config'
 import { RESTAdaptorWithFetch } from '@/services/RESTAdaptorWithFetch'
 import Quiz from '@/models/Quiz'
 import { enableFetchMocks } from 'jest-fetch-mock'
@@ -7,6 +7,7 @@ enableFetchMocks()
 const quizService = new RESTAdaptorWithFetch(CONFIG.BACKEND_URL + '/quiz', Quiz.copyConstructor)
 
 beforeEach(() => {
+  // arrange
   fetch.resetMocks()
 })
 
@@ -15,43 +16,68 @@ beforeEach(() => {
  * @author Marco de Boer
  */
 describe('Method asyncFindAll', () => {
+  // Right-BICEP: Right, Boundary, Inverse, Cross-Check, Error-Conditions, Performance
+  // Error conditions
   it('should return all quizzes', async function () {
+    // arrange
     fetch.mockResponseOnce(JSON.stringify([mockedResponseJSONData, mockedResponseJSONData]))
     const result = await quizService.asyncFindAll()
+    // act
     await result.load()
+    // assert
     expect(result.error.value, 'error has happend').toBeNull()
     expect(result.entities.value.length, 'not the expected amount of quizzes returned').toBe(2)
     expect(result.entities.value[0], 'returned entities are not instances of Quiz').toBeInstanceOf(Quiz)
   })
+  // Right-BICEP: Right, Boundary, Inverse, Cross-Check, Error-Conditions, Performance
+  // Error conditions
   it('should return [] if there was nothing', async function () {
+    // arrange
     fetch.mockResponseOnce(JSON.stringify([]))
     const result = await quizService.asyncFindAll()
+    // act
     await result.load()
+    // assert
     expect(result.error.value).toBeNull()
     expect(result.entities.value).toStrictEqual([])
   })
 })
 
 describe('Method asyncFindById', () => {
+  // Right-BICEP: Right, Boundary, Inverse, Cross-Check, Error-Conditions, Performance
+  // Error conditions
+  // Right
+  // FAST under 200ms
   it('should return null if id is not found', async function () {
+    // arrange
     fetch.mockResponseOnce(JSON.stringify(null))
     const result = await quizService.asyncFindById(2)
+    // act
     await result.load()
+    // assert
     expect(result.error.value).toBeNull()
     expect(result.entity.value).toBeNull()
   })
+  // Right-BICEP: Right, Boundary, Inverse, Cross-Check, Error-Conditions, Performance
   it('should return quiz with id 1', async function () {
+    // arrange
     fetch.mockResponseOnce(JSON.stringify(mockedResponseJSONData))
     const result = await quizService.asyncFindById(1)
+    // act
     await result.load()
+    // assert
     expect(result.error.value).toBeNull()
     expect(result.entity.value.id).toBe(1)
     expect(result.entity.value, 'returned entity is not an instances of Quiz').toBeInstanceOf(Quiz)
   })
+  // Right-BICEP: Right, Boundary, Inverse, Cross-Check, Error-Conditions, Performance
   it('should return a error if something is incorrect', async function () {
+    // arrange
     fetch.mockResponseOnce(null, { status: 404 })
     const result = await quizService.asyncFindById(2000)
+    // act
     await result.load()
+    // assert
     expect(result.error.value).not.toBeNull()
   })
 })

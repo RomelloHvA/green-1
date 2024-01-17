@@ -15,31 +15,42 @@ let quiz
 
 beforeEach(() => {
   // Initialize the quiz object before each test
+  // arrange
   quiz = new Quiz(quizJSON, isInQuizBuilder)
 })
-
+// Right-BICEP: Right, Boundary, Interface, Conformance, Exceptions, Performance
 describe('Constructing a quiz outside quizbuilder', () => {
   it('with valid json should create a Quiz object', () => {
+    // arrange
     const quiz2 = new Quiz(quizJSON, isInQuizBuilder)
+    // assert
     expect(quiz2, 'quiz should be a Quiz Model').toBeInstanceOf(Quiz)
   })
+  // Right-BICEP: Right, Boundary, Interface, Conformance, Exceptions, Performance
   it('with undefined json should throw an error', () => {
+    // act & assert
     expect(() => {
       // eslint-disable-next-line no-new
       new Quiz()
     }).toThrow('JSON is undefined')
   })
+  // Right-BICEP: Right, Boundary, Interface, Conformance, Exceptions, Performance
   it('with undefined name in json should throw an error', () => {
+    // arrange
     const json = JSON.parse(JSON.stringify(quizJSON))
     json.name = undefined
+    // act & assert
     expect(() => {
       // eslint-disable-next-line no-new
       new Quiz(json, isInQuizBuilder)
     }).toThrow('name is undefined')
   })
+  // Right-BICEP: Right, Boundary, Interface, Conformance, Exceptions, Performance
   it('with undefined quizQuestions in json should throw an error', () => {
+    // arrange
     const json = JSON.parse(JSON.stringify(quizJSON))
     json.quizQuestions = undefined
+    // act & assert
     expect(() => {
       // eslint-disable-next-line no-new
       new Quiz(json, isInQuizBuilder)
