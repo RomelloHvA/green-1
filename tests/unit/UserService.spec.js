@@ -25,7 +25,9 @@ describe('Method findAll', () => {
         method: 'GET'
       })
     // makes a call to the backend to retrieve all users
+    // Act
     const response = await usersServices.asyncFindAll()
+    // Assert
     expect(response).toEqual(mockUsers)
   })
 })
@@ -40,7 +42,9 @@ describe('Method findById', () => {
         method: 'GET'
       })
     // makes a call to the backend to retrieve a user with given id
+    // Act
     const response = await usersServices.asyncFindById(1)
+    // Assert
     expect(response).not.toBeNull()
     expect(response.length, 'a single user should not be returned in a Array').toBeUndefined()
     expect(response.user_id, 'the user account does not match the given id').toStrictEqual(mockUsers[0].user_id)
@@ -50,6 +54,7 @@ describe('Method findById', () => {
 describe('Method save', () => {
   it('should return a user with new data', async () => {
     // create a new user with new data
+    // Arrange
     const user = {
       user_id: 1,
       first_name: 'Carl',
@@ -68,7 +73,9 @@ describe('Method save', () => {
       method: 'POST'
     })
     // makes a call to the backend to save a user
+    // Act
     const response = await usersServices.asyncSave(user)
+    // Assert
     expect(response).not.toBeNull()
     expect(response.username).toStrictEqual('carlsimons')
     expect(response.first_name).toStrictEqual('Carl')
@@ -82,6 +89,7 @@ describe('Method save', () => {
 })
 describe('Method updateProfile', () => {
   it('should updaten a profile with new data', async () => {
+    // Arrange
     // save a existing user with new data
     const user = mockUserData1
     user.first_name = 'Sarah'
@@ -94,7 +102,10 @@ describe('Method updateProfile', () => {
       method: 'PUT'
     })
     // makes a call to the backend to update a users profile
+    // Act
     const response = await usersServices.asyncUpdateProfile(user, user.user_id)
+
+    // Assert
     expect(response, 'updating a users profile should not return nothing').not.toBeNull()
     expect(response.first_name, 'the first name should not be the same as the one before the update').toStrictEqual('Sarah')
     expect(response.last_name, 'the last name should not be the same as the one before the update').toStrictEqual('Dessert')
@@ -102,7 +113,9 @@ describe('Method updateProfile', () => {
   })
 })
 describe('Method deleteById', () => {
+  // Fast
   it('should delete a user with given id', async () => {
+    // Arrange
     const deletedUser = mockUserData1
     fetch.mockResponseOnce(JSON.stringify(mockUserData1), {
       status: 200,
@@ -111,7 +124,8 @@ describe('Method deleteById', () => {
       method: 'DELETE'
     })
     // makes a call to the backend to delete a user with given id
-    const response = await usersServices.asyncDeleteById(deletedUser.user_id)
+    const response = await usersServices.asyncDeleteById(deletedUser.user_id) // Act
+    // Assert
     expect(response.length, 'deleting a user should not return an array').toStrictEqual(undefined)
     expect(response.user_id, 'deleted user should only be deleted with the same id').toStrictEqual(mockUsers[0].user_id)
   })

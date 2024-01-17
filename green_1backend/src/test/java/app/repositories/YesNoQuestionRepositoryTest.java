@@ -55,6 +55,7 @@ public class YesNoQuestionRepositoryTest {
 
     @Test
     public void repoFindByIdReturnsProperYesNoQuestion() {
+        // Fast
         for (int i = 0; i < this.yesNoQuestions.size(); i++) {
             YesNoQuestion yesNoQuestion = this.yesNoQuestions.get(i);
             assertNotNull(yesNoQuestion, "The YesNoQuestion " + yesNoQuestion + " should exist");
@@ -68,24 +69,35 @@ public class YesNoQuestionRepositoryTest {
     @Test
     public void repoSaveAddsOrUpdatesProperYesNoQuestion() {
         // Saving a new YesNoQuestion
+        // Arrange
         YesNoQuestion yesNoQuestion = new YesNoQuestion((long) 0, "question 3", "imgPath", null, 1, 3);
+        // Act
         YesNoQuestion savedYesNoQuestion = this.yesNoQuestionRepository.save(yesNoQuestion);
+        // Assert
         assertTrue(savedYesNoQuestion.getId() > 0, "YesNoQuestion ID should be greater than 0");
 
         // Updating an existing YesNoQuestion
+        // Act
         YesNoQuestion existingYesNoQuestion = this.yesNoQuestionRepository.findById((long) 1).orElse(null);
+        // Assert
         assertNotNull(existingYesNoQuestion, "The YesNoQuestion should exist");
+        // Arrange
         existingYesNoQuestion.setQuestion("question 4");
+        // Act
         YesNoQuestion updatedYesNoQuestion = this.yesNoQuestionRepository.save(existingYesNoQuestion);
+        // Assert
         assertTrue(updatedYesNoQuestion.getQuestion().equals("question 4"), "The question should be updated");
     }
 
     @Test
     public void repoDeleteYesNoQuestion() {
+        // Arrange
         YesNoQuestion yesNoQuestion = this.yesNoQuestionRepository.findById((long) 1).orElse(null);
         assertNotNull(yesNoQuestion, "The YesNoQuestion should exist");
+        // Act
         this.yesNoQuestionRepository.deleteById((long) 1);
         YesNoQuestion deletedYesNoQuestion = this.yesNoQuestionRepository.findById((long) 1).orElse(null);
+        // Assert
         assertNull(deletedYesNoQuestion, "The YesNoQuestion should not exist anymore");
     }
 }
