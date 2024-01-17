@@ -43,20 +43,28 @@ public class PageControllerTest {
     }
 
     @Test
+    // FIRST
     public void allPagesCanBeRetrieved() {
-
+        // act
         ResponseEntity<Page[]> response =
                 this.restTemplate.getForEntity("/page/all", Page[].class);
+        // assert
         assertEquals(HttpStatus.OK, response.getStatusCode(), "Status code should be 200 OK");
+        // assert
         assertEquals(pages.size(), Objects.requireNonNull(response.getBody()).length, "Size should be" + pages.size());
     }
 
     @Test
+    // FIRST
     public void pageCanBeAdded() {
+        // arrange
         Page page = new Page(3L, "Title3");
+        // act
         ResponseEntity<String> response =
                 this.restTemplate.postForEntity("/page/add?pageTitle=" + page.getPageTitle(), null, String.class);
+        // assert
         assertEquals(HttpStatus.CREATED, response.getStatusCode(), "Status code should be 201 CREATED");
+        // assert
         assertEquals("Page Created: " + page.getPageTitle(), response.getBody(), "Body should be Page Created: " + page.getPageTitle());
     }
 }

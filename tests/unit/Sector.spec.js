@@ -6,11 +6,13 @@ import Sector from '@/models/Sector'
 
 let sectorMock
 beforeEach(function () {
+  // arrange
   sectorMock = new Sector(sectorsMock[0])
 })
-
+// arrange
 describe('Sector Model', () => {
-  it('checks for instansce of a sector', () => {
+  it('checks for instance of a sector', () => {
+    // act & assert
     expect(sectorMock).toBeInstanceOf(Sector)
   })
   it('should give an error id is undefined', function () {

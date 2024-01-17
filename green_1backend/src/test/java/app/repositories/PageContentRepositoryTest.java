@@ -27,6 +27,7 @@ public class PageContentRepositoryTest {
     private PageRepository pageRepository;
 
     @BeforeEach
+    // Arrange
     public void setup() {
         Page page1 = new Page(1L, "Title1");
         Page page2 = new Page(2L, "Title2");
@@ -38,19 +39,25 @@ public class PageContentRepositoryTest {
         pageContentRepository.save(pageContent2);
     }
     @Test
+    // FIRST principle
+    // act and arrange
     public void repoFindAllReturnsAll() {
         assertEquals(2, pageContentRepository.findAll().size(), "Size should be 2");
     }
 
     @Test
+    // act and arrange FIRST principle
     public void repoCantFindByIdReturnsNull() {
         assertNull(pageContentRepository.findById(3).orElse(null), "Should be null");
     }
 
 
     @Test
+    // BICEP
     public void repoFindAllByFkPageIdReturnsEmpty() {
+        // act
         List<PageContent> result = pageContentRepository.findAllByFkPage_PageId(7L);
+        // assert
         assertEquals(0, result.size(), "Size should be 0");
     }
 }

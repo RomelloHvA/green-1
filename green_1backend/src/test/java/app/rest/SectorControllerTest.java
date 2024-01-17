@@ -27,21 +27,28 @@ public class SectorControllerTest {
     private Sector sector;
 
     @BeforeEach
+    // arrange
     void setup() {
         sector = new Sector((long) 1, "The new sector", "The new sector description");
     }
 
     @Test
+    // FIRST
     public void allSectorsCanBeRetrieved() {
+        // act
         ResponseEntity<Sector[]> response =
                 this.restTemplate.getForEntity("/sector/all", Sector[].class);
+        // assert
         assertEquals(HttpStatus.OK, response.getStatusCode(), "Status code should be 200 OK");
     }
 
     @Test
+    // FIRST
     public void sectorCanBeAdded() {
+        // act
         ResponseEntity<Sector> response =
                 this.restTemplate.postForEntity("/sector/0", sector, Sector.class);
+        // assert
         assertEquals(HttpStatus.CREATED, response.getStatusCode(), "Status code should be 201 CREATED");
     }
 
@@ -56,9 +63,12 @@ public class SectorControllerTest {
     }
 
     @Test
+    // FAST
     public void sectorCantBeDeleted() {
+        // act
         ResponseEntity<Void> response =
                 this.restTemplate.exchange("/sector/1", HttpMethod.DELETE, null, Void.class);
+        // assert
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode(), "Status code should be 409 CONFLICT");
     }
 

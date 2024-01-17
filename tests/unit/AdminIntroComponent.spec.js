@@ -10,24 +10,31 @@ let wrapper
  * @author Romello ten Broeke
  */
 
-beforeEach(() => {
+beforeEach(() => { // arrange
   wrapper = mount(AdminIntroComponent)
 })
-
+// FAST principle
 describe('IntroComponent.vue', () => {
   it('renders the correct text and contains AdminPanelComponents', () => {
+    // assert
     expect(wrapper.find('.card-title').text()).toBe('Welcome to the admin dashboard')
+    // assert
     expect(wrapper.find('.card-text').text()).toContain('On this page you will find all the activities an admin can do and a small explanation per activity')
   })
   it('should check the correct amount of adminPanelComponents', function () {
+    // arrange and act
     const adminPanelComponents = wrapper.findAllComponents(AdminPanelComponent)
+    // assert
     expect(adminPanelComponents.length).toBe(3)
   })
   it('Check correct text and contains AdminPanelComponents with correct titles', () => {
+    // arrange and act
     const adminPanelComponents = wrapper.findAllComponents(AdminPanelComponent)
+    // arrange
     const titles = ['Users', 'Content', 'Quiz']
+    // assert
     expect(adminPanelComponents.length).toBeGreaterThan(0)
-
+    // assert
     for (let i = 0; i < adminPanelComponents.length; i++) {
       const actualTitle = adminPanelComponents.at(i).props('title')
       expect(actualTitle).toBe(titles[i])
