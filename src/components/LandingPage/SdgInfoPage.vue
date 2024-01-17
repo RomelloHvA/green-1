@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid d-flex flex-row justify-content-around m-2 mx-auto" style="width: 80%">
-    <button type="button" class="btn btn-primary btn-lg" @click="this.toPreviousSDG">Previous SDG</button>
+    <button type="button" id="previousSdgButton" class="btn btn-primary btn-lg" @click="this.toPreviousSDG">Previous SDG</button>
     <div class="card" style="width: 25vw; border: 2px solid black;">
       <img :src="this.sdgContent.goal.image" class="card-img-top" alt="sdg-img">
       <div class="card-body">
@@ -44,7 +44,7 @@
         </table>
       </div>
     </div>
-    <button type="button" class="btn btn-primary btn-lg" @click="this.toNextSDG">Next SDG</button>
+    <button type="button" id="nextSdgButton" class="btn btn-primary btn-lg" @click="this.toNextSDG">Next SDG</button>
   </div>
 </template>
 

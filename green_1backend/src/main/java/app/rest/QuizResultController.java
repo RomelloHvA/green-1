@@ -14,7 +14,6 @@ import java.util.*;
 @RequestMapping("/quizresult")
 public class QuizResultController {
 
-//    private final QuizResultRepositoryJPA quizResultRepositoryJPA;
     private final UsersRepositoryJPA usersRepositoryJPA;
     private final QuizResultRepositoryJPA quizResultRepositoryJPA;
 
@@ -71,7 +70,7 @@ public class QuizResultController {
     @GetMapping("/getById/{userId}")
     public ResponseEntity<List<QuizResult>> getResultsForUser(
              @PathVariable long userId ) {
-        User user = this.usersRepositoryJPA .findById(userId).orElse(null);
+        User user = this.usersRepositoryJPA.findById(userId).orElse(null);
         List<QuizResult>quizResultsFromUser = this.quizResultRepositoryJPA.findQuizResultByUser(user);
 
         return ResponseEntity.ok(quizResultsFromUser); // 200 found successfully

@@ -16,29 +16,31 @@ public class ProfilesRepositoryMock implements ProfilesRepository {
 
     private GoalsRepository<Goal> goalsRepo;
 
-//    private GoalsRepository<Goal> goalsRepo;
-
     public ProfilesRepositoryMock(GoalsRepository<Goal> goalsRepo) {
         this.goalsRepo = goalsRepo;
         profiles = new ArrayList<>();
         int numberOfUsers = 2;
+        Profile profile = new Profile(1, "John", "Smith");
+        profiles.add(profile);
+        Profile profile2 = new Profile(2, "Jan", "Bob");
+        profiles.add(profile2);
 
-        for (int i = 0; i < numberOfUsers; i++) {
-            Profile profile = Profile.createSampleProfile(i, null);
-            profiles.add(profile);
-            associateGoalToProfile(profile);
-        }
+//        for (int i = 0; i < numberOfUsers; i++) {
+//            Profile profile = Profile.createSampleProfile(i, null);
+//            profiles.add(profile);
+//            associateGoalToProfile(profile);
+//        }
     }
 
-    private void associateGoalToProfile(Profile profile) {
-        List<Goal> goals = new ArrayList<>();
-        profile.setGoals(goals);
+//    private void associateGoalToProfile(Profile profile) {
+//        List<Goal> goals = new ArrayList<>();
+//        profile.setGoals(goals);
 //        for (int i = 0; i < 3; i++) {
 //            Goal goal = Goal.createSampleGoal(i+1, profile.getUser_id());
 //            goals.add(goal);
 //            profile.setGoals(goals);
 //        }
-    }
+//    }
 
     @Override
     public List findAll() {

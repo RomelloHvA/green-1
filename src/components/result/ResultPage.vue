@@ -4,24 +4,24 @@
       <h2 class="ml-custom" id="title">These are your top sdgs!</h2>
 
       <div class="paste-button">
-        <button class="button">Sort by &nbsp; ▼</button>
+        <button id="sortButton" class="button">Sort by &nbsp; ▼</button>
         <div class="dropdown-content">
           <a class="dropdown-item" @click="sortResults('asc')" id="top">Date ascending</a>
           <a class="dropdown-item" @click="sortResults('desc')" id="bottom">Date descending</a>
         </div>
       </div>
-      <button @click="onBack" class="btn-secondary goBackButton">Back to profile</button>
+      <button id="backToProfile" @click="onBack" class="btn-secondary goBackButton">Back to profile</button>
     </div>
     <div class="mt-2 mb-5 resultBody">
       <div class="row">
         <table>
           <tbody id="scroll-screen">
           <!-- This loop is used to get the users Quiz Results -->
-          <tr class="container sdgGoals" style="margin-bottom: 40px" v-for="quizResult in sortedQuizResults" :key="quizResult.result_id">
+          <tr class="container sdgGoals" style="margin-bottom: 40px" v-for="quizResultSpec in sortedQuizResults" :key="quizResultSpec.result_id">
             <div class="row">
-              <td class="containeResult justify-content-center" style="font-weight: bold; color: #6D3FD9;">These are your top 3 SDGs from the Quiz you made on: {{ formatDate(quizResult.dateOfQuiz) }}</td>
+              <td class="containeResult justify-content-center" style="font-weight: bold; color: #6D3FD9;">These are your top 3 SDGs from the Quiz you made on: {{ formatDate(quizResultSpec.dateOfQuiz) }}</td>
               <!-- This loop gets all the data for the sdg cards -->
-              <div v-for="sdgId in quizResult.sdgArray" :key="sdgId" class="col" style="width: 20vh">
+              <div v-for="sdgId in quizResultSpec.sdgArray" :key="sdgId" class="col" style="width: 20vh">
                 <sdg-card-component :sdg-data="getSdgDataById(sdgId)" />
               </div>
             </div>
@@ -38,6 +38,27 @@ import sdgCardComponent from '@/components/quizResultsComponents/sdgCardComponen
 import { sdgData } from '@/assets/testData/sdgTestData'
 
 export default {
+  /**
+   * ResultPage Vue component.
+   * Displays the top SDGs for the user based on quiz results.
+   *
+   * @component
+   * @name ResultPage
+   * @namespace app.views
+   *
+   * @property {string} account - User account information.
+   * @property {Array} quizResults - Array of quiz results.
+   * @property {Array} sdgData - Array of SDG data.
+   * @property {Array} sortedQuizResults - Array of sorted quiz results.
+   * @property {string} sortDirection - Sorting direction ('asc' or 'desc').
+   *
+   * @event {method} formatDate - Format date string.
+   * @event {method} onBack - Navigate back to the user's profile page.
+   * @event {method} getQuizResults - Retrieve quiz results for the current user.
+   * @event {method} getSdgDataById - Get SDG data by ID.
+   * @event {method} sortResults - Sort quiz results based on date and direction.
+   */
+
   name: 'ResultPage',
   components: { sdgCardComponent },
   inject: ['profileService', 'quizResultService', 'sessionService'],
@@ -82,6 +103,7 @@ export default {
       this.sortedQuizResults.sort((a, b) => {
         const dateA = new Date(a.dateOfQuiz)
         const dateB = new Date(b.dateOfQuiz)
+        // If its 'asc' dateA will be compared to dateB else dateB will be compared with dateA
         return direction === 'asc' ? dateA - dateB : dateB - dateA
       })
     }

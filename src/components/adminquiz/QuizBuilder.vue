@@ -27,7 +27,8 @@
               <div class="flexRow m-auto my-4 w-75 justify-content-between" justify-content-between>
                   <div class="flexRow text-start m-auto">
                     <label for="quizName" class="quizBuilderLabel text-start">Quiz Name:</label>
-                    <input v-model="quiz.name" type="text" autocomplete="off" class="form-control quizNameInput" id="quizName">
+                    <input v-model="quiz.name" type="text" autocomplete="off" class="form-control quizNameInput" id="quizName"
+                    :class="{'red-border': quiz.nameIsEmpty}">
                   </div>
                   <div>
                     <SectorDropDownComponent :sector="quiz.sector" @sectorSelected="setSector"/>
@@ -244,7 +245,7 @@ export default {
 
     const setSector = (sector) => {
       quiz.value.sector = sector
-      if (sector.id !== quizOriginal.value.sector.id) {
+      if (sector !== null && quizOriginal.value.sector !== null && sector.id !== quizOriginal.value.sector.id) {
         quiz.value.isLive = false
       }
     }

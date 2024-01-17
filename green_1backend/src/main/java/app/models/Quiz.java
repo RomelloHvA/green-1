@@ -31,6 +31,20 @@ public class Quiz {
 
     public Quiz(){}
 
+    public Quiz(Long id, String name){
+        this.id = id;
+        this.name = name;
+    }
+
+    public Quiz(Long id, String name, boolean isPublished, boolean isConcept, boolean isLive, Sector sector){
+        this.id = id;
+        this.name = name;
+        this.isPublished = isPublished;
+        this.isConcept = isConcept;
+        this.isLive = isLive;
+        this.sector = sector;
+    }
+
     public void setIsLive(boolean live) {
         isLive = live;
     }

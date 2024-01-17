@@ -23,6 +23,11 @@ public class MultipleChoiceOption {
 
     }
 
+    public MultipleChoiceOption(Long id, String option) {
+        this.id = id;
+        this.option = option;
+    }
+
     public int getSDG() {
         return sdg;
     }

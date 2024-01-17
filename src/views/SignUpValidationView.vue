@@ -70,7 +70,14 @@
                     </div>
                   </div>
                   <div class="d-flex justify-content-center">
-                    <button @click.prevent="signUpCheck" class="btn btn-primary btn-block btn-lg buttonColor text-body">Sign up</button>
+                    <button
+                      @click.prevent="signUpCheck"
+                      :disabled="!allFieldsFilled"
+                      class="btn btn-primary btn-block btn-lg buttonColor text-body"
+                      id="signUpBtn"
+                    >
+                      Sign up
+                    </button>
                   </div>
                   <p class="text-center text-muted mt-4 mb-0">Already have an account?
                     <router-link class="fw-bold text-body signuplink" to="/login">Login here</router-link>
@@ -93,6 +100,19 @@ import { useToast } from 'vue-toast-notification'
 export default {
   name: 'SignUpValidationView',
   inject: ['usersServices'],
+  computed: {
+    allFieldsFilled() {
+      return (
+        this.firstName &&
+        this.lastName &&
+        this.email &&
+        this.postCode &&
+        this.userName &&
+        this.password &&
+        this.confirmPassword
+      );
+    },
+  },
   data () {
     return {
       errorFirstName: '',

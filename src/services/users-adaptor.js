@@ -1,4 +1,3 @@
-import { User } from '@/models/user'
 export class UsersAdaptor {
   resourcesUrl
 
@@ -25,28 +24,28 @@ export class UsersAdaptor {
     }
   }
 
-  async asyncFindByName (username) {
-    const url = `${this.resourcesUrl}/users/name`
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: username
-    }
-    return this.fetchJson(url, options)
-  }
-
   async asyncFindAll () {
     let response = []
     const url = `${this.resourcesUrl}/users/all`
-    response = await this.fetchJson(url)
-    return response.map(user => User.copyConstructor(user))
+    const options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    response = await this.fetchJson(url, options)
+    return response
   }
 
   async asyncFindById (id) {
     const url = `${this.resourcesUrl}/users/${id}`
-    return this.fetchJson(url)
+    const options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    return this.fetchJson(url, options)
   }
 
   async asyncSave (user) {

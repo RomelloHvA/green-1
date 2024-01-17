@@ -1,6 +1,5 @@
 package app.repositories;
 
-import app.models.Question;
 import app.models.QuizResult;
 import app.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
