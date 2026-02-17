@@ -35,7 +35,7 @@ public class UploadController {
                 Files.createDirectories(Paths.get(directoryPath));
                 Path path = Paths.get(directoryPath + filename);
                 System.out.println("Path: " + path);
-                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(file.getInputStream(), path.normalize(), StandardCopyOption.REPLACE_EXISTING);
 
                 // Save the image information in the database (omitted for brevity)
 

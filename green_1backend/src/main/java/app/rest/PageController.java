@@ -24,6 +24,6 @@ public class PageController {
         Page page = new Page();
         page.setPageTitle(pageTitle);
         pageRepository.save(page);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Page Created: " + pageTitle);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Page Created: " + page.getPageTitle());
     }
 }

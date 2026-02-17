@@ -39,24 +39,6 @@ public class User {
     @JsonView({ViewClasses.Summary.class})
     private boolean isAdmin = false;
 
-    private static final String[] FIRST_NAMES = {"John", "Mary", "David", "Lisa", "Michael", "Sarah"};
-    private static final String[] LAST_NAMES = {"Smith", "Johnson", "Brown", "Taylor", "Clark", "Wilson"};
-    private static final String[] EMAIL_USER = {"Smith@gmail.com", "Johnson@hotmail.com", "Brownlee@live.com", "TaylorA@gmail.com", "Clark123@gmail.com", "Wilsonbaba@gmail.com"};
-    private static final String[] USER_PASSWORD = {"R#9sGp@2", "3Fb*Zx7Y", "Qa2$8pVr", "D6&hFt1s", "Px9!cL5w"};
-    private static final String[] USER_NAMES = {"Johny123", "Mary123", "David123", "Lisa123", "Michael123", "Sarah123"};
-    private static final String[] USER_GOALS = {"No Poverty",
-            "Zero Hunger",
-            "Good Health and Well Being",
-            "Quality Education",
-            "Gender Equality", "Clean Water and Sanitation",
-            "Affordable and Clean Energy", "Decent Work and Economic Growth",
-            "Industry, Innovation, and Infrastructure",
-            "Reduced Inequality", "Sustainable Cities and Communities",
-            "Responsible Consumption and Production", "Climate Action",
-            "Life Below Water", "Life on Land",
-            "Peace, Justice, and Strong Institutions",
-            "Partnerships for the Goals"};
-
     public User(String first_name, String last_name, String email, String username, String user_goal, String password, boolean isAdmin) {
         this.first_name = first_name;
         this.last_name = last_name;
