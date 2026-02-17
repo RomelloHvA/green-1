@@ -12,13 +12,13 @@ public class Quiz {
     private Long id;
     private String name;
 
-    @Column(name = "is_published", columnDefinition = "TINYINT", length = 1)
+    @Column(name = "is_published")
     private boolean isPublished;
 
-    @Column(name = "is_concept", columnDefinition = "TINYINT", length = 1)
+    @Column(name = "is_concept")
     private boolean isConcept;
 
-    @Column(name = "is_live", columnDefinition = "TINYINT", length = 1)
+    @Column(name = "is_live")
     private boolean isLive;
 
     @ManyToOne

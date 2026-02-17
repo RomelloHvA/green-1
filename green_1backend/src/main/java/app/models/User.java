@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 @Entity
-@Table(name = "\"user\"")
+@Table(name = "app_user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
